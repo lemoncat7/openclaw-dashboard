@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v98.0">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v99.0">
     <meta name="theme-color" content="#08080c">
-    <title>MoShang Status v98.0</title>
+    <title>MoShang Status v99.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -23573,6 +23573,705 @@
             }
         }
 
+        /* ========== v99.0: Next-Gen 2026 Enhancements ========== */
+        
+        /* v99.0: Modern @property with animation-composition */
+        @property --v99-hue-rotate {
+            syntax: '<angle>';
+            inherits: false;
+            initial-value: 0deg;
+        }
+        @property --v99-morph-radius {
+            syntax: '<length>';
+            inherits: false;
+            initial-value: 16px;
+        }
+        @property --v99-glow-spread {
+            syntax: '<length>';
+            inherits: false;
+            initial-value: 10px;
+        }
+        
+        /* v99.0: Modern vibrant color palette */
+        :root {
+            --v99-neon-mint: #00FFAA;
+            --v99-neon-coral: #FF6B9D;
+            --v99-neon-cyan: #00F0FF;
+            --v99-neon-violet: #A855F7;
+            --v99-neon-amber: #FFB800;
+            --v99-neon-rose: #FF4D6D;
+            --v99-neon-teal: #14B8A6;
+            --v99-neon-indigo: #6366F1;
+        }
+        
+        /* v99.0: Glass morphism 2026 - Ultra modern frosted glass */
+        .v99-glass {
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.12) 0%,
+                rgba(255, 255, 255, 0.06) 40%,
+                rgba(255, 255, 255, 0.03) 100%
+            );
+            backdrop-filter: blur(24px) saturate(180%) contrast(1.1);
+            -webkit-backdrop-filter: blur(24px) saturate(180%) contrast(1.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.25),
+                inset 0 1px 1px rgba(255, 255, 255, 0.25),
+                inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .v99-glass::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.08) 50%,
+                transparent 100%
+            );
+            animation: v99GlassShimmer 3s ease-in-out infinite;
+        }
+        
+        @keyframes v99GlassShimmer {
+            0%, 100% { left: -100%; opacity: 0.5; }
+            50% { left: 100%; opacity: 1; }
+        }
+        
+        /* v99.0: Morphing border animation - Cyberpunk style */
+        @keyframes v99MorphBorder {
+            0%, 100% { 
+                border-radius: 16px 8px 20px 12px;
+                box-shadow: 
+                    0 0 15px rgba(var(--accent-rgb, 255,136,51), 0.4),
+                    0 0 30px rgba(var(--accent-rgb, 255,136,51), 0.2);
+            }
+            25% { 
+                border-radius: 8px 20px 12px 16px;
+                box-shadow: 
+                    0 0 20px rgba(var(--accent-rgb, 255,136,51), 0.5),
+                    0 0 40px rgba(var(--accent-rgb, 255,136,51), 0.3);
+            }
+            50% { 
+                border-radius: 20px 12px 16px 8px;
+                box-shadow: 
+                    0 0 25px rgba(var(--accent-rgb, 255,136,51), 0.6),
+                    0 0 50px rgba(var(--accent-rgb, 255,136,51), 0.4);
+            }
+            75% { 
+                border-radius: 12px 16px 8px 20px;
+                box-shadow: 
+                    0 0 20px rgba(var(--accent-rgb, 255,136,51), 0.5),
+                    0 0 40px rgba(var(--accent-rgb, 255,136,51), 0.3);
+            }
+        }
+        
+        .v99-morph-border {
+            animation: v99MorphBorder 6s ease-in-out infinite;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .v99-morph-border:hover {
+            animation: v99MorphBorder 2s ease-in-out infinite;
+        }
+        
+        /* v99.0: Neon pulse glow - High energy */
+        @keyframes v99NeonPulse {
+            0%, 100% { 
+                text-shadow: 
+                    0 0 5px var(--v99-neon-cyan),
+                    0 0 10px var(--v99-neon-cyan),
+                    0 0 20px var(--v99-neon-cyan);
+                filter: brightness(1);
+            }
+            50% { 
+                text-shadow: 
+                    0 0 10px var(--v99-neon-cyan),
+                    0 0 20px var(--v99-neon-cyan),
+                    0 0 40px var(--v99-neon-cyan),
+                    0 0 60px var(--v99-neon-cyan);
+                filter: brightness(1.2);
+            }
+        }
+        
+        .v99-neon-pulse {
+            animation: v99NeonPulse 2s ease-in-out infinite;
+        }
+        
+        /* v99.0: Spring entrance - Bouncy feel */
+        @keyframes v99SpringIn {
+            0% { 
+                opacity: 0; 
+                transform: scale(0.3) translateY(40px);
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.08) translateY(-5px);
+            }
+            70% { 
+                transform: scale(0.95) translateY(2px);
+            }
+            85% { 
+                transform: scale(1.03) translateY(-1px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        .v99-spring-in {
+            animation: v99SpringIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        
+        /* v99.0: Shimmer sweep - Light beam effect */
+        @keyframes v99ShimmerSweep {
+            0% { 
+                background-position: -200% center;
+                opacity: 0.3;
+            }
+            50% { 
+                opacity: 0.8;
+            }
+            100% { 
+                background-position: 200% center;
+                opacity: 0.3;
+            }
+        }
+        
+        .v99-shimmer-sweep {
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.4) 50%,
+                transparent 100%
+            );
+            background-size: 200% 100%;
+            animation: v99ShimmerSweep 2.5s ease-in-out infinite;
+        }
+        
+        /* v99.0: Pulse ring - Expanding rings */
+        @keyframes v99PulseRing {
+            0% { 
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            100% { 
+                transform: scale(2.2);
+                opacity: 0;
+            }
+        }
+        
+        .v99-pulse-ring {
+            position: relative;
+        }
+        
+        .v99-pulse-ring::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            animation: v99PulseRing 1.5s ease-out infinite;
+        }
+        
+        /* v99.0: Fox enhanced effects */
+        .fox-glow-aura.v99-enhanced {
+            filter: blur(25px);
+            opacity: 0.7;
+            animation: v99FoxAura 2.5s ease-in-out infinite;
+        }
+        
+        @keyframes v99FoxAura {
+            0%, 100% { 
+                opacity: 0.5;
+                transform: scale(1);
+                filter: blur(20px);
+            }
+            50% { 
+                opacity: 0.8;
+                transform: scale(1.15);
+                filter: blur(30px);
+            }
+        }
+        
+        /* v99.0: Mood sync ring enhanced */
+        .mood-sync-ring.v99-enhanced {
+            border-width: 3px;
+            animation: v99MoodRing 2.5s ease-in-out infinite;
+        }
+        
+        @keyframes v99MoodRing {
+            0%, 100% { 
+                transform: rotate(0deg) scale(1);
+                opacity: 0.7;
+            }
+            50% { 
+                transform: rotate(180deg) scale(1.05);
+                opacity: 1;
+            }
+        }
+        
+        /* v99.0: Activity indicator enhanced */
+        .v99-activity-indicator {
+            display: flex;
+            gap: 4px;
+            align-items: flex-end;
+            height: 24px;
+        }
+        
+        .v99-activity-bar {
+            width: 5px;
+            background: linear-gradient(to top, var(--accent), var(--v99-neon-cyan));
+            border-radius: 3px;
+            animation: v99ActivityBounce 0.7s ease-in-out infinite;
+        }
+        
+        .v99-activity-bar:nth-child(1) { height: 35%; animation-delay: 0s; }
+        .v99-activity-bar:nth-child(2) { height: 65%; animation-delay: 0.08s; }
+        .v99-activity-bar:nth-child(3) { height: 100%; animation-delay: 0.16s; }
+        .v99-activity-bar:nth-child(4) { height: 55%; animation-delay: 0.24s; }
+        .v99-activity-bar:nth-child(5) { height: 80%; animation-delay: 0.32s; }
+        
+        @keyframes v99ActivityBounce {
+            0%, 100% { transform: scaleY(0.4); opacity: 0.6; }
+            50% { transform: scaleY(1); opacity: 1; }
+        }
+        
+        /* v99.0: Neural pulse - AI vibes */
+        @keyframes v99NeuralPulse {
+            0%, 100% { 
+                opacity: 0.4;
+                box-shadow: 0 0 8px var(--v99-neon-violet);
+            }
+            50% { 
+                opacity: 1;
+                box-shadow: 
+                    0 0 20px var(--v99-neon-violet),
+                    0 0 40px var(--v99-neon-violet),
+                    inset 0 0 15px var(--v99-neon-violet);
+            }
+        }
+        
+        .v99-neural-pulse {
+            animation: v99NeuralPulse 1.8s ease-in-out infinite;
+            border: 1px solid var(--v99-neon-violet);
+            border-radius: 50%;
+        }
+        
+        /* v99.0: Gradient text - Animated rainbow */
+        .v99-gradient-text {
+            background: linear-gradient(
+                270deg,
+                var(--primary) 0%,
+                var(--accent) 20%,
+                var(--v99-neon-violet) 40%,
+                var(--v99-neon-cyan) 60%,
+                var(--accent) 80%,
+                var(--primary) 100%
+            );
+            background-size: 400% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: v99GradientShift 4s ease-in-out infinite;
+        }
+        
+        @keyframes v99GradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        /* v99.0: Particle orbit - Orbiting dots */
+        @keyframes v99ParticleOrbit {
+            0% { 
+                transform: rotate(0deg) translateX(55px) rotate(0deg);
+                opacity: 0.7;
+            }
+            50% { opacity: 1; }
+            100% { 
+                transform: rotate(360deg) translateX(55px) rotate(-360deg);
+                opacity: 0.7;
+            }
+        }
+        
+        .v99-particle-orbit {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: radial-gradient(circle, var(--v99-neon-cyan) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: v99ParticleOrbit 5s linear infinite;
+            box-shadow: 0 0 8px var(--v99-neon-cyan);
+        }
+        
+        .v99-particle-orbit:nth-child(2) {
+            animation-delay: -1s;
+            background: radial-gradient(circle, var(--v99-neon-violet) 0%, transparent 70%);
+            box-shadow: 0 0 8px var(--v99-neon-violet);
+        }
+        
+        .v99-particle-orbit:nth-child(3) {
+            animation-delay: -2s;
+            background: radial-gradient(circle, var(--v99-neon-rose) 0%, transparent 70%);
+            box-shadow: 0 0 8px var(--v99-neon-rose);
+        }
+        
+        /* v99.0: Focus ring enhanced */
+        .v99-focus-ring:focus-visible {
+            outline: none;
+            box-shadow: 
+                0 0 0 2px var(--bg-dark),
+                0 0 0 4px var(--v99-neon-cyan),
+                0 0 25px rgba(0, 240, 255, 0.5);
+            animation: v99FocusPulse 1.2s ease-in-out infinite;
+        }
+        
+        @keyframes v99FocusPulse {
+            0%, 100% { 
+                box-shadow: 
+                    0 0 0 2px var(--bg-dark),
+                    0 0 0 4px var(--v99-neon-cyan),
+                    0 0 20px rgba(0, 240, 255, 0.4);
+            }
+            50% { 
+                box-shadow: 
+                    0 0 0 2px var(--bg-dark),
+                    0 0 0 6px var(--v99-neon-cyan),
+                    0 0 35px rgba(0, 240, 255, 0.6);
+            }
+        }
+        
+        /* v99.0: Action button enhanced */
+        .action-btn.v99-enhanced {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .action-btn.v99-enhanced::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                transparent 100%
+            );
+            transition: left 0.5s ease;
+        }
+        
+        .action-btn.v99-enhanced:hover::before {
+            left: 100%;
+        }
+        
+        .action-btn.v99-enhanced:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.35),
+                0 0 20px rgba(var(--accent-rgb, 255, 136, 51), 0.4);
+        }
+        
+        .action-btn.v99-enhanced:active {
+            transform: translateY(1px) scale(0.97);
+        }
+        
+        /* v99.0: Stat card enhanced */
+        .stat-card.v99-enhanced {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card.v99-enhanced::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                from 0deg,
+                transparent 0deg,
+                rgba(255, 255, 255, 0.08) 60deg,
+                transparent 120deg
+            );
+            animation: v99CardRotate 8s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .stat-card.v99-enhanced:hover::after {
+            opacity: 1;
+        }
+        
+        @keyframes v99CardRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .stat-card.v99-enhanced:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                0 0 25px rgba(var(--accent-rgb, 255, 136, 51), 0.2);
+        }
+        
+        /* v99.0: Mood button enhanced */
+        .mood-btn.v99-enhanced {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .mood-btn.v99-enhanced:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 25px rgba(var(--accent-rgb, 255, 136, 51), 0.5);
+        }
+        
+        .mood-btn.v99-enhanced:active {
+            transform: scale(0.9);
+        }
+        
+        /* v99.0: Mini stat enhanced */
+        .mini-stat.v99-enhanced {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .mini-stat.v99-enhanced:hover {
+            transform: scale(1.08);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 15px rgba(var(--accent-rgb, 255, 136, 51), 0.3);
+        }
+        
+        /* v99.0: Toast enhanced */
+        @keyframes v99ToastSlide {
+            0% { 
+                opacity: 0; 
+                transform: translateX(120px) scale(0.8);
+            }
+            60% { 
+                opacity: 1; 
+                transform: translateX(-12px) scale(1.03);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateX(0) scale(1);
+            }
+        }
+        
+        .v99-toast {
+            animation: v99ToastSlide 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            border-left: 4px solid var(--accent);
+            background: linear-gradient(135deg, rgba(var(--accent-rgb, 255,136,51), 0.15), rgba(0,0,0,0.3));
+        }
+        
+        /* v99.0: State-specific mood aura */
+        .mood-aura.v99-enhanced {
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .mood-aura.status-idle.v99-enhanced { 
+            background: radial-gradient(circle, rgba(255,179,71,0.25) 0%, transparent 70%);
+        }
+        .mood-aura.status-working.v99-enhanced { 
+            background: radial-gradient(circle, rgba(0,212,255,0.25) 0%, transparent 70%);
+        }
+        .mood-aura.status-sleeping.v99-enhanced { 
+            background: radial-gradient(circle, rgba(139,92,246,0.25) 0%, transparent 70%);
+        }
+        .mood-aura.status-excited.v99-enhanced { 
+            background: radial-gradient(circle, rgba(236,72,153,0.25) 0%, transparent 70%);
+        }
+        .mood-aura.status-thinking.v99-enhanced { 
+            background: radial-gradient(circle, rgba(167,139,250,0.25) 0%, transparent 70%);
+        }
+        .mood-aura.status-laughing.v99-enhanced { 
+            background: radial-gradient(circle, rgba(255,200,100,0.25) 0%, transparent 70%);
+        }
+        .mood-aura.status-error.v99-enhanced { 
+            background: radial-gradient(circle, rgba(255,77,77,0.25) 0%, transparent 70%);
+        }
+        
+        /* v99.0: Energy ring enhanced */
+        .energy-ring.v99-enhanced {
+            border: 2px solid;
+            border-image: linear-gradient(45deg, var(--accent), var(--v99-neon-cyan)) 1;
+            animation: v99EnergyRing 2.5s ease-in-out infinite;
+        }
+        
+        .energy-ring:nth-child(1) { animation-delay: 0s; }
+        .energy-ring:nth-child(2) { animation-delay: 0.4s; }
+        .energy-ring:nth-child(3) { animation-delay: 0.8s; }
+        
+        @keyframes v99EnergyRing {
+            0%, 100% { opacity: 0.25; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.12); }
+        }
+        
+        /* v99.0: AI context bar enhanced */
+        .v87-ai-context.v99-enhanced {
+            background: linear-gradient(
+                90deg,
+                rgba(168,85,247,0.18) 0%,
+                rgba(0,240,255,0.18) 50%,
+                rgba(255,107,157,0.18) 100%
+            );
+            border: 1px solid rgba(168,85,247,0.4);
+            animation: v99ContextSlide 0.5s ease-out;
+        }
+        
+        /* v99.0: Fox expression enhanced */
+        .fox-expression.v99-enhanced {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: v99ExpressionBounce 1.8s ease-in-out infinite;
+        }
+        
+        @keyframes v99ExpressionBounce {
+            0%, 100% { transform: scale(1) translateY(0); }
+            50% { transform: scale(1.12) translateY(-4px); }
+        }
+        
+        /* v99.0: Status change flash effect */
+        @keyframes v99StatusFlash {
+            0% { opacity: 0; }
+            15% { opacity: 0.6; }
+            100% { opacity: 0; }
+        }
+        
+        .v99-status-flash {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            background: radial-gradient(circle at center, var(--status-color, var(--accent)) 0%, transparent 70%);
+            animation: v99StatusFlash 0.6s ease-out forwards;
+        }
+        
+        /* v99.0: Smooth cursor trail effect */
+        .v99-cursor-trail {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--v99-neon-cyan) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .v99-cursor-trail.active {
+            opacity: 0.7;
+        }
+        
+        /* v99.0: Interactive hover lift */
+        .v99-hover-lift {
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .v99-hover-lift:hover {
+            transform: translateY(-6px);
+            box-shadow: 
+                0 12px 30px rgba(0, 0, 0, 0.35),
+                0 0 20px rgba(var(--accent-rgb, 255, 136, 51), 0.25);
+        }
+        
+        /* v99.0: Stagger entrance */
+        .v99-stagger > *:nth-child(1) { animation-delay: 0ms; }
+        .v99-stagger > *:nth-child(2) { animation-delay: 80ms; }
+        .v99-stagger > *:nth-child(3) { animation-delay: 160ms; }
+        .v99-stagger > *:nth-child(4) { animation-delay: 240ms; }
+        .v99-stagger > *:nth-child(5) { animation-delay: 320ms; }
+        .v99-stagger > *:nth-child(6) { animation-delay: 400ms; }
+        .v99-stagger > *:nth-child(7) { animation-delay: 480ms; }
+        .v99-stagger > *:nth-child(8) { animation-delay: 560ms; }
+        
+        /* v99.0: Scroll reveal */
+        @keyframes v99ScrollReveal {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+        
+        .v99-scroll-reveal {
+            opacity: 0;
+        }
+        
+        .v99-scroll-reveal.revealed {
+            animation: v99ScrollReveal 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        
+        /* v99.0: Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            .v99-*,
+            [class*="v99-"] {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        /* v99.0: High contrast mode */
+        @media (prefers-contrast: more) {
+            .v99-glass {
+                border-width: 2px;
+            }
+            
+            .v99-neon-pulse {
+                text-shadow: 0 0 3px currentColor;
+            }
+        }
+        
+        /* v99.0: Dark mode optimizations */
+        @media (prefers-color-scheme: dark) {
+            .v99-glass {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.08) 0%,
+                    rgba(255, 255, 255, 0.03) 40%,
+                    rgba(255, 255, 255, 0.01) 100%
+                );
+            }
+        }
+        
+        /* v99.0: Light mode optimizations */
+        @media (prefers-color-scheme: light) {
+            .v99-glass {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.5) 0%,
+                    rgba(255, 255, 255, 0.25) 40%,
+                    rgba(255, 255, 255, 0.1) 100%
+                );
+            }
+            
+            .v99-neon-pulse {
+                text-shadow: 
+                    0 0 3px var(--v99-neon-cyan),
+                    0 0 6px var(--v99-neon-cyan);
+            }
+        }
+
     </style>
 </head>
 <body class="loading">
@@ -28080,6 +28779,16 @@
                 setTimeout(() => moodAura.classList.remove('v98-aura-active'), 700);
             }
             
+            // v99.0: Status change flash effect - Full screen radial flash
+            const statusFlash = document.createElement('div');
+            statusFlash.className = 'v99-status-flash';
+            statusFlash.style.setProperty('--status-color', colors[mood] || '#ffc864');
+            document.body.appendChild(statusFlash);
+            setTimeout(() => statusFlash.remove(), 700);
+            
+            // v99.0: Enhanced cursor trail burst on state change
+            triggerV99CursorBurst();
+            
             // v98.0: State change toast notification
             const stateNames = {
                 idle: 'Idle', working: 'Working', sleeping: 'Sleeping',
@@ -28093,6 +28802,71 @@
             };
             showToastV32(`${stateIcons[mood] || '🔄'} ${stateNames[mood] || mood} mode`, 'default', 2000);
         }
+        
+        // v99.0: Cursor burst effect on state change
+        function triggerV99CursorBurst() {
+            const cursorTrail = document.querySelector('.v99-cursor-trail');
+            if (!cursorTrail) return;
+            
+            cursorTrail.classList.add('active');
+            setTimeout(() => cursorTrail.classList.remove('active'), 300);
+        }
+        
+        // v99.0: Initialize enhanced cursor trail
+        (function initV99CursorTrail() {
+            const trail = document.createElement('div');
+            trail.className = 'v99-cursor-trail';
+            document.body.appendChild(trail);
+            
+            let lastTrailTime = 0;
+            document.addEventListener('mousemove', (e) => {
+                const now = Date.now();
+                if (now - lastTrailTime < 50) return; // Throttle
+                lastTrailTime = now;
+                
+                trail.style.left = e.clientX - 4 + 'px';
+                trail.style.top = e.clientY - 4 + 'px';
+                trail.classList.add('active');
+                
+                clearTimeout(trail._hideTimeout);
+                trail._hideTimeout = setTimeout(() => {
+                    trail.classList.remove('active');
+                }, 200);
+            });
+            
+            document.addEventListener('mouseleave', () => {
+                trail.classList.remove('active');
+            });
+        })();
+        
+        // v99.0: Enhanced scroll reveal using Intersection Observer
+        (function initV99ScrollReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+            
+            document.querySelectorAll('.v99-scroll-reveal').forEach(el => {
+                observer.observe(el);
+            });
+        })();
+        
+        // v99.0: Status-specific particle colors for enhanced canvas effects
+        const v99StateParticles = {
+            idle: { color: '#FFB347', count: 6 },
+            working: { color: '#00D4FF', count: 8 },
+            sleeping: { color: '#A78BFA', count: 5 },
+            excited: { color: '#EC4899', count: 10 },
+            thinking: { color: '#8B5CF6', count: 7 },
+            laughing: { color: '#FFB800', count: 8 },
+            error: { color: '#FF6B6B', count: 6 },
+            focused: { color: '#5CDB95', count: 7 },
+            learning: { color: '#FFB347', count: 6 }
+        };
 
         // v38: Number Pop Animation on Value Change
         function triggerV38NumberPop(elementId) {

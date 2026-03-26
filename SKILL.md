@@ -9,27 +9,36 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
-- v97.0: 2026现代视觉增强（v97-enhanced现代化类系统/状态光晕增强/弹簧动画/粒子轨道）
-- v97.0: 现代化色彩体系（v97-gold/v97-coral/v97-cyan/v97-violet/v97-pink等2026流行色）
-- v97.0: 狐狸发光光晕升级（状态感知彩虹光晕/旋转动画/亮度脉动）
-- v97.0: 心情同步环增强（3px边框/3D旋转/动态边框宽度）
-- v97.0: 玻璃态效果升级（v97-glass现代玻璃 morphism/内阴影高光）
-- v97.0: 卡片深度效果（v97-depth-card 3D透视悬停/弹簧物理）
-- v97.0: 弹簧入场动画（v97SpringIn弹性缩放/overshoot效果）
-- v97.0: 扫光动画增强（v97ShimmerSweep双向扫光）
-- v97.0: 脉冲环动画（v97PulseRing缩放透明度呼吸）
-- v97.0: 变形边框动画（v97MorphBorder动态圆角/彩虹渐变）
-- v97.0: 状态光晕增强（每个状态独特的光晕颜色和动画节奏）
-- v97.0: 活动指示器增强（v97ActivityBounce动态高度柱状图）
-- v97.0: 粒子轨道动画（v97ParticleOrbit环绕旋转/6色粒子）
-- v97.0: 神经脉冲增强（v97NeuralPulse紫色发光脉冲）
-- v97.0: 渐变文字（v97GradientText 5色循环位移）
-- v97.0: 狐狸表情动画增强（弹跳表情符号）
-- v97.0: 兴奋状态增强（渐变爱心眼睛/多层光晕粒子/心形粒子爆发）
-- v97.0: 睡眠状态增强（梦幻紫光晕/浮动Z字/甜蜜粒子）
-- v97.0: 思考状态增强（发光思维气泡/神经火花/软紫光晕）
-- v97.0: 大笑状态增强（温暖金笑容/腮红包围/微笑光晕/ sparkle粒子）
-- v97.0: 增强型reduced motion支持（v97-*全系列）
+- v99.0: Next-Gen 2026视觉增强（v99-glass超现代毛玻璃/霓虹脉冲/动画组合）
+- v99.0: 全新霓虹色彩体系（v99-neon-mint/v99-neon-coral/v99-neon-cyan/v99-neon-violet等）
+- v99.0: 状态切换全屏闪光效果（v99StatusFlash径向渐变脉冲）
+- v99.0: 增强型光标轨迹效果（v99CursorTrail状态感知跟随光效）
+- v99.0: 玻璃态效果增强（v99-glass折射光/动态扫光/角闪高光）
+- v99.0: 变形边框增强（v99MorphBorder赛博朋克风格/多色阴影脉动）
+- v99.0: 霓虹发光脉冲（v99NeonPulse高强度文字发光/亮度呼吸）
+- v99.0: 弹簧入场动画（v99SpringIn物理弹性缩放/overshoot回弹）
+- v99.0: 扫光动画增强（v99ShimmerSweep流动光束/透明度变化）
+- v99.0: 脉冲环动画（v99PulseRing扩散消失/渐变边框）
+- v99.0: 狐狸光晕增强（v99-enhanced多层模糊/亮度缩放脉动）
+- v99.0: 心情同步环增强（v99MoodRing 3D旋转/透明度呼吸）
+- v99.0: 活动指示器增强（v99ActivityBounce渐变彩色柱/交错延迟）
+- v99.0: 粒子轨道增强（v99ParticleOrbit三色环绕/阴影发光）
+- v99.0: 神经脉冲增强（v99NeuralPulse紫色发光脉冲/内阴影效果）
+- v99.0: 渐变文字增强（v99GradientText 6色270度循环位移）
+- v99.0: 焦点环增强（v99FocusRing双层发光/脉冲偏移动画）
+- v99.0: 交互按钮增强（v99-enhanced光泽扫光/悬停上浮/按压反馈）
+- v99.0: 统计卡片增强（v99-enhanced旋转扫光层/透视悬停）
+- v99.0: 心情按钮增强（v99-enhanced悬停放大/发光阴影）
+- v99.0: 迷你统计增强（v99-enhanced缩放/背景变化/发光悬停）
+- v99.0: Toast通知增强（v99ToastSlide弹性缩放/x轴位移）
+- v99.0: 能量环增强（v99EnergyRing渐变边框/交错缩放）
+- v99.0: 表情动画增强（v99ExpressionBounce缩放位移弹跳）
+- v99.0: 交错入场动画（v99-stagger 8元素自动延迟）
+- v99.0: 滚动驱动动画（v99ScrollReveal视口入场/透明度位移）
+- v99.0: 悬停上浮效果（v99HoverLift阴影深度/发光效果）
+- v99.0: 高对比度模式优化（prefers-contrast: more）
+- v99.0: 深色/浅色模式适配（prefers-color-scheme自动切换）
+- v99.0: 增强型reduced motion支持（v99-*全系列）
 - v95.0: Modern CSS 2026 增强（@property多属性/交错入场/stagger动画/v95-glass玻璃效果）
 - v95.0: v95-pulse-glow脉冲发光动画
 - v95.0: v95-ripple涟漪点击效果
