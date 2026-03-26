@@ -9,6 +9,11 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+- v92.0: Modern CSS 2025+ Features（@property增强/interpolate-size/Anchor定位/native dialog）
+- v92.0: :has()状态管理（stat卡片边框颜色随数值状态变化）
+- v92.0: Scroll-driven动画增强 + @starting-style入场动画
+- v92.0: 移动端触摸优化（更大触摸目标/按压反馈优化）
+- v92.0: 无障碍增强（prefers-contrast:more高对比度模式/print样式）
 - v91.0: 连接状态机可视化（Connecting/Live/Reconnecting/Offline 四态动画指示器）
 - v91.0: 数据历史迷你折线图（每个 stat 卡片显示最近12个值的 sparkline 柱状图）
 - v91.0: 触控滑动手势支持（移动端滑動 stat 卡片查看历史数值提示）

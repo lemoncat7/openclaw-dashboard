@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v91.0">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v92.0">
     <meta name="theme-color" content="#08080c">
-    <title>MoShang Status v91.0</title>
+    <title>MoShang Status v92.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -595,6 +595,196 @@
                 background: rgba(255,107,107,0.12);
                 border-color: rgba(255,107,107,0.25);
                 color: var(--danger);
+            }
+            
+            /* ========== v92.0: Modern CSS 2025+ Features ========== */
+            
+            /* v92.0: @property for animation performance */
+            @property --v92-hue {
+                syntax: '<angle>';
+                inherits: false;
+                initial-value: 0deg;
+            }
+            @property --v92-intensity {
+                syntax: '<number>';
+                inherits: false;
+                initial-value: 0;
+            }
+            @property --v92-pulse {
+                syntax: '<percentage>';
+                inherits: false;
+                initial-value: 50%;
+            }
+            
+            /* v92.0: interpolate-size for smooth height transitions */
+            @supports (field-sizing: content) {
+                .cmd-input {
+                    field-sizing: content;
+                }
+            }
+            
+            /* v92.0: Anchor positioning for tooltips (progressive enhancement) */
+            .v92-tooltip {
+                position: absolute;
+                background: rgba(10,10,20,0.95);
+                backdrop-filter: blur(20px);
+                border: 1px solid rgba(255,255,255,0.12);
+                border-radius: var(--radius-lg);
+                padding: 10px 14px;
+                font-size: 12px;
+                color: var(--text);
+                z-index: 9999;
+                pointer-events: none;
+                opacity: 0;
+                transform: translateY(4px);
+                transition: opacity 0.2s ease, transform 0.2s ease;
+                max-width: 220px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            }
+            
+            .v92-tooltip.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            
+            /* v92.0: Native <dialog> modal styling */
+            dialog.v92-modal {
+                background: transparent;
+                border: none;
+                padding: 0;
+                max-width: 90vw;
+                max-height: 85vh;
+                overflow: visible;
+            }
+            
+            dialog.v92-modal::backdrop {
+                background: rgba(0,0,0,0.7);
+                backdrop-filter: blur(8px);
+            }
+            
+            /* v92.0: :focus-visible ring with blur */
+            :focus-visible {
+                outline: 2px solid var(--primary);
+                outline-offset: 3px;
+                box-shadow: 0 0 16px color-mix(in srgb, var(--primary) 40%, transparent);
+            }
+            
+            /* v92.0: :has() for state management - lighter cards */
+            .stat-card:has(.stat-value.low) {
+                border-color: rgba(92,219,149,0.3);
+            }
+            
+            .stat-card:has(.stat-value.mid) {
+                border-color: rgba(254,202,87,0.3);
+            }
+            
+            .stat-card:has(.stat-value.high),
+            .stat-card:has(.stat-value.max) {
+                border-color: rgba(255,107,107,0.3);
+            }
+            
+            /* v92.0: Scroll-driven animation progress */
+            @keyframes v92ScrollReveal {
+                from { opacity: 0; transform: translateY(24px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            
+            .v92-scroll-reveal {
+                animation: v92ScrollReveal linear both;
+                animation-timeline: view();
+                animation-range: entry 0% entry 100%;
+            }
+            
+            /* v92.0: Smooth list animation with @starting-style */
+            @starting-style {
+                .stat-card {
+                    animation: v92CardIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+                }
+            }
+            
+            @keyframes v92CardIn {
+                from { opacity: 0; transform: scale(0.95) translateY(16px); }
+                to { opacity: 1; transform: scale(1) translateY(0); }
+            }
+            
+            /* v92.0: Light/dark mode via color-scheme */
+            @media (prefers-color-scheme: light) {
+                :root {
+                    --bg-dark: #f5f5fa;
+                    --bg-darker: #ebebf0;
+                    --text: #1a1a2e;
+                    --text-dim: #6a6a7a;
+                    --text-bright: #000000;
+                    --text-muted: #8a8a9a;
+                }
+            }
+            
+            /* v92.0: High contrast mode support */
+            @media (prefers-contrast: more) {
+                .stat-card, .glass-card, .mini-stat {
+                    border-width: 2px;
+                }
+                
+                .stat-value {
+                    font-weight: 700;
+                }
+            }
+            
+            /* v92.0: Enhanced reduced motion */
+            @media (prefers-reduced-motion: reduce) {
+                *, *::before, *::after {
+                    animation-duration: 0.01ms !important;
+                    animation-iteration-count: 1 !important;
+                    transition-duration: 0.01ms !important;
+                }
+                
+                /* Keep essential state indicators */
+                .v91-connection-state.connected .v91-conn-dot,
+                .v91-connection-state.offline .v91-conn-dot {
+                    animation: none;
+                    opacity: 1;
+                }
+            }
+            
+            /* v92.0: Mobile touch optimization */
+            @media (hover: none) and (pointer: coarse) {
+                .stat-card:active {
+                    transform: scale(0.98);
+                }
+                
+                .mini-stat:active {
+                    transform: scale(0.97);
+                }
+                
+                .action-btn:active {
+                    transform: scale(0.95);
+                }
+                
+                /* Larger touch targets */
+                .mood-btn {
+                    min-width: 48px;
+                    min-height: 48px;
+                }
+            }
+            
+            /* v92.0: Print styles */
+            @media print {
+                body {
+                    background: white;
+                    color: black;
+                }
+                
+                .fox-container, .neural-canvas, .particle-mesh-canvas,
+                .ambient-orb, .v91-data-stream, .v78-morph-orb,
+                .v77-pulse-grid, .v92-data-stream {
+                    display: none !important;
+                }
+                
+                .stat-card, .glass-card {
+                    background: white;
+                    border: 1px solid #ccc;
+                    box-shadow: none;
+                }
             }
             
             /* v77.0: Crystal glass card effect */
