@@ -9,25 +9,26 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
-- v92.0: Modern CSS 2025+ Features（@property增强/interpolate-size/Anchor定位/native dialog）
-- v92.0: :has()状态管理（stat卡片边框颜色随数值状态变化）
-- v92.0: Scroll-driven动画增强 + @starting-style入场动画
-- v92.0: 移动端触摸优化（更大触摸目标/按压反馈优化）
-- v92.0: 无障碍增强（prefers-contrast:more高对比度模式/print样式）
-- v91.0: 连接状态机可视化（Connecting/Live/Reconnecting/Offline 四态动画指示器）
-- v91.0: 数据历史迷你折线图（每个 stat 卡片显示最近12个值的 sparkline 柱状图）
-- v91.0: 触控滑动手势支持（移动端滑動 stat 卡片查看历史数值提示）
-- v91.0: FPS 显示开关（按 F 键切换性能监控显示/隐藏）
-- v91.0: 数据流动画（顶部光流条在 fetch 时动画反馈）
-- v91.0: 延迟质量指示器（显示 ms 延迟 + 颜色编码 Excellent/Good/Fair/Poor）
-- v91.0: @property 动画增强（--v91-conn-opacity/--v91-conn-scale/--v91-sparkline-pos）
-- v90.0: CSS 2025 现代特性（scroll-driven 动画 / :has() 父选择器 / Container Queries）
-- v90.0: 性能优化（CSS containment / reduced motion 支持 / GPU 加速层提示）
-- v90.0: 光暗模式切换（:has() + checkbox 实现纯 CSS 主题切换）
-- v90.0: 渐变文字 + 焦点环 + 悬停提升效果
-- v89.0: 全息玻璃面板（彩虹折射 + 动态扫光 + 悬停变形边框）
-- v89.0: 空间音频可视化条（8条动态高度柱状图，反应活动等级）
-- v89.0: 神经网格背景（20个动态脉冲节点，随活动状态调整速度）
+- v93.0: 数据可靠性增强（电路断路器优化/多源验证/指数退避）
+- v93.0: Modern CSS 2025+ Features（@property增强/interpolate-size/Anchor定位/native dialog）
+- v93.0: :has()状态管理（stat卡片边框颜色随数值状态变化）
+- v93.0: Scroll-driven动画增强 + @starting-style入场动画
+- v93.0: 移动端触摸优化（更大触摸目标/按压反馈优化）
+- v93.0: 无障碍增强（prefers-contrast:more高对比度模式/print样式）
+- v92.0: 连接状态机可视化（Connecting/Live/Reconnecting/Offline 四态动画指示器）
+- v92.0: 数据历史迷你折线图（每个 stat 卡片显示最近12个值的 sparkline 柱状图）
+- v92.0: 触控滑动手势支持（移动端滑動 stat 卡片查看历史数值提示）
+- v92.0: FPS 显示开关（按 F 键切换性能监控显示/隐藏）
+- v92.0: 数据流动画（顶部光流条在 fetch 时动画反馈）
+- v92.0: 延迟质量指示器（显示 ms 延迟 + 颜色编码 Excellent/Good/Fair/Poor）
+- v92.0: @property 动画增强（--v91-conn-opacity/--v91-conn-scale/--v91-sparkline-pos）
+- v91.0: CSS 2025 现代特性（scroll-driven 动画 / :has() 父选择器 / Container Queries）
+- v91.0: 性能优化（CSS containment / reduced motion 支持 / GPU 加速层提示）
+- v91.0: 光暗模式切换（:has() + checkbox 实现纯 CSS 主题切换）
+- v91.0: 渐变文字 + 焦点环 + 悬停提升效果
+- v90.0: 全息玻璃面板（彩虹折射 + 动态扫光 + 悬停变形边框）
+- v90.0: 空间音频可视化条（8条动态高度柱状图，反应活动等级）
+- v90.0: 神经网格背景（20个动态脉冲节点，随活动状态调整速度）
 - v89.0: 粒子生命系统（30个自主漂浮粒子，Canvas实时渲染）
 - v89.0: 智能上下文工具提示（悬停显示标题+描述说明）
 - v89.0: 动态状态栏（实时显示Optimal/Degraded/Critical状态）

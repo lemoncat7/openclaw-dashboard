@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v92.0">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v94.0">
     <meta name="theme-color" content="#08080c">
-    <title>MoShang Status v92.0</title>
+    <title>MoShang Status v94.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -22091,6 +22091,84 @@
                 animation: none !important;
             }
         }
+        
+        /* ========== v94.0: Enhanced Health Trends ========== */
+        .v94-health-trend {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+        
+        .v94-health-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        
+        .v94-health-label {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        
+        .v94-health-value {
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text);
+        }
+        
+        .v94-health-trend {
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        /* v94.0: Memory health indicator */
+        .v94-memory-health {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* v94.0: Mini sparkline for trends */
+        .v94-mini-spark {
+            display: flex;
+            align-items: flex-end;
+            gap: 1px;
+            height: 12px;
+        }
+        
+        .v94-mini-spark-bar {
+            width: 3px;
+            background: var(--primary);
+            border-radius: 1px;
+            opacity: 0.6;
+        }
+        
+        .v94-mini-spark-bar:last-child {
+            opacity: 1;
+        }
+        
+        /* v94.0: Health trends display */
+        .v94-health-trends {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .v94-trend-indicator {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            padding: 1px 4px;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .v94-trend-indicator.improving { color: var(--success); background: rgba(0,255,136,0.1); }
+        .v94-trend-indicator.declining { color: var(--danger); background: rgba(255,59,48,0.1); }
+        .v94-trend-indicator.stable { color: var(--text-muted); }
 
     </style>
 </head>
@@ -22346,6 +22424,11 @@
                         <span class="ring-label" id="v56HealthLabel">--</span>
                     </div>
                     <div class="v56-quick-stat-label">Health</div>
+                    <!-- v94.0: Health Trends -->
+                    <div id="v94HealthTrends" class="v94-health-trends" style="display:flex;gap:8px;margin-top:4px;font-size:10px;">
+                        <span id="v94MemoryTrend" class="v94-trend-indicator" style="color:var(--text-muted)">--</span>
+                        <span id="v94CPUTrend" class="v94-trend-indicator" style="color:var(--text-muted)">--</span>
+                    </div>
                 </div>
                 <div class="v56-quick-stat">
                     <!-- v56.0: Activity Heat Bar -->
@@ -22914,8 +22997,8 @@
                     <span id="routeStatusDisplay" class="route-check-time" title="Last Check">--</span>
                 </div>
                 <div class="footer-info">
-                    <span class="footer-version v42-version-glow v43-version-badge v66-version-flash v72-version-glow v73-version-glow v76-version-glow v77-version-glow v78-version-glow v82-version-glow" id="footerVersion">v90.0</span>
-                    <span class="v48-footer-badge" id="v50FooterBadge">✨ v90.0</span>
+                    <span class="footer-version v42-version-glow v43-version-badge v66-version-flash v72-version-glow v73-version-glow v76-version-glow v77-version-glow v78-version-glow v82-version-glow" id="footerVersion">v93.0</span>
+                    <span class="v48-footer-badge" id="v50FooterBadge">✨ v93.0</span>
                     <span id="uptime">--</span>
                     <span id="reliabilityBadge" class="reliability-badge high" aria-label="Data Reliability Score">100%</span>
                     <!-- v40.0: Connection Quality -->
@@ -27532,6 +27615,9 @@
             updateV48TrendData('memory', memPercent);
             const trendEl = document.getElementById('memoryTrend');
             if (trendEl) trendEl.innerHTML = getV48TrendSVG('memory');
+            // v94.0: Record health history
+            v94RecordHealth(memPercent, null, null);
+            v94UpdateMemoryHealth(memPercent);
         }
 
         // v48.2: Update CPU with trend indicator
@@ -27540,6 +27626,9 @@
             updateV48TrendData('cpu', cpuPercent);
             const trendEl = document.getElementById('cpuTrend');
             if (trendEl) trendEl.innerHTML = getV48TrendSVG('cpu');
+            // v94.0: Record health history
+            v94RecordHealth(null, cpuPercent, null);
+            v94UpdateCPUHealth(cpuPercent);
         }
 
         // ========== v50.0: Spark Meter - Energy/Creativity Level ==========
@@ -32398,11 +32487,122 @@
             console.log('✨ v91.0 initialized - Connection state, sparklines, touch gestures');
         }
 
+        // ========== v94.0: Enhanced Health & Memory Trends ==========
+        
+        // v94.0: Health history tracking
+        const v94HealthHistory = {
+            memory: [],
+            cpu: [],
+            reliability: [],
+            maxHistory: 10
+        };
+        
+        // v94.0: Record health metrics
+        function v94RecordHealth(memoryPercent, cpuPercent, reliability) {
+            v94HealthHistory.memory.push(memoryPercent);
+            v94HealthHistory.cpu.push(cpuPercent);
+            v94HealthHistory.reliability.push(reliability || 100);
+            
+            if (v94HealthHistory.memory.length > v94HealthHistory.maxHistory) v94HealthHistory.memory.shift();
+            if (v94HealthHistory.cpu.length > v94HealthHistory.maxHistory) v94HealthHistory.cpu.shift();
+            if (v94HealthHistory.reliability.length > v94HealthHistory.maxHistory) v94HealthHistory.reliability.shift();
+        }
+        
+        // v94.0: Get health trend
+        function v94GetHealthTrend(values) {
+            if (values.length < 2) return 'stable';
+            const recent = values.slice(-3);
+            const older = values.slice(0, Math.min(3, values.length - 1));
+            const recentAvg = recent.reduce((a, b) => a + b, 0) / recent.length;
+            const olderAvg = older.reduce((a, b) => a + b, 0) / older.length;
+            const diff = recentAvg - olderAvg;
+            if (diff > 5) return 'improving';
+            if (diff < -5) return 'declining';
+            return 'stable';
+        }
+        
+        // v94.0: Update memory health display
+        function v94UpdateMemoryHealth(memoryPercent) {
+            const container = document.getElementById('v94MemoryHealth');
+            const trendEl = document.getElementById('v94MemoryTrend');
+            if (!container) return;
+            
+            const trend = v94GetHealthTrend(v94HealthHistory.memory);
+            const trendIcons = { improving: '↗', declining: '↘', stable: '→' };
+            const trendColors = { improving: 'var(--success)', declining: 'var(--danger)', stable: 'var(--text-muted)' };
+            
+            container.innerHTML = `
+                <div class="v94-health-item">
+                    <span class="v94-health-label">Memory</span>
+                    <span class="v94-health-value">${memoryPercent}%</span>
+                    <span class="v94-health-trend" style="color: ${trendColors[trend]}">${trendIcons[trend]}</span>
+                </div>
+            `;
+            
+            // v94.0: Update quick stats trend indicator
+            if (trendEl) {
+                trendEl.textContent = 'MEM ' + trendIcons[trend];
+                trendEl.className = 'v94-trend-indicator ' + trend;
+            }
+        }
+        
+        // v94.0: Update CPU health display  
+        function v94UpdateCPUHealth(cpuPercent) {
+            const container = document.getElementById('v94CPUHealth');
+            const trendEl = document.getElementById('v94CPUTrend');
+            if (!container) return;
+            
+            const trend = v94GetHealthTrend(v94HealthHistory.cpu);
+            const trendIcons = { improving: '↗', declining: '↘', stable: '→' };
+            const trendColors = { improving: 'var(--success)', declining: 'var(--danger)', stable: 'var(--text-muted)' };
+            
+            container.innerHTML = `
+                <div class="v94-health-item">
+                    <span class="v94-health-label">CPU</span>
+                    <span class="v94-health-value">${cpuPercent}%</span>
+                    <span class="v94-health-trend" style="color: ${trendColors[trend]}">${trendIcons[trend]}</span>
+                </div>
+            `;
+            
+            // v94.0: Update quick stats trend indicator
+            if (trendEl) {
+                trendEl.textContent = 'CPU ' + trendIcons[trend];
+                trendEl.className = 'v94-trend-indicator ' + trend;
+            }
+        }
+        
+        // v94.0: Hook into data updates
+        function v94InitHealthTrends() {
+            // Create health trend elements if they don't exist
+            if (!document.getElementById('v94MemoryHealth')) {
+                const memEl = document.createElement('div');
+                memEl.id = 'v94MemoryHealth';
+                memEl.className = 'v94-health-trend';
+                const memStat = document.querySelector('.quick-stat:nth-child(2)');
+                if (memStat) memStat.appendChild(memEl);
+            }
+            
+            if (!document.getElementById('v94CPUHealth')) {
+                const cpuEl = document.createElement('div');
+                cpuEl.id = 'v94CPUHealth';
+                cpuEl.className = 'v94-health-trend';
+                const cpuStat = document.querySelector('.quick-stat:nth-child(3)');
+                if (cpuStat) cpuStat.appendChild(cpuEl);
+            }
+            
+            console.log('✨ v94.0 initialized - Health trends tracking');
+        }
+        
+        // v94.0: Init all v94 features
+        function initV94Features() {
+            v94InitHealthTrends();
+        }
+        
         // Initialize all features after DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); });
+            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); });
         } else {
-            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); }, 100);
+            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); }, 100);
         }
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); });
@@ -32592,7 +32792,7 @@
 
     <!-- v82.0: Command Palette Hint -->
     <div class="v82-version-badge v81-version-badge" id="v78VersionHint" style="position:fixed;bottom:20px;left:20px;opacity:0.5;font-size:10px;cursor:pointer;" onclick="toggleV78CmdPalette()" title="Open Command Palette (Ctrl+K)">
-        ⚡ v89.0 · Ctrl+K
+        ⚡ v93.0 · Ctrl+K
     </div>
     
     <!-- v80.0: Demo Mode Badge (shown when API unavailable) -->
