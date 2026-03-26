@@ -218,6 +218,48 @@ async function fetchEvomapStatus() {
     return;
   }
   
+  // Heartbeat API - v88.0: Added for frontend compatibility
+  if (url === '/api/heartbeat') {
+    apiCalls++;
+    const uptime = Math.floor((Date.now() - startTime) / 1000);
+    const hours = Math.floor(uptime / 3600);
+    const uptimeStr = hours > 0 ? `${hours}h` : '<1h';
+    
+    const now = new Date();
+    const heartbeat = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+    
+    // Determine status based on activity level
+    let status = 'idle';
+    if (activityLevel > 80) status = 'excited';
+    else if (activityLevel > 60) status = 'working';
+    else if (activityLevel < 20) status = 'sleeping';
+    
+    // Calculate task progress (0-100)
+    const taskProgress = taskQueue.length > 0 ? Math.round((1 - taskQueue.length / 10) * 100) : 0;
+    
+    // 同步获取 EvoMap 状态
+    const evomap = await fetchEvomapStatus();
+    
+    res.writeHead(200, { 
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache'
+    });
+    res.end(JSON.stringify({
+      heartbeat: heartbeat,
+      activity: activityLevel,
+      status: status,
+      uptime: uptimeStr,
+      source: 'dashboard',
+      reputation: evomap ? evomap.reputation_score : null,
+      currentTask: currentTaskInfo,
+      taskProgress: taskProgress,
+      msgCount: chatCount,
+      taskDone: taskCount,
+      timestamp: new Date().toISOString()
+    }));
+    return;
+  }
+  
   // 更新任务计数
   if (url.startsWith('/api/task/')) {
     const action = url.split('/')[3];

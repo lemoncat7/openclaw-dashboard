@@ -9,6 +9,17 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+- v91.0: 连接状态机可视化（Connecting/Live/Reconnecting/Offline 四态动画指示器）
+- v91.0: 数据历史迷你折线图（每个 stat 卡片显示最近12个值的 sparkline 柱状图）
+- v91.0: 触控滑动手势支持（移动端滑動 stat 卡片查看历史数值提示）
+- v91.0: FPS 显示开关（按 F 键切换性能监控显示/隐藏）
+- v91.0: 数据流动画（顶部光流条在 fetch 时动画反馈）
+- v91.0: 延迟质量指示器（显示 ms 延迟 + 颜色编码 Excellent/Good/Fair/Poor）
+- v91.0: @property 动画增强（--v91-conn-opacity/--v91-conn-scale/--v91-sparkline-pos）
+- v90.0: CSS 2025 现代特性（scroll-driven 动画 / :has() 父选择器 / Container Queries）
+- v90.0: 性能优化（CSS containment / reduced motion 支持 / GPU 加速层提示）
+- v90.0: 光暗模式切换（:has() + checkbox 实现纯 CSS 主题切换）
+- v90.0: 渐变文字 + 焦点环 + 悬停提升效果
 - v89.0: 全息玻璃面板（彩虹折射 + 动态扫光 + 悬停变形边框）
 - v89.0: 空间音频可视化条（8条动态高度柱状图，反应活动等级）
 - v89.0: 神经网格背景（20个动态脉冲节点，随活动状态调整速度）
