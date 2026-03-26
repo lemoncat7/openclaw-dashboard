@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v89.0">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v90.0">
     <meta name="theme-color" content="#08080c">
-    <title>MoShang Status v89.0</title>
+    <title>MoShang Status v90.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -152,6 +152,63 @@
                 inherits: false;
                 initial-value: 0;
             }
+            
+            /* ========== v90.0: CSS 2025 Modern Features ========== */
+            
+            /* v90.0: Scroll-driven animations */
+            @keyframes scroll-fade-in {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            
+            .scroll-trigger {
+                animation: scroll-fade-in linear;
+                animation-timeline: view();
+                animation-range: entry 0% entry 100%;
+            }
+            
+            /* v90.0: :has() for parent selection - reduce JS overhead */
+            .card:has(.error) { border-color: #ff4444; }
+            .card:has(.success) { border-color: #44ff44; }
+            .stats-row:has(.low) { background: rgba(255,100,100,0.1); }
+            
+            /* v90.0: CSS Container Queries for responsive components */
+            @container card-container (width < 400px) {
+                .stat-card { padding: 12px; }
+                .stat-value { font-size: 1.2rem; }
+            }
+            
+            /* v90.0: Enhanced :focus-visible with glow */
+            :focus-visible {
+                outline: 2px solid var(--primary);
+                outline-offset: 3px;
+                box-shadow: 0 0 12px color-mix(in srgb, var(--primary) 50%, transparent);
+            }
+            
+            /* v90.0: Reduced motion support */
+            @media (prefers-reduced-motion: reduce) {
+                *, *::before, *::after {
+                    animation-duration: 0.01ms !important;
+                    animation-iteration-count: 1 !important;
+                    transition-duration: 0.01ms !important;
+                }
+            }
+            
+            /* v90.0: Performance - CSS containment */
+            .stat-card, .glass-card, .fox-container {
+                contain: layout style paint;
+            }
+            
+            /* v90.0: Light & dark mode via :has() */
+            :has(#themeToggle:checked) {
+                --bg-dark: #f0f0f5;
+                --bg-darker: #e0e0e8;
+                --primary: #ff8833;
+                --accent: #0088cc;
+            }
+            
+            /* v90.0: Improved color contrast */
+            .stat-label { color: color-mix(in srgb, var(--primary) 90%, white); }
             
             /* v77.0: Crystal glass card effect */
             .v77-crystal-card {
@@ -673,15 +730,33 @@
                 }
             }
             
-            /* v77.0: Fox aura enhancement */
+            /* v90.0: Fox aura enhancement with modern gradients */
             .fox-glow-aura.v77-enhanced {
-                filter: blur(25px);
-                animation: v77AuraPulse 2.5s ease-in-out infinite;
+                filter: blur(30px);
+                animation: v90AuraPulse 2.5s ease-in-out infinite;
+                background: radial-gradient(
+                    ellipse at center,
+                    color-mix(in srgb, var(--primary) 60%, transparent) 0%,
+                    color-mix(in srgb, var(--accent) 30%, transparent) 50%,
+                    transparent 70%
+                );
             }
             
-            @keyframes v77AuraPulse {
-                0%, 100% { opacity: 0.5; transform: scale(1); }
-                50% { opacity: 0.8; transform: scale(1.15); }
+            @keyframes v90AuraPulse {
+                0%, 100% { opacity: 0.5; transform: scale(1); filter: blur(30px); }
+                50% { opacity: 0.85; transform: scale(1.2); filter: blur(35px); }
+            }
+            
+            /* v90.0: Fox breathing glow effect */
+            .fox-glow-aura.breathing {
+                animation: v90BreathingGlow 4s ease-in-out infinite;
+            }
+            
+            @keyframes v90BreathingGlow {
+                0%, 100% { opacity: 0.4; transform: scale(1); }
+                25% { opacity: 0.6; transform: scale(1.08); }
+                50% { opacity: 0.7; transform: scale(1.12); }
+                75% { opacity: 0.6; transform: scale(1.08); }
             }
             
             /* v77.0: Version badge */
@@ -3886,11 +3961,11 @@
             position: relative; z-index: 10;
         }
 
-        /* ========== Glass Card ========== */
+        /* ========== v90.0: Glass Card with Modern Effects ========== */
         .glass-card {
             background: var(--bg-card);
-            backdrop-filter: blur(32px) saturate(200%);
-            -webkit-backdrop-filter: blur(32px) saturate(200%);
+            backdrop-filter: blur(32px) saturate(180%) contrast(1.05);
+            -webkit-backdrop-filter: blur(32px) saturate(180%) contrast(1.05);
             border: 1px solid rgba(255,255,255,0.06);
             border-radius: var(--radius-2xl);
             box-shadow: var(--shadow-soft), var(--shadow-glow),
@@ -3898,6 +3973,9 @@
             overflow: hidden;
             transition: all var(--transition-normal) var(--ease-out-expo);
             position: relative;
+            /* v90.0: GPU acceleration */
+            transform: translateZ(0);
+            will-change: transform, box-shadow;
         }
 
         .glass-card::before {
@@ -3909,11 +3987,34 @@
             pointer-events: none;
         }
 
+        /* v90.0: Glossy shine effect */
+        .glass-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(255,255,255,0.08) 0%,
+                transparent 40%,
+                transparent 60%,
+                rgba(255,255,255,0.03) 100%
+            );
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .glass-card:hover::after {
+            opacity: 1;
+        }
+
         .glass-card:hover {
             background: var(--bg-card-hover);
             border-color: rgba(255,255,255,0.1);
             box-shadow: var(--shadow-medium), var(--shadow-glow-strong),
                         inset 0 1px 0 rgba(255,255,255,0.1);
+            /* v90.0: Subtle lift on hover */
+            transform: translateY(-2px);
         }
 
         /* ========== Header ========== */
@@ -4336,6 +4437,7 @@
             margin-top: 18px; width: 100%;
         }
 
+        /* v90.0: Enhanced action-btn with modern micro-interactions */
         .action-btn {
             flex: 1; padding: 12px;
             background: rgba(255,255,255,0.05);
@@ -4346,6 +4448,9 @@
             cursor: pointer;
             transition: all 0.2s var(--ease-spring);
             position: relative; overflow: hidden;
+            /* v90.0: Smooth state transitions */
+            transition-behavior: allow-discrete;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .action-btn::before {
@@ -4354,6 +4459,25 @@
             background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255,255,255,0.2) 0%, transparent 60%);
             opacity: 0; transition: opacity 0.2s ease;
         }
+        
+        /* v90.0: Ripple effect */
+        .action-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
+            border-radius: 50%;
+            background: rgba(255,200,100,0.4);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease;
+            opacity: 0;
+        }
+        
+        .action-btn:active::after {
+            width: 200px; height: 200px;
+            opacity: 0;
+            transition: width 0s, height 0s, opacity 0s;
+        }
 
         .action-btn:hover::before { opacity: 1; }
         .action-btn:hover {
@@ -4361,10 +4485,16 @@
             transform: translateY(-3px) scale(1.02);
             box-shadow: 0 8px 24px -6px rgba(255,200,100,0.35);
         }
+        
+        /* v90.0: Press effect */
+        @starting-style {
+            .action-btn { opacity: 0; }
+        }
 
         .action-btn:active { 
             transform: translateY(-1px) scale(0.96);
             transition-duration: 0.08s;
+            box-shadow: 0 2px 8px -2px rgba(255,200,100,0.5);
         }
         
         .action-btn.spring-press:active {
@@ -22207,8 +22337,8 @@
                     <span id="routeStatusDisplay" class="route-check-time" title="Last Check">--</span>
                 </div>
                 <div class="footer-info">
-                    <span class="footer-version v42-version-glow v43-version-badge v66-version-flash v72-version-glow v73-version-glow v76-version-glow v77-version-glow v78-version-glow v82-version-glow" id="footerVersion">v85.0</span>
-                    <span class="v48-footer-badge" id="v50FooterBadge">✨ v85.0</span>
+                    <span class="footer-version v42-version-glow v43-version-badge v66-version-flash v72-version-glow v73-version-glow v76-version-glow v77-version-glow v78-version-glow v82-version-glow" id="footerVersion">v90.0</span>
+                    <span class="v48-footer-badge" id="v50FooterBadge">✨ v90.0</span>
                     <span id="uptime">--</span>
                     <span id="reliabilityBadge" class="reliability-badge high" aria-label="Data Reliability Score">100%</span>
                     <!-- v40.0: Connection Quality -->
