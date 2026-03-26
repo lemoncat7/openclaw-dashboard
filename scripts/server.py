@@ -1,0 +1,1329 @@
+#!/usr/bin/env python3
+"""Dashboard Service - 莫殇状态看板 + Star Office UI 代理"""
+
+import http.server
+import socketserver
+import os
+import json
+import time
+from urllib.parse import urlparse
+from datetime import datetime
+import logging
+import threading
+import asyncio
+try:
+    import websockets
+    WEBSOCKETS_AVAILABLE = True
+except ImportError:
+    WEBSOCKETS_AVAILABLE = False
+    print("[Dashboard] websockets module not available, WebSocket real-time updates disabled")
+
+# 配置日志
+logging.basicConfig(level=logging.INFO, format='[Dashboard] %(message)s')
+logger = logging.getLogger(__name__)
+
+PORT = 19000
+
+DASHBOARD_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend/index.html')
+STAR_OFFICE_DIR = '/workspace/Star-Office-UI/frontend'
+STATE_FILE = '/home/root/.openclaw/workspace/memory/heartbeat_tasks/state.json'
+TASKS_MAP_FILE = '/home/root/.openclaw/workspace/memory/heartbeat_tasks/tasks_map.json'
+
+# 缓存机制
+_cache = {
+    'dashboard': {'data': None, 'time': 0},
+    'system': {'data': None, 'time': 0}
+}
+CACHE_TTL = 2  # 缓存2秒
+
+# 新增：技能统计缓存
+_skills_cache = {'data': None, 'time': 0}
+SKILLS_CACHE_TTL = 30  # 技能统计缓存30秒
+
+# 新增：最近活动历史
+_activity_history = []
+
+# WebSocket 支持
+_websocket_clients = set()
+_websocket_lock = threading.Lock()
+_ws_stop_event = threading.Event()
+
+def get_system_info():
+    """获取系统信息 - 增强版 v2.3"""
+    now = time.time()
+    
+    # 检查缓存
+    if now - _cache['system']['time'] < CACHE_TTL and _cache['system']['data']:
+        return _cache['system']['data']
+    
+    data = {
+        'memory': '0 / 0',
+        'memoryPercent': 0,
+        'memoryUsed': 0,
+        'memoryTotal': 0,
+        'cpu': '0',
+        'cpuPercent': 0,
+        'disk': '0 / 0',
+        'diskPercent': 0,
+        'loadAvg': [0, 0, 0],
+        'networkIn': 0,
+        'networkOut': 0,
+        'processes': 0,
+        'uptime': '0h',
+        'timestamp': datetime.now().isoformat(),
+        'source': 'system'
+    }
+    
+    try:
+        import subprocess
+        
+        # 内存信息 - 使用更可靠的方法
+        try:
+            mem_result = subprocess.run(['free', '-m'], capture_output=True, text=True, timeout=3)
+            if mem_result.returncode == 0:
+                lines = mem_result.stdout.strip().split('\n')
+                if len(lines) > 1:
+                    mem_parts = lines[1].split()
+                    if len(mem_parts) > 1:
+                        total_mem = int(mem_parts[1])
+                        used_mem = int(mem_parts[2])
+                        data['memoryTotal'] = total_mem
+                        data['memoryUsed'] = used_mem
+                        data['memory'] = f'{used_mem} / {total_mem}'
+                        data['memoryPercent'] = round((used_mem / total_mem) * 100) if total_mem > 0 else 0
+        except Exception as mem_err:
+            # 备用方案：读取 /proc/meminfo
+            try:
+                with open('/proc/meminfo', 'r') as f:
+                    mem_info = f.read()
+                for line in mem_info.split('\n'):
+                    if line.startswith('MemTotal:'):
+                        data['memoryTotal'] = int(line.split()[1]) // 1024
+                    elif line.startswith('MemAvailable:'):
+                        avail = int(line.split()[1]) // 1024
+                        data['memoryUsed'] = data['memoryTotal'] - avail
+                        data['memory'] = f"{data['memoryUsed']} / {data['memoryTotal']}"
+                        data['memoryPercent'] = round((data['memoryUsed'] / data['memoryTotal']) * 100) if data['memoryTotal'] > 0 else 0
+            except:
+                pass
+        
+        # CPU 使用率 - 使用更可靠的方法 v2
+        cpu_acquired = False
+        
+        # 方法1: 读取 /proc/stat (最可靠)
+        try:
+            with open('/proc/stat', 'r') as f:
+                cpu_line = f.readline()
+            if cpu_line.startswith('cpu '):
+                parts = cpu_line.split()
+                if len(parts) >= 8:
+                    # user, nice, system, idle, iowait, irq, softirq, steal
+                    idle = int(parts[4])
+                    total = sum(int(x) for x in parts[1:8])
+                    if total > 0:
+                        cpu_usage = 100 * (1 - idle / total)
+                        data['cpu'] = str(int(cpu_usage))
+                        data['cpuPercent'] = int(min(cpu_usage, 100))
+                        cpu_acquired = True
+        except:
+            pass
+        
+        # 方法2: top (备用)
+        if not cpu_acquired:
+            try:
+                cpu_result = subprocess.run(['top', '-bn1'], capture_output=True, text=True, timeout=3)
+                if cpu_result.returncode == 0:
+                    for line in cpu_result.stdout.split('\n'):
+                        if 'Cpu(s)' in line or '%Cpu' in line:
+                            parts = line.split()
+                            for i, p in enumerate(parts):
+                                if 'id' in p.lower() or 'idle' in p.lower():
+                                    try:
+                                        idle = float(parts[i-1].replace(',', '.'))
+                                        cpu_usage = 100 - idle
+                                        data['cpu'] = str(int(cpu_usage))
+                                        data['cpuPercent'] = int(min(cpu_usage, 100))
+                                        cpu_acquired = True
+                                    except:
+                                        pass
+                            break
+            except:
+                pass
+        if data['cpuPercent'] == 0:
+            try:
+                mpstat_result = subprocess.run(['mpstat', '1', '1'], capture_output=True, text=True, timeout=5)
+                # 解析 mpstat 输出
+            except:
+                pass
+        
+        # 负载平均值
+        try:
+            load_avg = os.getloadavg()
+            data['loadAvg'] = [round(x, 2) for x in load_avg]
+        except:
+            pass
+        
+        # 磁盘使用
+        try:
+            disk_result = subprocess.run(['df', '-h', '/'], capture_output=True, text=True, timeout=3)
+            if disk_result.returncode == 0:
+                lines = disk_result.stdout.strip().split('\n')
+                if len(lines) > 1:
+                    parts = lines[1].split()
+                    if len(parts) > 4:
+                        used = parts[2]
+                        total = parts[1]
+                        data['disk'] = f'{used} / {total}'
+                        # 提取百分比
+                        pct_str = parts[4].replace('%', '')
+                        try:
+                            data['diskPercent'] = int(pct_str)
+                        except:
+                            pass
+        except:
+            pass
+        
+        # 网络IO - 尝试读取 /proc/net/dev
+        try:
+            with open('/proc/net/dev', 'r') as f:
+                lines = f.readlines()
+            total_in = 0
+            total_out = 0
+            for line in lines[2:]:  # 跳过表头
+                if 'lo:' in line:
+                    continue
+                parts = line.split()
+                if len(parts) > 8:
+                    try:
+                        total_in += int(parts[1])
+                        total_out += int(parts[9])
+                    except:
+                        pass
+            data['networkIn'] = total_in
+            data['networkOut'] = total_out
+        except:
+            pass
+        
+        # 进程数
+        try:
+            proc_result = subprocess.run(['ps', 'aux'], capture_output=True, text=True, timeout=3)
+            if proc_result.returncode == 0:
+                # 计算进程数（减去表头）
+                data['processes'] = len(proc_result.stdout.split('\n')) - 1
+        except:
+            pass
+        
+        # 系统运行时间
+        try:
+            with open('/proc/uptime', 'r') as f:
+                uptime_seconds = float(f.read().split()[0])
+                if uptime_seconds < 60:
+                    data['uptime'] = f'{int(uptime_seconds)}s'
+                elif uptime_seconds < 3600:
+                    data['uptime'] = f'{int(uptime_seconds/60)}m'
+                else:
+                    data['uptime'] = f'{int(uptime_seconds/3600)}h'
+        except:
+            pass
+            
+    except Exception as e:
+        logger.warning(f"获取系统信息失败: {e}")
+    
+    # 更新缓存
+    _cache['system']['data'] = data
+    _cache['system']['time'] = now
+    
+    return data
+
+def _read_json_safe(path, default=None):
+    """安全读取JSON文件"""
+    try:
+        if os.path.exists(path):
+            with open(path, 'r') as f:
+                return json.loads(f.read())
+    except Exception:
+        pass
+    return default
+
+def _parse_timestamp(value):
+    """安全解析时间戳，返回 (timestamp, error_msg)"""
+    if not value:
+        return None, "empty"
+    try:
+        if isinstance(value, (int, float)):
+            return float(value), None
+        value = str(value).strip()
+        if not value:
+            return None, "empty string"
+        if 'T' in value:
+            dt = datetime.fromisoformat(value.replace('Z', '+00:00'))
+            return dt.timestamp(), None
+        return float(value), None
+    except Exception as e:
+        return None, str(e)
+
+def _get_file_mtime(path):
+    """获取文件修改时间"""
+    try:
+        if os.path.exists(path):
+            return os.path.getmtime(path)
+    except Exception:
+        pass
+    return None
+
+def get_dashboard_data():
+    """获取看板数据 - 增强可靠性 v3.0 (数据源保证)"""
+    now = time.time()
+    
+    # 检查缓存
+    if now - _cache['dashboard']['time'] < CACHE_TTL and _cache['dashboard']['data']:
+        return _cache['dashboard']['data']
+    
+    data = {
+        'heartbeat': '--',
+        'msgCount': 0,
+        'taskDone': 0,
+        'uptime': '0h',
+        'currentTask': '',
+        'status': 'online',
+        'channel': 'matrix',
+        'model': 'MiniMax-M2.5',
+        'lastUpdate': datetime.now().isoformat(),
+        'activityLevel': 50,
+        'memory': '0 / 0',
+        'memoryPercent': 0,
+        'cpu': '0',
+        'cpuPercent': 0,
+        'diskPercent': 0,
+        'processes': 0,
+        'systemUptime': '0h',
+        'skillsTotal': 0,
+        'skillsActive': 0,
+        'skillsList': [],
+        'skillsCategories': {},
+        'skillsTopActive': [],
+        '_source': 'gateway'
+    }
+    
+    # 获取系统信息
+    sys_info = get_system_info()
+    data['memory'] = sys_info['memory']
+    data['memoryPercent'] = sys_info['memoryPercent']
+    data['cpu'] = sys_info['cpu']
+    data['cpuPercent'] = sys_info['cpuPercent']
+    data['diskPercent'] = sys_info.get('diskPercent', 0)
+    data['processes'] = sys_info.get('processes', 0)
+    data['systemUptime'] = sys_info.get('uptime', '0h')
+    
+    # 获取技能统计 - 增强版
+    skills_info = get_skills_data()
+    data['skillsTotal'] = skills_info.get('total', 0)
+    data['skillsActive'] = skills_info.get('active', 0)
+    data['skillsList'] = skills_info.get('list', [])
+    data['skillsCategories'] = skills_info.get('categories', {})
+    data['skillsTopActive'] = skills_info.get('topActive', [])
+    
+    # 读取心跳状态 - 多数据源增强版 v3.0
+    hb_sources = [
+        STATE_FILE,
+        '/home/root/.openclaw/workspace/memory/heartbeat_tasks/state.json',
+        '/tmp/openclaw_heartbeat.json',
+        '/home/root/.openclaw/workspace/memory/heartbeat.json',
+        '/home/root/.openclaw/workspace/memory/last_heartbeat.txt',
+    ]
+    
+    # 任务文件来源 - 在心跳循环前定义（v20.1 修复 UnboundLocalError）
+    tasks_sources = [
+        TASKS_MAP_FILE,
+        '/home/root/.openclaw/workspace/memory/heartbeat_tasks/tasks_map.json',
+        '/tmp/tasks_map.json'
+    ]
+    
+    # 任务调度器输出目录 - 新增数据源 v3.0
+    task_output_dir = '/home/root/.openclaw/workspace/skills/task-scheduler/output'
+    task_output_mtime = None
+    try:
+        if os.path.exists(task_output_dir):
+            files = [f for f in os.listdir(task_output_dir) if f.endswith('.md')]
+            if files:
+                latest = max(files, key=lambda f: os.path.getmtime(os.path.join(task_output_dir, f)))
+                task_output_mtime = os.path.getmtime(os.path.join(task_output_dir, latest))
+                hb_sources.append(('task_output', task_output_mtime))
+    except Exception:
+        pass
+    
+    heartbeat_found = False
+    _last_heartbeat_ts = None
+    _hb_source = None
+    
+    for hb_file in hb_sources:
+        if heartbeat_found:
+            break
+        # 处理 task_output 元组格式
+        if isinstance(hb_file, tuple):
+            hb_path, mtime = hb_file
+            if mtime:
+                diff = now - mtime
+                _last_heartbeat_ts = mtime
+                _hb_source = 'task_output'
+                heartbeat_found = True
+                if diff < 60:
+                    data['heartbeat'] = f'{int(diff)}s'
+                    data['activityLevel'] = 90
+                    data['status'] = 'working'
+                elif diff < 3600:
+                    data['heartbeat'] = f'{int(diff/60)}m'
+                    data['activityLevel'] = 60
+                    data['status'] = 'idle'
+                else:
+                    data['heartbeat'] = f'{int(diff/3600)}h'
+                    data['activityLevel'] = 20
+                    data['status'] = 'sleeping'
+                if diff > 300:
+                    data['status'] = 'sleeping'
+                    data['activityLevel'] = 10
+            continue
+        
+        try:
+            if os.path.exists(hb_file):
+                with open(hb_file, 'r') as f:
+                    content = f.read().strip()
+                
+                # 尝试 JSON 格式
+                if content.startswith('{'):
+                    state = json.loads(content)
+                    last_hb = state.get('lastHeartbeat', state.get('last_heartbeat', state.get('timestamp', '')))
+                else:
+                    # 尝试纯文本时间戳
+                    last_hb = content
+                
+                if last_hb:
+                    ts, err = _parse_timestamp(last_hb)
+                    if ts is not None:
+                        diff = now - ts
+                        if diff < 0:
+                            diff = 0
+                        
+                        _last_heartbeat_ts = ts
+                        _hb_source = os.path.basename(hb_file)
+                        heartbeat_found = True
+                        
+                        if diff < 60:
+                            data['heartbeat'] = f'{int(diff)}s'
+                            data['activityLevel'] = 90
+                            data['status'] = 'working'
+                        elif diff < 3600:
+                            data['heartbeat'] = f'{int(diff/60)}m'
+                            data['activityLevel'] = 60
+                            data['status'] = 'idle'
+                        else:
+                            data['heartbeat'] = f'{int(diff/3600)}h'
+                            data['activityLevel'] = 20
+                            data['status'] = 'sleeping'
+                            
+                        # 检查是否超时 (>5分钟无心跳)
+                        if diff > 300:
+                            data['status'] = 'sleeping'
+                            data['activityLevel'] = 10
+                    else:
+                        logger.warning(f"解析心跳时间失败 ({hb_file}): {err}")
+                        continue
+        except Exception as e:
+            logger.warning(f"读取心跳文件失败 ({hb_file}): {e}")
+            continue
+    
+    # 如果没有找到任何心跳数据，尝试通过任务调度器判断状态
+    if not heartbeat_found:
+        # 检查任务文件的时间戳来判断是否活跃
+        latest_task_time = 0
+        for tasks_file in tasks_sources:
+            try:
+                if os.path.exists(tasks_file):
+                    mtime = os.path.getmtime(tasks_file)
+                    if mtime > latest_task_time:
+                        latest_task_time = mtime
+            except:
+                continue
+        
+        if latest_task_time > 0:
+            task_age = now - latest_task_time
+            if task_age < 60:
+                data['heartbeat'] = f'{int(task_age)}s'
+                data['activityLevel'] = 85
+                data['status'] = 'working'
+            elif task_age < 3600:
+                data['heartbeat'] = f'{int(task_age/60)}m'
+                data['activityLevel'] = 50
+                data['status'] = 'idle'
+            else:
+                data['heartbeat'] = f'{int(task_age/3600)}h'
+                data['activityLevel'] = 20
+                data['status'] = 'sleeping'
+        else:
+            data['heartbeat'] = '--'
+            data['status'] = 'idle'
+            data['activityLevel'] = 30
+        heartbeat_found = True
+    
+    # 读取消息数量 - 尝试多个可能的位置
+    msg_sources = [
+        '/home/root/.openclaw/workspace/memory/session_stats.json',
+        '/tmp/session_stats.json',
+        '/home/root/.openclaw/workspace/memory/today_messages.json'
+    ]
+    for msg_file in msg_sources:
+        try:
+            if os.path.exists(msg_file):
+                with open(msg_file, 'r') as f:
+                    stats = json.load(f)
+                    data['msgCount'] = stats.get('totalMessages', stats.get('count', 0))
+                    break
+        except:
+            continue
+    
+    # 读取任务统计 (复用前面定义的 tasks_sources)
+    for tasks_file in tasks_sources:
+        try:
+            if os.path.exists(tasks_file):
+                with open(tasks_file, 'r') as f:
+                    tasks_map = json.load(f)
+                data['taskDone'] = len(tasks_map.get('completed', tasks_map.get('done', [])))
+                break
+        except Exception as e:
+            continue
+    
+    # 计算运行时间 - 多种方式
+    start_time = None
+    start_sources = [
+        '/tmp/openclaw_start_time',
+        '/home/root/.openclaw/workspace/memory/start_time.txt',
+        STATE_FILE
+    ]
+    for start_file in start_sources:
+        try:
+            if os.path.exists(start_file):
+                with open(start_file, 'r') as f:
+                    content = f.read().strip()
+                if content.startswith('{'):
+                    state = json.loads(content)
+                    start_time = state.get('startTime', state.get('start_time'))
+                else:
+                    start_time = float(content)
+                if start_time:
+                    break
+        except:
+            continue
+    
+    if start_time:
+        try:
+            uptime = now - float(start_time)
+            if uptime < 60:
+                data['uptime'] = f'{int(uptime)}s'
+            elif uptime < 3600:
+                data['uptime'] = f'{int(uptime/60)}m'
+            else:
+                data['uptime'] = f'{int(uptime/3600)}h'
+        except:
+            pass
+    
+    # 如果 OpenClaw uptime 太短（<5分钟），显示系统 uptime 作为补充
+    if data.get('uptime') == '0h' or data.get('uptime') == '0m' or data.get('uptime') == '0s':
+        if sys_info.get('uptime') and sys_info.get('uptime') != '0h':
+            data['uptime'] = sys_info['uptime']  # 使用系统 uptime
+        elif sys_info.get('systemUptime'):
+            data['uptime'] = sys_info['systemUptime']
+    
+    # 当前任务 - 从 state 文件读取
+    state_sources = [
+        STATE_FILE,
+        '/home/root/.openclaw/workspace/memory/heartbeat_tasks/state.json'
+    ]
+    for state_file in state_sources:
+        try:
+            if os.path.exists(state_file):
+                with open(state_file, 'r') as f:
+                    state = json.load(f)
+
+                # 获取下一个任务
+                next_tasks = state.get('nextTasks', state.get('pendingTasks', {}))
+                if not next_tasks:
+                    next_tasks = state.get('tasks', {})
+
+                if next_tasks:
+                    # 找到最近的要执行的任务
+                    min_time = float('inf')
+                    current = ''
+                    now_ts = time.time()
+                    for name, t in next_tasks.items():
+                        try:
+                            t_val = float(t) if isinstance(t, str) else t
+                            if t_val < min_time and t_val > now_ts - 3600:
+                                min_time = t_val
+                                current = name
+                        except:
+                            pass
+                    if current and (min_time - now) < 300:
+                        data['currentTask'] = current
+                        data['status'] = 'working'
+                        data['activityLevel'] = 85
+                break
+        except Exception as e:
+            continue
+
+    # v25.0: 获取 EvoMap reputation
+    try:
+        evomap_state_file = '/home/root/.openclaw/workspace/memory/evomap_state.json'
+        if os.path.exists(evomap_state_file):
+            with open(evomap_state_file, 'r') as f:
+                evomap_state = json.load(f)
+            data['reputation'] = evomap_state.get('reputation', evomap_state.get('score'))
+    except:
+        pass
+
+    # 更新缓存
+    _cache['dashboard']['data'] = data
+    _cache['dashboard']['time'] = now
+    
+    # 添加数据来源标记
+    data['_source'] = 'gateway'
+    data['_cacheAge'] = round(now - _cache['dashboard']['time'], 3)
+    data['_version'] = '3.0'
+    data['_reliability'] = 'high' if heartbeat_found else 'medium'
+
+    # 数据新鲜度分析
+    _last_heartbeat_ts = None
+    for hb_file in hb_sources:
+        try:
+            if os.path.exists(hb_file):
+                with open(hb_file, 'r') as f:
+                    content = f.read().strip()
+                if content.startswith('{'):
+                    state = json.loads(content)
+                    last_hb = state.get('lastHeartbeat', state.get('last_heartbeat', state.get('timestamp', '')))
+                else:
+                    last_hb = content
+                if last_hb:
+                    try:
+                        if 'T' in last_hb:
+                            dt = datetime.fromisoformat(last_hb.replace('Z', '+00:00'))
+                            _last_heartbeat_ts = dt.timestamp()
+                        else:
+                            _last_heartbeat_ts = float(last_hb)
+                        break
+                    except:
+                        continue
+        except:
+            continue
+    
+    # 如果心跳太旧（>30分钟），尝试用任务文件的修改时间作为备用
+    if _last_heartbeat_ts and (now - _last_heartbeat_ts) > 1800:
+        for tasks_file in tasks_sources:
+            try:
+                if os.path.exists(tasks_file):
+                    mtime = os.path.getmtime(tasks_file)
+                    if mtime > (_last_heartbeat_ts if _last_heartbeat_ts else 0):
+                        _last_heartbeat_ts = mtime
+                        break
+            except:
+                continue
+
+    data['_lastHeartbeatTs'] = _last_heartbeat_ts
+    data['_dataAge'] = round(now - _last_heartbeat_ts, 1) if _last_heartbeat_ts else None
+    # 超过5分钟无活动视为过期，但如果心跳文件本身就很旧（>24小时）且有活跃任务，说明是历史遗留数据不算过期
+    _is_heartbeat_truly_old = (_last_heartbeat_ts and (now - _last_heartbeat_ts) > 86400)  # 超过24小时
+    data['_isStale'] = (data['_dataAge'] is not None and data['_dataAge'] > 300) and not _is_heartbeat_truly_old  # >5分钟视为过期，但历史心跳不算
+    # 数据可靠性评分
+    if _is_heartbeat_truly_old or not heartbeat_found:
+        data['_reliability'] = 'low'  # 心跳太旧或找不到，标记为低可靠性
+    elif data['_dataAge'] and data['_dataAge'] < 60:
+        data['_reliability'] = 'high'
+    elif data['_dataAge'] and data['_dataAge'] < 300:
+        data['_reliability'] = 'medium'
+    else:
+        data['_reliability'] = 'low'
+    data['_sourcesAvailable'] = {
+        'heartbeat': heartbeat_found,
+        'state_file': os.path.exists(STATE_FILE),
+        'tasks_file': os.path.exists(TASKS_MAP_FILE),
+        'task_output': task_output_mtime is not None
+    }
+    data['_hbSource'] = _hb_source  # 数据来源标识
+    data['_timestamp'] = datetime.now().isoformat()
+
+    # 添加详细健康状态
+    mem_pct = data.get('memoryPercent', 0)
+    cpu_pct = data.get('cpuPercent', 0)
+    disk_pct = data.get('diskPercent', 0)
+    data['_health'] = {
+        'memory': 'ok' if mem_pct < 80 else 'warning' if mem_pct < 90 else 'critical',
+        'cpu': 'ok' if cpu_pct < 80 else 'warning' if cpu_pct < 90 else 'critical',
+        'disk': 'ok' if disk_pct < 85 else 'warning' if disk_pct < 95 else 'critical',
+        'heartbeat': 'ok' if heartbeat_found else 'stale',
+        'data_fresh': 'ok' if not data['_isStale'] else 'stale'
+    }
+
+    return data
+
+def get_skills_data():
+    """获取技能统计 - 增强版 v2.5"""
+    now = time.time()
+    
+    # 检查缓存
+    if now - _skills_cache['time'] < SKILLS_CACHE_TTL and _skills_cache['data']:
+        return _skills_cache['data']
+    
+    data = {
+        'total': 0,
+        'active': 0,
+        'list': [],
+        'categories': {},
+        'topActive': []
+    }
+    
+    try:
+        skills_dir = '/home/root/.openclaw/workspace/skills'
+        
+        # 技能分类映射
+        category_map = {
+            'task-scheduler': 'system',
+            'dashboard-service': 'system',
+            'bio-memory': 'memory',
+            'proactive-agent': 'agent',
+            'self-improving-agent': 'agent',
+            'task-handler': 'system',
+            'weather': 'utility',
+            'icloud-calendar': 'integration',
+            'daily-reminder': 'utility',
+            'news-aggregator-skill': 'news',
+            'evomap': 'integration',
+            '1password': 'security',
+            'healthcheck': 'system',
+            'skill-creator': 'development',
+            'tavily': 'search'
+        }
+        
+        if os.path.exists(skills_dir):
+            skill_count = 0
+            active_count = 0
+            skill_list = []
+            categories = {}
+            
+            for item in os.listdir(skills_dir):
+                item_path = os.path.join(skills_dir, item)
+                if os.path.isdir(item_path) and os.path.exists(os.path.join(item_path, 'SKILL.md')):
+                    skill_count += 1
+                    
+                    # 获取修改时间
+                    mtime = os.path.getmtime(item_path)
+                    age_days = (now - mtime) / 86400
+                    
+                    # 7天内修改的视为活跃
+                    is_active = age_days < 7
+                    if is_active:
+                        active_count += 1
+                    
+                    # 获取分类
+                    category = category_map.get(item, 'other')
+                    if category not in categories:
+                        categories[category] = 0
+                    categories[category] += 1
+                    
+                    skill_list.append({
+                        'name': item,
+                        'active': is_active,
+                        'updated': datetime.fromtimestamp(mtime).strftime('%m-%d'),
+                        'category': category,
+                        'ageDays': round(age_days, 1)
+                    })
+            
+            # 按活跃度和更新时间排序
+            skill_list.sort(key=lambda x: (x['active'], -x['ageDays']))
+            
+            data['total'] = skill_count
+            data['active'] = active_count
+            data['list'] = skill_list[:15]
+            data['categories'] = categories
+            data['topActive'] = [s for s in skill_list if s['active']][:5]
+            
+    except Exception as e:
+        logger.warning(f"获取技能统计失败: {e}")
+    
+    # 更新缓存
+    _skills_cache['data'] = data
+    _skills_cache['time'] = now
+    
+    return data
+
+def get_evomap_status():
+    """获取 EvoMap 状态 - v51.0 修复缺失函数"""
+    _evomap_cache = {'data': None, 'time': 0}
+    EVOMAP_CACHE_TTL = 30
+    
+    now = time.time()
+    if now - _evomap_cache['time'] < EVOMAP_CACHE_TTL and _evomap_cache['data']:
+        return _evomap_cache['data']
+    
+    data = {
+        'connected': False,
+        'reputation': None,
+        'status': 'unknown',
+        'timestamp': datetime.now().isoformat()
+    }
+    
+    try:
+        # 尝试从 EvoMap 状态文件读取
+        evomap_sources = [
+            '/home/root/.openclaw/workspace/memory/evomap_state.json',
+            '/tmp/evomap_state.json',
+            '/home/root/.openclaw/workspace/memory/evomap_status.json'
+        ]
+        
+        for source in evomap_sources:
+            if os.path.exists(source):
+                with open(source, 'r') as f:
+                    state = json.load(f)
+                data['reputation'] = state.get('reputation', state.get('score'))
+                data['connected'] = True
+                data['status'] = 'ok'
+                break
+        
+        # 如果没找到，从 dashboard 数据获取 reputation
+        if not data['connected']:
+            dash_data = get_dashboard_data()
+            if dash_data.get('reputation'):
+                data['reputation'] = dash_data['reputation']
+                data['connected'] = True
+                data['status'] = 'ok'
+                
+    except Exception as e:
+        logger.warning(f"获取EvoMap状态失败: {e}")
+        data['status'] = 'error'
+    
+    _evomap_cache['data'] = data
+    _evomap_cache['time'] = now
+    
+    return data
+
+def get_memories_data():
+    """获取记忆数据 - v51.0 新增 (修复前端/api/memories 404问题)"""
+    # 记忆数据缓存
+    _memories_cache = {'data': None, 'time': 0}
+    MEMORIES_CACHE_TTL = 10  # 10秒缓存
+    
+    now = time.time()
+    if now - _memories_cache['time'] < MEMORIES_CACHE_TTL and _memories_cache['data']:
+        return _memories_cache['data']
+    
+    data = {
+        'recent': [],
+        'count': 0,
+        'status': 'ok',
+        'timestamp': datetime.now().isoformat()
+    }
+    
+    try:
+        # 尝试读取记忆文件
+        memory_sources = [
+            '/home/root/.openclaw/workspace/memory/MEMORY.md',
+            '/home/root/.openclaw/workspace/memory/last_heartbeat.txt',
+            '/tmp/openclaw_last_memory.md'
+        ]
+        
+        for mem_file in memory_sources:
+            try:
+                if os.path.exists(mem_file):
+                    mtime = os.path.getmtime(mem_file)
+                    age_minutes = (now - mtime) / 60
+                    
+                    # 读取文件内容摘要
+                    with open(mem_file, 'r') as f:
+                        content = f.read()
+                    
+                    # 提取前200字符作为摘要
+                    summary = content[:200].strip() if content else ''
+                    
+                    data['recent'].append({
+                        'source': os.path.basename(mem_file),
+                        'summary': summary,
+                        'age_minutes': round(age_minutes, 1),
+                        'mtime': datetime.fromtimestamp(mtime).isoformat()
+                    })
+                    
+                    if len(data['recent']) >= 5:
+                        break
+            except Exception:
+                continue
+        
+        data['count'] = len(data['recent'])
+        
+    except Exception as e:
+        logger.warning(f"获取记忆数据失败: {e}")
+        data['status'] = 'error'
+    
+    _memories_cache['data'] = data
+    _memories_cache['time'] = now
+    
+    return data
+
+async def websocket_handler(websocket, path):
+    """WebSocket handler for real-time dashboard updates"""
+    client_id = id(websocket)
+    logger.info(f"WebSocket client connected: {client_id}")
+    
+    with _websocket_lock:
+        _websocket_clients.add(websocket)
+    
+    try:
+        # Send initial data
+        initial_data = {
+            'type': 'init',
+            'data': get_dashboard_data(),
+            'timestamp': datetime.now().isoformat()
+        }
+        await websocket.send(json.dumps(initial_data))
+        
+        # Keep connection alive and send periodic updates
+        while not _ws_stop_event.is_set():
+            try:
+                # Wait for client message or timeout (30 seconds)
+                data = await asyncio.wait_for(websocket.recv(), timeout=30)
+                # Echo back for ping/pong
+                if data == 'ping':
+                    await websocket.send(json.dumps({'type': 'pong', 'timestamp': datetime.now().isoformat()}))
+            except asyncio.TimeoutError:
+                # Send heartbeat/pong on timeout
+                await websocket.send(json.dumps({'type': 'pong', 'timestamp': datetime.now().isoformat()}))
+            except websockets.exceptions.ConnectionClosed:
+                break
+    except Exception as e:
+        logger.warning(f"WebSocket handler error: {e}")
+    finally:
+        with _websocket_lock:
+            _websocket_clients.discard(websocket)
+        logger.info(f"WebSocket client disconnected: {client_id}")
+
+def broadcast_update(data):
+    """Broadcast update to all connected WebSocket clients"""
+    if not _websocket_clients:
+        return
+    
+    message = json.dumps({
+        'type': 'update',
+        'data': data,
+        'timestamp': datetime.now().isoformat()
+    })
+    
+    # Create a copy of set to avoid modification during iteration
+    with _websocket_lock:
+        clients = list(_websocket_clients)
+    
+    disconnected = []
+    for client in clients:
+        try:
+            asyncio.run(client.send(message))
+        except Exception as e:
+            logger.warning(f"Broadcast error: {e}")
+            disconnected.append(client)
+    
+    # Remove disconnected clients
+    if disconnected:
+        with _websocket_lock:
+            for client in disconnected:
+                _websocket_clients.discard(client)
+
+def start_websocket_server():
+    """Start WebSocket server in background thread"""
+    if not WEBSOCKETS_AVAILABLE:
+        logger.warning("WebSocket server not started (module unavailable)")
+        return None
+        
+    async def ws_main():
+        async with websockets.serve(websocket_handler, "localhost", 19001):
+            logger.info("WebSocket server started on ws://localhost:19001")
+            while not _ws_stop_event.is_set():
+                await asyncio.sleep(1)
+    
+    def run_ws():
+        asyncio.run(ws_main())
+    
+    ws_thread = threading.Thread(target=run_ws, daemon=True)
+    ws_thread.start()
+    return ws_thread
+
+class DashboardHandler(http.server.BaseHTTPRequestHandler):
+    def do_GET(self):
+        path = urlparse(self.path).path
+        
+        # 调试日志
+        logger.info(f"Request path: {path}")
+        
+        # Dashboard API - 获取看板数据
+        if path == '/api/dashboard':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            self.send_header('Pragma', 'no-cache')
+            self.send_header('Expires', '0')
+            self.end_headers()
+            data = get_dashboard_data()
+            self.wfile.write(json.dumps(data).encode())
+            return
+        
+        # v26.0: Heartbeat API - simplified heartbeat data for real-time updates
+        if path == '/api/heartbeat':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Cache-Control', 'no-cache')
+            self.end_headers()
+            dash_data = get_dashboard_data()
+            # Return heartbeat-specific fields
+            heartbeat_data = {
+                'heartbeat': dash_data.get('heartbeat', '--'),
+                'activity': dash_data.get('activityLevel', 50),
+                'status': dash_data.get('status', 'idle'),
+                'uptime': dash_data.get('uptime', '0h'),
+                'source': dash_data.get('_hbSource', 'gateway'),
+                'reputation': dash_data.get('reputation'),
+                'currentTask': dash_data.get('currentTask'),
+                'taskProgress': dash_data.get('taskProgress', 0),
+                'msgCount': dash_data.get('msgCount', 0),
+                'taskDone': dash_data.get('taskDone', 0),
+                'timestamp': datetime.now().isoformat()
+            }
+            self.wfile.write(json.dumps(heartbeat_data).encode())
+            return
+        
+        # 详细状态 API
+        if path == '/api/status':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            
+            dash_data = get_dashboard_data()
+            sys_data = get_system_info()
+            
+            data = {
+                'service': 'dashboard',
+                'version': '2.2',
+                'timestamp': datetime.now().isoformat(),
+                'uptime': dash_data.get('uptime', '0h'),
+                'status': 'running',
+                'system': sys_data,
+                'dashboard': {
+                    'heartbeat': dash_data.get('heartbeat'),
+                    'status': dash_data.get('status'),
+                    'tasks': dash_data.get('taskDone'),
+                    'messages': dash_data.get('msgCount')
+                }
+            }
+            self.wfile.write(json.dumps(data).encode())
+            return
+        
+        # 系统信息 API - 简化的实时数据
+        if path == '/api/system':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Cache-Control', 'no-cache')
+            self.end_headers()
+            data = get_system_info()
+            self.wfile.write(json.dumps(data).encode())
+            return
+        
+        # 技能统计 API - 增强版 v2.5
+        if path == '/api/skills':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Cache-Control', 'no-cache')
+            self.end_headers()
+            data = get_skills_data()
+            self.wfile.write(json.dumps(data).encode())
+            return
+        
+        # Gateway 状态 API - 新增
+        if path == '/api/gateway':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Cache-Control', 'no-cache')
+            self.end_headers()
+            
+            gateway_data = get_gateway_status()
+            self.wfile.write(json.dumps(gateway_data).encode())
+            return
+        
+        # v20.1: EvoMap Status API
+        if path == '/api/evomap':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Cache-Control', 'no-cache')
+            self.end_headers()
+            
+            evomap_data = get_evomap_status()
+            self.wfile.write(json.dumps(evomap_data).encode())
+            return
+        
+        # 详细技能统计 API
+        if path == '/api/skills/detailed':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            
+            skills_data = get_skills_data()
+            data = {
+                'summary': {
+                    'total': skills_data.get('total', 0),
+                    'active': skills_data.get('active', 0),
+                    'inactive': skills_data.get('total', 0) - skills_data.get('active', 0)
+                },
+                'categories': skills_data.get('categories', {}),
+                'recentlyUpdated': skills_data.get('list', [])[:5],
+                'topActive': skills_data.get('topActive', []),
+                'allSkills': skills_data.get('list', [])
+            }
+            self.wfile.write(json.dumps(data).encode())
+            return
+        
+        # v51.0: Memories API (修复前端调用404问题)
+        if path == '/api/memories':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Cache-Control', 'no-cache')
+            self.end_headers()
+            
+            memories_data = get_memories_data()
+            self.wfile.write(json.dumps(memories_data).encode())
+            return
+        
+        # 健康检查 - 增强
+        if path == '/health' or path == '/healthz':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            
+            sys_info = get_system_info()
+            dash_data = get_dashboard_data()
+            
+            # 综合健康状态判断
+            checks = {
+                'state_file': os.path.exists(STATE_FILE),
+                'tasks_file': os.path.exists(TASKS_MAP_FILE),
+                'frontend': os.path.exists(DASHBOARD_FILE),
+                'memory_ok': sys_info['memoryPercent'] < 95,
+                'cpu_ok': sys_info['cpuPercent'] < 95,
+                'disk_ok': sys_info['diskPercent'] < 90,
+                'data_fresh': not dash_data.get('_isStale', False),
+            }
+            
+            # 数据新鲜度评分
+            data_age = dash_data.get('_dataAge')
+            if data_age is not None:
+                if data_age < 60:
+                    freshness_score = 'fresh'
+                elif data_age < 300:
+                    freshness_score = 'normal'
+                else:
+                    freshness_score = 'stale'
+            else:
+                freshness_score = 'unknown'
+            
+            overall_status = 'ok'
+            if not all(checks.values()):
+                if any(k in ['frontend'] for k, v in checks.items() if not v):
+                    overall_status = 'degraded'
+                elif not checks['data_fresh'] or not checks['state_file']:
+                    overall_status = 'warning'
+            
+            data = {
+                'status': overall_status,
+                'service': 'dashboard',
+                'version': '3.0',
+                'timestamp': datetime.now().isoformat(),
+                'checks': checks,
+                'metrics': {
+                    'memoryPercent': sys_info['memoryPercent'],
+                    'cpuPercent': sys_info['cpuPercent'],
+                    'diskPercent': sys_info['diskPercent']
+                },
+                'dataFreshness': {
+                    'score': freshness_score,
+                    'ageSeconds': data_age,
+                    'lastHeartbeatTs': dash_data.get('_lastHeartbeatTs'),
+                    'sourcesAvailable': dash_data.get('_sourcesAvailable', {})
+                }
+            }
+            self.wfile.write(json.dumps(data).encode())
+            return
+        
+        # Star Office UI
+        if path.startswith('/star') or path.startswith('/office'):
+            file_path = path.replace('/star', '').replace('/office', '')
+            if not file_path or file_path == '/':
+                file_path = '/index.html'
+            full_path = os.path.join(STAR_OFFICE_DIR, file_path.lstrip('/'))
+            
+            if os.path.exists(full_path):
+                self.serve_file(full_path)
+            else:
+                # 尝试 index.html
+                index_path = os.path.join(STAR_OFFICE_DIR, 'index.html')
+                if os.path.exists(index_path):
+                    self.serve_file(index_path)
+                else:
+                    self.send_error(404, 'Not Found')
+            return
+        
+        # 默认显示看板
+        if os.path.exists(DASHBOARD_FILE):
+            self.serve_file(DASHBOARD_FILE)
+        else:
+            self.send_error(404, 'Dashboard not found')
+    
+    def serve_file(self, file_path):
+        ext = os.path.splitext(file_path)[1]
+        content_types = {
+            '.html': 'text/html; charset=utf-8',
+            '.js': 'application/javascript; charset=utf-8',
+            '.css': 'text/css; charset=utf-8',
+            '.png': 'image/png',
+            '.jpg': 'image/jpeg',
+            '.jpeg': 'image/jpeg',
+            '.webp': 'image/webp',
+            '.woff': 'font/woff2',
+            '.woff2': 'font/woff2',
+            '.svg': 'image/svg+xml',
+            '.json': 'application/json',
+        }
+        
+        content_type = content_types.get(ext, 'text/plain')
+        
+        # 添加缓存头
+        if ext in ['.html', '.js', '.css']:
+            cache_control = 'no-cache, no-store, must-revalidate'
+        else:
+            cache_control = 'max-age=3600'
+        
+        with open(file_path, 'rb') as f:
+            content = f.read()
+        
+        self.send_response(200)
+        self.send_header('Content-Type', content_type)
+        self.send_header('Content-Length', len(content))
+        self.send_header('Cache-Control', cache_control)
+        self.end_headers()
+        self.wfile.write(content)
+    
+    def log_message(self, format, *args):
+        # 减少日志噪音
+        msg = str(args[0]) if args else str(format)
+        if '/api/' not in msg and '/health' not in msg:
+            logger.info(msg)
+
+def get_gateway_status():
+    """获取 Gateway 进程状态 - 新增 v2.6"""
+    data = {
+        'running': False,
+        'process_count': 0,
+        'memory_mb': 0,
+        'uptime': 'unknown',
+        'config_loaded': False,
+        'channels': [],
+        'timestamp': datetime.now().isoformat()
+    }
+    
+    try:
+        import subprocess
+        
+        # 查找 Gateway 进程
+        result = subprocess.run(['pgrep', '-f', 'openclaw'], capture_output=True, text=True, timeout=3)
+        if result.returncode == 0 and result.stdout:
+            pids = result.stdout.strip().split('\n')
+            data['process_count'] = len(pids)
+            data['running'] = len(pids) > 0
+            
+            # 获取主进程内存
+            if pids:
+                try:
+                    ps_result = subprocess.run(
+                        ['ps', '-p', pids[0], '-o', 'rss='],
+                        capture_output=True, text=True, timeout=2
+                    )
+                    if ps_result.returncode == 0:
+                        data['memory_mb'] = int(ps_result.stdout.strip()) // 1024
+                except:
+                    pass
+                
+                # 尝试获取进程运行时间
+                try:
+                    ps_uptime = subprocess.run(
+                        ['ps', '-p', pids[0], '-o', 'etime='],
+                        capture_output=True, text=True, timeout=2
+                    )
+                    if ps_uptime.returncode == 0:
+                        data['uptime'] = ps_uptime.stdout.strip()
+                except:
+                    pass
+        
+        # 检查配置文件
+        config_files = [
+            '/home/root/.openclaw/conf/gateway.json',
+            '/home/root/.openclaw/conf/openclaw.json'
+        ]
+        for cf in config_files:
+            if os.path.exists(cf):
+                data['config_loaded'] = True
+                try:
+                    with open(cf, 'r') as f:
+                        config = json.load(f)
+                        data['channels'] = list(config.get('channels', {}).keys())
+                except:
+                    pass
+                break
+                
+    except Exception as e:
+        logger.warning(f"获取Gateway状态失败: {e}")
+    
+    return data
+
+print(f"🚀 Dashboard 服务启动中 v2.14: http://localhost:{PORT}")
+print(f"📊 看板: http://localhost:{PORT}/")
+print(f"🏢 Star Office: http://localhost:{PORT}/star")
+print(f"🔌 WebSocket: ws://localhost:19001 (实时更新)")
+
+# 启动 WebSocket 服务器 (可选功能)
+if WEBSOCKETS_AVAILABLE:
+    try:
+        ws_thread = start_websocket_server()
+    except Exception as e:
+        logger.warning(f"WebSocket 启动失败: {e}")
+
+# 启动 HTTP 服务器
+class ReuseAddrTCPServer(socketserver.TCPServer):
+    allow_reuse_address = True
+
+try:
+    with ReuseAddrTCPServer(('', PORT), DashboardHandler) as httpd:
+        logger.info(f"Serving on port {PORT}")
+        httpd.serve_forever()
+except KeyboardInterrupt:
+    logger.info("Shutting down...")
+except OSError as e:
+    if e.errno == 98:  # Address already in use
+        logger.warning(f"Port {PORT} is already in use, trying to reuse...")
+        # 尝试使用 SO_REUSEADDR
+        import socket
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s.bind(('', PORT))
+        s.close()
+        logger.info("Port should be available now, please restart the service")
+    else:
+        logger.error(f"Error: {e}")

@@ -1,0 +1,3799 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v37.0">
+    <meta name="theme-color" content="#08080c">
+    <title>MoShang Status v37.0</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ========== v37.0: Modern CSS Architecture & Enhanced Reliability ========== */
+        
+        /* CSS @layer for modern organization */
+        @layer reset, base, layout, components, utilities, animations, states;
+        
+        @layer reset {
+            *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+            html { scroll-behavior: smooth; }
+        }
+        
+        @layer base {
+            :root {
+                /* v37.0: Enhanced theme with color-mix() */
+                --theme-color: var(--primary);
+                --theme-bg: var(--bg-dark);
+                --theme-subtle: color-mix(in srgb, var(--theme-color) 15%, transparent);
+                --theme-glow: color-mix(in srgb, var(--theme-color) 40%, transparent);
+            }
+        }
+
+        :root {
+            --primary: #ffc864;
+            --primary-glow: #ffaa33;
+            --primary-dim: rgba(255,200,100,0.3);
+            --accent: #00d4ff;
+            --accent-glow: #00ffff;
+            --accent-dim: rgba(0,212,255,0.3);
+            --success: #5cdb95;
+            --success-glow: #7fff7f;
+            --success-dim: rgba(92,219,149,0.3);
+            --warning: #feca57;
+            --warning-glow: #ffcc00;
+            --warning-dim: rgba(254,202,87,0.3);
+            --danger: #ff6b6b;
+            --danger-glow: #ff4444;
+            --danger-dim: rgba(255,107,107,0.3);
+            --purple: #a855f7;
+            --purple-glow: #c084fc;
+            --purple-dim: rgba(168,85,247,0.3);
+            --pink: #ec4899;
+            --pink-glow: #f472b6;
+            --pink-dim: rgba(236,72,153,0.3);
+            --bg-dark: #08080c;
+            --bg-deep: #04040a;
+            --bg-card: rgba(15,15,25,0.88);
+            --bg-card-hover: rgba(20,20,30,0.95);
+            --bg-glass: rgba(255,255,255,0.04);
+            --bg-glass-hover: rgba(255,255,255,0.08);
+            --text: #dcdce4;
+            --text-dim: #5a5a6a;
+            --text-bright: #ffffff;
+            --text-muted: #8a8a9a;
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --radius-2xl: 40px;
+            --radius-full: 9999px;
+            --shadow-soft: 0 4px 24px rgba(0,0,0,0.35);
+            --shadow-medium: 0 8px 40px rgba(0,0,0,0.45);
+            --shadow-glow: 0 0 80px -20px;
+            --shadow-glow-strong: 0 0 120px -20px;
+            --shadow-card: 0 2px 8px rgba(0,0,0,0.2), 0 8px 32px rgba(0,0,0,0.3);
+            --shadow-card-hover: 0 4px 16px rgba(0,0,0,0.25), 0 12px 48px rgba(0,0,0,0.4);
+            --neon-gradient: linear-gradient(135deg, var(--primary), var(--accent));
+            --aurora-gradient: linear-gradient(135deg, #ff6b9d, #ffc864, #00d4ff, #5cdb95);
+            --space-gradient: radial-gradient(ellipse at center, rgba(30,30,60,0.8) 0%, transparent 70%);
+            --mesh-gradient: radial-gradient(ellipse at 20% 50%, rgba(168,85,247,0.12) 0%, transparent 50%),
+                             radial-gradient(ellipse at 80% 20%, rgba(0,212,255,0.1) 0%, transparent 50%),
+                             radial-gradient(ellipse at 50% 80%, rgba(255,200,100,0.08) 0%, transparent 50%);
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --spring-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            color: var(--text);
+        }
+
+        /* ========== Backgrounds ========== */
+        .bg-mesh {
+            position: fixed; inset: 0;
+            background: var(--mesh-gradient);
+            z-index: -4;
+        }
+
+        .bg-space {
+            position: fixed; inset: 0;
+            background: var(--space-gradient);
+            z-index: -3;
+        }
+
+        .bg-stars {
+            position: fixed; inset: 0;
+            z-index: -2; pointer-events: none;
+        }
+
+        .bg-neural {
+            position: fixed; inset: 0;
+            z-index: -1; opacity: 0.5;
+        }
+
+        /* ========== Ambient Orbs ========== */
+        .ambient-orb {
+            position: fixed; border-radius: 50%;
+            filter: blur(80px); opacity: 0.15;
+            pointer-events: none; z-index: -1;
+            animation: orbFloat 25s ease-in-out infinite;
+        }
+
+        .ambient-orb-1 {
+            width: 600px; height: 600px;
+            background: var(--primary);
+            top: -200px; left: -200px;
+            animation-delay: 0s;
+        }
+
+        .ambient-orb-2 {
+            width: 500px; height: 500px;
+            background: var(--accent);
+            bottom: -150px; right: -150px;
+            animation-delay: -8s;
+        }
+
+        .ambient-orb-3 {
+            width: 400px; height: 400px;
+            background: var(--purple);
+            top: 50%; left: 60%;
+            animation-delay: -15s;
+        }
+
+        .ambient-orb-4 {
+            width: 250px; height: 250px;
+            background: var(--pink);
+            top: 25%; right: 15%;
+            animation-delay: -5s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            20% { transform: translate(50px, -50px) scale(1.1); }
+            40% { transform: translate(-35px, 25px) scale(0.95); }
+            60% { transform: translate(25px, 45px) scale(1.05); }
+            80% { transform: translate(-25px, -35px) scale(1.08); }
+        }
+
+        .particle-mesh-canvas {
+            position: fixed; inset: 0;
+            z-index: -1; opacity: 0.4;
+            pointer-events: none;
+        }
+
+        /* ========== v36.0: Advanced Visual Effects ========== */
+        
+        /* Glass Reflection Enhancement */
+        .glass-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 100%);
+            pointer-events: none;
+            border-radius: inherit;
+        }
+        
+        /* Magnetic Hover Enhancement */
+        .stat-card.magnetic-hover {
+            transition: transform 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                        box-shadow 0.18s ease,
+                        border-color 0.2s ease;
+        }
+        
+        .stat-card.magnetic-hover:hover {
+            transform: translateY(-8px) scale(1.02) perspective(1000px) rotateX(2deg) rotateY(-2deg);
+            box-shadow: 0 20px 60px -15px rgba(255,200,100,0.25),
+                        0 0 40px rgba(255,200,100,0.1);
+        }
+        
+        /* Aurora Border Animation v36.0 */
+        @keyframes auroraBorder {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .aurora-border {
+            position: relative;
+        }
+        
+        .aurora-border::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(45deg, #ff6b9d, #ffc864, #00d4ff, #5cdb95, #a855f7, #ff6b9d);
+            background-size: 400% 400%;
+            border-radius: inherit;
+            z-index: -1;
+            animation: auroraBorder 8s ease infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .aurora-border:hover::after {
+            opacity: 1;
+        }
+        
+        /* Pulse Ring Activity Sync */
+        @keyframes activityPulseRing {
+            0% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.12); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.6; }
+        }
+        
+        .activity-sync-ring {
+            position: absolute;
+            inset: -20px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease, border-color 0.4s ease;
+        }
+        
+        .activity-sync-ring.active {
+            opacity: 1;
+            animation: activityPulseRing 2s ease-in-out infinite;
+        }
+        
+        /* Neural Sync Indicator */
+        @keyframes neuralSync {
+            0% { transform: rotate(0deg); opacity: 0.4; }
+            50% { transform: rotate(180deg); opacity: 0.8; }
+            100% { transform: rotate(360deg); opacity: 0.4; }
+        }
+        
+        .neural-sync-indicator {
+            position: absolute;
+            inset: -24px;
+            border-radius: 50%;
+            border: 1.5px dashed rgba(168,85,247,0.5);
+            pointer-events: none;
+            opacity: 0.3;
+            transition: opacity 0.4s ease;
+        }
+        
+        .neural-sync-indicator.active {
+            animation: neuralSync 3s linear infinite;
+        }
+        
+        /* View Transitions API Support */
+        @supports (view-transition-name: none) {
+            .stat-value, .mini-stat-value {
+                view-transition-name: stat-value;
+            }
+        }
+        
+        /* Data Stream Flow Effect */
+        @keyframes dataStreamFlow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+        
+        .data-stream-line {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .data-stream-line::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(0,212,255,0.15) 50%, transparent 100%);
+            background-size: 200% 100%;
+            animation: dataStreamFlow 3s linear infinite;
+            pointer-events: none;
+        }
+        
+        /* Glitch Effect for Error State */
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-3px, 3px); }
+            40% { transform: translate(-3px, -3px); }
+            60% { transform: translate(3px, 3px); }
+            80% { transform: translate(3px, -3px); }
+            100% { transform: translate(0); }
+        }
+        
+        @keyframes glitchColor {
+            0% { text-shadow: 2px 0 #ff6b6b, -2px 0 #00d4ff; }
+            50% { text-shadow: -2px 0 #ff6b6b, 2px 0 #00d4ff; }
+            100% { text-shadow: 2px 0 #ff6b6b, -2px 0 #00d4ff; }
+        }
+        
+        .glitch-effect {
+            animation: glitch 0.3s ease-in-out infinite, glitchColor 0.5s ease-in-out infinite;
+        }
+        
+        /* Toast Stack Enhancement */
+        .toast-v32 {
+            transform-origin: right bottom;
+        }
+        
+        .toast-v32.entering {
+            animation: toastElasticIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        
+        .toast-v32.exiting {
+            animation: toastElasticOut 0.3s ease-in forwards;
+        }
+        
+        @keyframes toastElasticIn {
+            0% { opacity: 0; transform: translateX(60px) scale(0.8); }
+            60% { opacity: 1; transform: translateX(-5px) scale(1.03); }
+            100% { opacity: 1; transform: translateX(0) scale(1); }
+        }
+        
+        @keyframes toastElasticOut {
+            0% { opacity: 1; transform: translateX(0) scale(1); }
+            100% { opacity: 0; transform: translateX(60px) scale(0.8); }
+        }
+        
+        /* Scroll-Driven Animations */
+        @keyframes scrollProgressBar {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
+        
+        .scroll-driven-progress {
+            animation: scrollProgressBar linear both;
+            animation-timeline: scroll();
+        }
+        
+        /* Focus State Enhancement */
+        .stat-card:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 4px;
+            box-shadow: 0 0 0 4px rgba(0,212,255,0.3);
+        }
+        
+        /* Keyboard Navigation Focus Ring */
+        .keyboard-focus :focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+            box-shadow: 0 0 12px rgba(255,200,100,0.4);
+        }
+        
+        /* Mini Stat Sparkline SVG Enhancement */
+        .mini-trend {
+            filter: drop-shadow(0 0 4px currentColor);
+        }
+        
+        /* ========== Main Container ========== */
+        .dashboard-container {
+            width: 100%; max-width: 1280px;
+            position: relative; z-index: 10;
+        }
+
+        /* ========== Glass Card ========== */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(32px) saturate(200%);
+            -webkit-backdrop-filter: blur(32px) saturate(200%);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-soft), var(--shadow-glow),
+                        inset 0 1px 0 rgba(255,255,255,0.08);
+            overflow: hidden;
+            transition: all var(--transition-normal) var(--ease-out-expo);
+            position: relative;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            pointer-events: none;
+        }
+
+        .glass-card:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(255,255,255,0.1);
+            box-shadow: var(--shadow-medium), var(--shadow-glow-strong),
+                        inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        /* ========== Header ========== */
+        .dashboard-header {
+            padding: 28px 36px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+        
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 36px; right: 36px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,200,100,0.2), transparent);
+        }
+
+        .header-left, .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 18px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-full);
+            font-size: 14px;
+            font-weight: 500;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+        }
+        
+        .status-badge:hover {
+            background: rgba(255,255,255,0.08);
+            transform: scale(1.02);
+        }
+
+        .status-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s ease-in-out infinite;
+            box-shadow: 0 0 8px var(--success);
+        }
+
+        .status-dot.warning { background: var(--warning); box-shadow: 0 0 8px var(--warning); }
+        .status-dot.error { background: var(--danger); box-shadow: 0 0 8px var(--danger); animation: criticalPulse 0.5s ease-in-out infinite; }
+        
+        .status-badge.error-state {
+            background: rgba(255,107,107,0.15);
+            border-color: rgba(255,107,107,0.3);
+        }
+
+        .refresh-badge {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 13px; color: var(--text-muted);
+            background: rgba(255,255,255,0.04);
+            padding: 6px 14px; border-radius: var(--radius-full);
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .refresh-badge:hover {
+            background: rgba(255,255,255,0.07);
+        }
+
+        .refresh-badge .dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: var(--success);
+            animation: pulse 1.5s ease-in-out infinite;
+            box-shadow: 0 0 6px var(--success);
+        }
+
+        /* ========== Grid ========== */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 28px;
+            padding: 28px 36px;
+        }
+
+        .left-column { display: flex; flex-direction: column; gap: 20px; }
+        .right-column { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+
+        /* ========== Avatar Section ========== */
+        .avatar-section {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 32px 28px;
+        }
+
+        .fox-container {
+            position: relative;
+            width: 210px; height: 210px;
+            margin-bottom: 24px;
+        }
+
+        .fox-container::before {
+            content: '';
+            position: absolute;
+            inset: -30px;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0.2;
+            filter: blur(35px);
+            animation: statusWhisper 4s ease-in-out infinite;
+            z-index: -1;
+            transition: background 0.5s ease;
+        }
+
+        .fox-container.idle::before { background: var(--warning); }
+        .fox-container.working::before { background: var(--accent); }
+        .fox-container.sleeping::before { background: var(--purple); }
+        .fox-container.excited::before { background: var(--pink); }
+        .fox-container.error::before { background: var(--danger); }
+        .fox-container.thinking::before { background: var(--purple); }
+        .fox-container.laughing::before { background: var(--warning); }
+        .fox-container.focused::before { background: var(--success); }
+
+        @keyframes statusWhisper {
+            0%, 100% { opacity: 0.25; transform: scale(1); filter: blur(28px); }
+            50% { opacity: 0.65; transform: scale(1.15); filter: blur(35px); }
+        }
+
+        @keyframes heartbeatPulse {
+            0%, 100% { transform: scale(1); box-shadow: var(--shadow-soft), var(--shadow-glow); }
+            50% { transform: scale(1.006); box-shadow: var(--shadow-soft), 0 0 110px -30px var(--accent); }
+        }
+
+        @keyframes dataWave {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.03); opacity: 0.85; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes numberPop {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.14); }
+        }
+
+        @keyframes springPop {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.18) rotate(-1deg); }
+            60% { transform: scale(0.94) rotate(0.5deg); }
+            80% { transform: scale(1.04); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes criticalPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-breathe { animation: heartbeatPulse 3s ease-in-out infinite; }
+        .data-wave { animation: dataWave 0.6s ease-out; }
+        .num-pop { animation: numberPop 0.35s ease-out; }
+        .spring-pop { animation: springPop 0.45s var(--ease-spring); }
+
+        /* Mood Sync Ring */
+        .mood-sync-ring {
+            position: absolute;
+            inset: -14px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        .mood-sync-ring.active {
+            opacity: 1;
+            animation: ringPulse 2.5s ease-in-out infinite;
+        }
+
+        .mood-sync-ring.idle { border-color: var(--warning); box-shadow: 0 0 35px var(--warning); }
+        .mood-sync-ring.working { border-color: var(--accent); box-shadow: 0 0 35px var(--accent); }
+        .mood-sync-ring.sleeping { border-color: var(--purple); box-shadow: 0 0 35px var(--purple); }
+        .mood-sync-ring.excited { border-color: var(--pink); box-shadow: 0 0 35px var(--pink); }
+        .mood-sync-ring.thinking { border-color: var(--purple); box-shadow: 0 0 35px var(--purple); }
+        .mood-sync-ring.laughing { border-color: var(--warning); box-shadow: 0 0 35px var(--warning); }
+        .mood-sync-ring.error { border-color: var(--danger); box-shadow: 0 0 35px var(--danger); }
+        .mood-sync-ring.focused { border-color: var(--success); box-shadow: 0 0 35px var(--success); }
+        .mood-sync-ring.learning { border-color: var(--primary); box-shadow: 0 0 35px var(--primary); }
+
+        @keyframes ringPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.08); opacity: 1; }
+        }
+
+        /* Energy Core */
+        .energy-core {
+            position: absolute;
+            width: 70px; height: 70px;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none; z-index: 0;
+        }
+
+        .energy-ring {
+            position: absolute; inset: 0;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--accent);
+            border-right-color: var(--primary);
+            animation: energySpin 3s linear infinite;
+        }
+
+        .energy-ring:nth-child(2) {
+            inset: 8px; animation-duration: 2s;
+            animation-direction: reverse;
+            border-top-color: var(--purple);
+            border-right-color: var(--pink);
+        }
+
+        .energy-ring:nth-child(3) {
+            inset: 16px; animation-duration: 1.5s;
+            border-top-color: var(--success);
+            border-right-color: var(--accent);
+        }
+
+        @keyframes energySpin { to { transform: rotate(360deg); } }
+
+        /* Fox Canvas Wrapper */
+        .fox-canvas-wrapper { position: relative; }
+
+        .fox-canvas {
+            width: 100%; height: 100%;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            display: block;
+        }
+
+        .fox-shadow {
+            position: absolute;
+            bottom: -14px; left: 50%;
+            transform: translateX(-50%);
+            width: 90px; height: 24px;
+            background: radial-gradient(ellipse, rgba(0,0,0,0.5) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: shadowBreath 3.5s ease-in-out infinite;
+        }
+
+        @keyframes shadowBreath {
+            0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.4; }
+            50% { transform: translateX(-50%) scale(1.15); opacity: 0.25; }
+        }
+
+        .fox-glow-aura {
+            position: absolute;
+            inset: -24px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,200,100,0.2) 0%, transparent 70%);
+            animation: foxGlowPulse 2.5s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes foxGlowPulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.12); }
+        }
+
+        .fox-expression {
+            position: absolute;
+            top: -14px; right: -14px;
+            font-size: 28px;
+            animation: expressionBounce 2.5s ease-in-out infinite;
+            pointer-events: none; z-index: 10;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+        }
+
+        @keyframes expressionBounce {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.14) rotate(-6deg); }
+            75% { transform: scale(1.14) rotate(6deg); }
+        }
+
+        /* Mood Aura */
+        .mood-aura {
+            position: absolute;
+            inset: -40px;
+            border-radius: 50%;
+            opacity: 0.5; filter: blur(24px);
+            transition: all 0.8s ease;
+            pointer-events: none; z-index: -1;
+        }
+
+        .mood-aura.idle { background: radial-gradient(circle, var(--warning) 0%, transparent 70%); }
+        .mood-aura.working { background: radial-gradient(circle, var(--accent) 0%, transparent 70%); animation: auraWorking 2s ease-in-out infinite; }
+        .mood-aura.sleeping { background: radial-gradient(circle, var(--purple) 0%, transparent 70%); animation: auraSleeping 4s ease-in-out infinite; }
+        .mood-aura.excited { background: radial-gradient(circle, var(--pink) 0%, transparent 70%); animation: auraExcited 1s ease-in-out infinite; }
+        .mood-aura.thinking { background: radial-gradient(circle, var(--purple) 0%, transparent 70%); animation: auraThinking 3s ease-in-out infinite; }
+        .mood-aura.laughing { background: radial-gradient(circle, var(--warning) 0%, transparent 70%); animation: auraLaughing 0.8s ease-in-out infinite; }
+        .mood-aura.error { background: radial-gradient(circle, var(--danger) 0%, transparent 70%); animation: auraError 0.5s ease-in-out infinite; }
+        .mood-aura.focused { background: radial-gradient(circle, var(--success) 0%, transparent 70%); animation: auraFocused 2s ease-in-out infinite; }
+
+        @keyframes auraWorking { 0%, 100% { opacity: 0.35; transform: scale(1); } 50% { opacity: 0.65; transform: scale(1.1); } }
+        @keyframes auraSleeping { 0%, 100% { opacity: 0.25; transform: scale(0.95); } 50% { opacity: 0.55; transform: scale(1.05); } }
+        @keyframes auraExcited { 0%, 100% { opacity: 0.4; transform: scale(1.05); } 50% { opacity: 0.75; transform: scale(1.18); } }
+        @keyframes auraThinking { 0%, 100% { opacity: 0.3; } 25% { opacity: 0.55; transform: translateX(-3px); } 75% { opacity: 0.55; transform: translateX(3px); } }
+        @keyframes auraLaughing { 0%, 100% { opacity: 0.4; transform: scale(1) rotate(0deg); } 50% { opacity: 0.65; transform: scale(1.1) rotate(4deg); } }
+        @keyframes auraError { 0%, 100% { opacity: 0.55; transform: scale(1); } 25% { transform: translate(-3px, 3px); } 50% { opacity: 0.75; transform: scale(1.12); } 75% { transform: translate(3px, -3px); } }
+        @keyframes auraFocused { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.65; transform: scale(1.1); } }
+
+        /* Fox Name */
+        .fox-name {
+            font-size: 28px; font-weight: 800;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--purple), var(--pink), var(--primary));
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientFlow 3.5s ease infinite;
+            margin-bottom: 8px; letter-spacing: -0.5px;
+        }
+
+        @keyframes gradientFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .fox-role {
+            font-size: 14px; color: var(--text-muted);
+            margin-bottom: 20px; letter-spacing: 0.5px;
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px; width: 100%;
+        }
+
+        .mini-stat {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius-md);
+            padding: 16px 14px;
+            text-align: center;
+            transition: all 0.2s var(--ease-spring), box-shadow 0.2s ease;
+        }
+
+        .mini-stat:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 12px 32px -8px rgba(255,200,100,0.3);
+        }
+
+        .mini-stat:active {
+            transform: translateY(-2px) scale(0.97);
+            transition-duration: 0.1s;
+        }
+
+        .mini-stat-value {
+            font-size: 24px; font-weight: 700;
+            color: var(--text-bright);
+            margin-bottom: 4px;
+            font-variant-numeric: tabular-nums;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+        
+        .mini-stat:hover .mini-stat-value {
+            transform: scale(1.05);
+            color: var(--primary);
+        }
+
+        .mini-stat-label {
+            font-size: 11px; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.6px;
+            transition: color 0.2s ease;
+        }
+        
+        .mini-stat:hover .mini-stat-label {
+            color: var(--text);
+        }
+
+        /* Status Section */
+        .status-section {
+            margin-top: 20px; padding: 16px 18px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius-md);
+            width: 100%; text-align: center;
+        }
+
+        .status-title {
+            font-size: 11px; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .status-value {
+            font-size: 18px; font-weight: 600;
+            color: var(--text-bright);
+            transition: color 0.3s ease;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex; gap: 10px;
+            margin-top: 18px; width: 100%;
+        }
+
+        .action-btn {
+            flex: 1; padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-md);
+            color: var(--text); font-size: 13px;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s var(--ease-spring);
+            position: relative; overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255,255,255,0.2) 0%, transparent 60%);
+            opacity: 0; transition: opacity 0.2s ease;
+        }
+
+        .action-btn:hover::before { opacity: 1; }
+        .action-btn:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 24px -6px rgba(255,200,100,0.35);
+        }
+
+        .action-btn:active { 
+            transform: translateY(-1px) scale(0.96);
+            transition-duration: 0.08s;
+        }
+        
+        .action-btn.spring-press:active {
+            animation: springPress 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        @keyframes springPress {
+            0% { transform: scale(1); }
+            30% { transform: scale(0.92); }
+            60% { transform: scale(1.04); }
+            100% { transform: scale(1); }
+        }
+
+        .action-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--bg-dark); font-weight: 600;
+            box-shadow: 0 0 20px rgba(255,200,100,0.4);
+        }
+
+        /* Mood Selector */
+        .mood-selector {
+            display: flex; gap: 10px;
+            margin-top: 18px; justify-content: center;
+        }
+
+        .mood-btn {
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.04);
+            font-size: 20px; cursor: pointer;
+            transition: all 0.2s var(--ease-spring);
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .mood-btn:hover {
+            transform: scale(1.2);
+            border-color: var(--primary);
+            background: rgba(255,200,100,0.12);
+        }
+
+        .mood-btn:active { transform: scale(0.95); }
+
+        .mood-btn.active {
+            border-color: var(--primary);
+            background: rgba(255,200,100,0.22);
+            box-shadow: 0 0 24px rgba(255,200,100,0.35);
+        }
+
+        /* Quick Stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px; margin-top: 20px; width: 100%;
+        }
+
+        .quick-stat {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius-md);
+            padding: 14px 10px; text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .quick-stat:hover { background: rgba(255,255,255,0.07); }
+
+        .quick-stat-value {
+            font-size: 20px; font-weight: 700;
+            color: var(--text-bright);
+        }
+
+        .quick-stat-label {
+            font-size: 10px; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.4px;
+            margin-top: 4px;
+        }
+
+        .glass-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+            margin: 20px 0;
+        }
+
+        /* Session Journey */
+        .session-journey {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius-lg);
+            padding: 18px; margin-top: 18px; width: 100%;
+        }
+
+        .journey-title {
+            font-size: 12px; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 14px;
+            display: flex; align-items: center; gap: 6px;
+        }
+
+        .journey-track {
+            position: relative; height: 8px;
+            background: rgba(255,255,255,0.08);
+            border-radius: var(--radius-full);
+            overflow: visible;
+        }
+
+        .journey-fill {
+            position: absolute; left: 0; top: 0;
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            border-radius: var(--radius-full);
+            transition: width 0.5s var(--ease-out-expo);
+        }
+
+        .journey-marker {
+            position: absolute; top: 50%;
+            transform: translate(-50%, -50%);
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 3px solid var(--bg-dark);
+            box-shadow: 0 0 12px rgba(255,200,100,0.5);
+            transition: left 0.5s var(--ease-out-expo);
+        }
+
+        .journey-label {
+            font-size: 11px; color: var(--text-dim);
+            margin-top: 10px;
+            display: flex; justify-content: space-between;
+        }
+
+        /* Time Greeting */
+        .time-greeting {
+            font-size: 12px; color: var(--text-muted);
+            padding: 5px 14px;
+            background: rgba(255,200,100,0.1);
+            border-radius: var(--radius-full);
+            margin-top: 16px;
+            display: inline-block;
+        }
+
+        /* Story Card */
+        .story-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            margin-top: 14px;
+            width: 100%;
+            position: relative; overflow: hidden;
+        }
+
+        .story-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--neon-gradient);
+            opacity: 0.9;
+        }
+
+        .story-title {
+            font-size: 12px; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .story-text {
+            font-size: 14px; color: var(--text-bright);
+            line-height: 1.6;
+        }
+
+        .story-highlight { color: var(--primary); font-weight: 600; }
+
+        /* Task Progress */
+        .task-progress { margin-top: 14px; display: none; }
+
+        .task-progress-header {
+            display: flex; align-items: center;
+            justify-content: space-between; margin-bottom: 8px;
+        }
+
+        .task-progress-label {
+            font-size: 11px; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        .task-progress-value {
+            font-size: 11px; color: var(--accent); font-weight: 500;
+        }
+
+        .task-progress-bar {
+            height: 5px;
+            background: rgba(255,255,255,0.1);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .task-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+            border-radius: var(--radius-full);
+            transition: width 0.5s var(--ease-out-expo);
+        }
+
+        /* Thinking Chain */
+        .thinking-chain {
+            display: flex; align-items: center; gap: 6px;
+            padding: 12px;
+            background: rgba(168,85,247,0.1);
+            border: 1px solid rgba(168,85,247,0.25border-radius: var(--radius-md);
+            margin-top: 12px;
+        }
+
+        .thinking-node {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--purple);
+            animation: thinkingPulse 1.5s ease-in-out infinite;
+        }
+
+        .thinking-node:nth-child(2) { animation-delay: 0.2s; }
+        .thinking-node:nth-child(3) { animation-delay: 0.4s; }
+        .thinking-node:nth-child(4) { animation-delay: 0.6s; }
+        .thinking-node:nth-child(5) { animation-delay: 0.8s; }
+
+        @keyframes thinkingPulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.5); opacity: 1; }
+        }
+
+        .thinking-label { font-size: 12px; color: var(--purple); margin-left: 8px; }
+
+        /* Reputation Badge */
+        .reputation-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 12px;
+            background: rgba(168,85,247,0.12);
+            border: 1px solid rgba(168,85,247,0.35);
+            border-radius: var(--radius-full);
+            font-size: 12px; color: var(--purple);
+            cursor: help;
+            transition: all 0.2s ease;
+            margin-top: 14px;
+        }
+
+        .reputation-badge:hover {
+            background: rgba(168,85,247,0.22);
+            transform: scale(1.05);
+        }
+
+        /* ========== Right Column Stat Cards ========== */
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: var(--radius-lg);
+            padding: 22px;
+            position: relative;
+            overflow: hidden;
+            transition: all var(--transition-normal) var(--ease-out-expo);
+            cursor: pointer;
+            box-shadow: var(--shadow-card);
+            transform-style: preserve-3d;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(255,255,255,0.14);
+            transform: translateY(-8px) perspective(1000px) rotateX(2deg) rotateY(-2deg);
+            box-shadow: var(--shadow-card-hover), 0 0 40px rgba(255,200,100,0.12);
+        }
+
+        .stat-card:active {
+            transform: translateY(-3px) scale(0.97);
+            transition-duration: 0.1s;
+        }
+        
+        .stat-card.spring-hover:hover {
+            animation: cardSpringHover 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        @keyframes cardSpringHover {
+            0% { transform: translateY(-6px) perspective(1000px) rotateX(1deg) rotateY(-1deg); }
+            40% { transform: translateY(-12px) perspective(1000px) rotateX(3deg) rotateY(-3deg) scale(1.02); }
+            70% { transform: translateY(-7px) perspective(1000px) rotateX(1.5deg) rotateY(-1.5deg) scale(0.99); }
+            100% { transform: translateY(-8px) perspective(1000px) rotateX(2deg) rotateY(-2deg) scale(1.01); }
+        }
+        
+        /* Corner Fold Hover Effect */
+        .stat-card {
+            position: relative;
+        }
+        
+        .stat-card .corner-fold {
+            position: absolute;
+            top: 0; right: 0;
+            width: 28px; height: 28px;
+            background: linear-gradient(225deg, rgba(255,255,255,0.15) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .stat-card:hover .corner-fold {
+            opacity: 1;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+            background-size: 200% 100%;
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+            animation: skeletonShimmer 1.5s ease-in-out infinite;
+        }
+
+        @keyframes skeletonShimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* v37.0: Skeleton loading state for stat values */
+        .skeleton-loading {
+            position: relative;
+            overflow: hidden;
+            color: transparent !important;
+            background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.05) 75%);
+            background-size: 200% 100%;
+            animation: skeletonShimmer 1.2s ease-in-out infinite;
+            border-radius: var(--radius-sm);
+        }
+
+        .stat-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .stat-icon {
+            width: 42px; height: 42px;
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+        }
+
+        .stat-value {
+            font-size: 32px; font-weight: 700;
+            color: var(--text-bright);
+            margin-bottom: 4px;
+            font-variant-numeric: tabular-nums;
+            transition: transform 0.15s ease, color 0.2s ease;
+        }
+
+        .stat-value.num-pop { animation: numberPop 0.35s ease-out; }
+
+        .stat-label {
+            font-size: 13px; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        .stat-subtext {
+            font-size: 12px; color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        .progress-container { margin-top: 14px; }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: var(--radius-full);
+            transition: width 0.6s var(--ease-out-expo);
+            position: relative; overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+            animation: progressShimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes progressShimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
+        }
+
+        .progress-fill.success { background: var(--success); }
+        .progress-fill.warning { background: var(--warning); }
+        .progress-fill.danger { background: var(--danger); }
+
+        /* Mini Trend Sparkline */
+        .mini-trend {
+            position: absolute;
+            bottom: 12px; right: 12px;
+            width: 48px; height: 20px;
+            opacity: 0.7;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            grid-column: 1 / -1;
+            margin-top: 10px;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .chart-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            transition: all var(--transition-normal);
+        }
+
+        .chart-card:hover {
+            border-color: rgba(255,255,255,0.1);
+            transform: translateY(-3px);
+        }
+
+        .chart-title {
+            font-size: 12px; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 14px;
+        }
+
+        .chart-canvas-container {
+            height: 120px;
+            position: relative;
+        }
+
+        .chart-canvas { width: 100%; height: 100%; }
+
+        /* Bottom Section */
+        .bottom-section {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        /* Memory Timeline */
+        .memory-timeline {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: var(--radius-lg);
+            padding: 22px;
+        }
+
+        .timeline-header {
+            display: flex; align-items: center;
+            justify-content: space-between; margin-bottom: 16px;
+        }
+
+        .timeline-title {
+            font-size: 14px; font-weight: 500;
+            color: var(--text-bright);
+        }
+
+        .timeline-items {
+            display: flex; flex-direction: column;
+            gap: 12px; max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .timeline-items::-webkit-scrollbar { width: 4px; }
+        .timeline-items::-webkit-scrollbar-track { background: transparent; }
+        .timeline-items::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+
+        .timeline-item {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 12px;
+            background: rgba(255,255,255,0.04);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+            opacity: 0;
+            animation: timelineSlideIn 0.4s var(--ease-out-expo) forwards;
+        }
+
+        .timeline-item:nth-child(1) { animation-delay: 0.05s; }
+        .timeline-item:nth-child(2) { animation-delay: 0.1s; }
+        .timeline-item:nth-child(3) { animation-delay: 0.15s; }
+        .timeline-item:nth-child(4) { animation-delay: 0.2s; }
+        .timeline-item:nth-child(5) { animation-delay: 0.25s; }
+
+        @keyframes timelineSlideIn {
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .timeline-item:hover { background: rgba(255,255,255,0.07); }
+
+        .timeline-icon {
+            width: 34px; height: 34px;
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .timeline-content { flex: 1; }
+
+        .timeline-text {
+            font-size: 13px; color: var(--text-bright);
+            margin-bottom: 4px;
+        }
+
+        .timeline-time { font-size: 11px; color: var(--text-muted); }
+
+        /* Skills Distribution */
+        .skills-distribution {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: var(--radius-lg);
+            padding: 22px;
+        }
+
+        .skills-title {
+            font-size: 14px; font-weight: 500;
+            color: var(--text-bright); margin-bottom: 18px;
+        }
+
+        .skill-item { margin-bottom: 14px; }
+
+        .skill-header {
+            display: flex; align-items: center;
+            justify-content: space-between; margin-bottom: 7px;
+        }
+
+        .skill-name { font-size: 13px; color: var(--text-bright); }
+        .skill-value { font-size: 13px; color: var(--text-muted); }
+
+        .skill-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .skill-fill {
+            height: 100%; border-radius: var(--radius-full);
+            transition: width 0.5s var(--ease-out-expo);
+        }
+
+        /* ========== Footer ========== */
+        .dashboard-footer {
+            padding: 22px 36px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex; align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+        
+        .dashboard-footer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 36px; right: 36px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0,212,255,0.15), transparent);
+        }
+
+        .footer-info {
+            font-size: 12px; color: var(--text-muted);
+            transition: color 0.3s ease;
+        }
+
+        .footer-info:hover { color: var(--text); }
+        
+        .footer-info span { color: var(--text-bright); font-weight: 500; }
+        
+        .footer-badges {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .footer-version {
+            padding: 4px 10px;
+            background: rgba(168,85,247,0.12);
+            border: 1px solid rgba(168,85,247,0.25);
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--purple);
+            transition: all 0.3s ease;
+        }
+        
+        .footer-version:hover {
+            background: rgba(168,85,247,0.22);
+            transform: scale(1.05);
+        }
+        
+        .footer-badges {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .footer-version {
+            padding: 4px 10px;
+            background: rgba(168,85,247,0.12);
+            border: 1px solid rgba(168,85,247,0.25);
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--purple);
+            transition: all 0.3s ease;
+        }
+        
+        .footer-version:hover {
+            background: rgba(168,85,247,0.22);
+            transform: scale(1.05);
+        }
+
+        /* ========== Data Route Map ========== */
+        .data-route-map {
+            display: flex; align-items: center; gap: 0;
+            padding: 12px 16px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .route-node {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 4px;
+            font-size: 10px; color: var(--text-dim);
+            flex-shrink: 0;
+        }
+
+        .route-node .route-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 6px var(--success);
+        }
+
+        .route-node.stale .route-dot { background: var(--warning); box-shadow: 0 0 6px var(--warning); }
+        .route-node.error .route-dot { background: var(--danger); box-shadow: 0 0 6px var(--danger); }
+
+        .route-line {
+            flex: 1; height: 1px;
+            background: rgba(255,255,255,0.08);
+            position: relative; overflow: hidden;
+            min-width: 20px;
+        }
+
+        .route-line::after {
+            content: '';
+            position: absolute; top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            animation: routeFlow 2.5s ease-in-out infinite;
+        }
+
+        @keyframes routeFlow {
+            0% { left: -100%; } 50% { left: 0%; } 100% { left: 100%; }
+        }
+
+        /* ========== Data Source Health ========== */
+        .data-source-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            margin-left: 14px; padding: 3px 10px;
+            background: rgba(255,255,255,0.06);
+            border-radius: var(--radius-full);
+            font-size: 11px; color: var(--text-muted);
+            cursor: help;
+        }
+
+        .source-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: var(--success);
+            transition: background 0.3s ease;
+        }
+
+        .source-dot.warning { background: var(--warning); }
+        .source-dot.error { background: var(--danger); }
+        .source-dot.stale { background: var(--purple); }
+        
+        /* v37.0: Reliability Score Badge */
+        .reliability-badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            margin-left: 10px; padding: 3px 10px;
+            background: rgba(255,255,255,0.06);
+            border-radius: var(--radius-full);
+            font-size: 11px; color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.4s ease;
+        }
+        .reliability-badge.high { 
+            background: color-mix(in srgb, var(--success) 18%, transparent); 
+            color: var(--success);
+        }
+        .reliability-badge.medium { 
+            background: color-mix(in srgb, var(--warning) 18%, transparent); 
+            color: var(--warning);
+        }
+        .reliability-badge.low { 
+            background: color-mix(in srgb, var(--danger) 18%, transparent); 
+            color: var(--danger);
+            animation: criticalPulse 0.8s ease-in-out infinite;
+        }
+
+        /* ========== External Route Status ========== */
+        .external-route-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            margin-left: 10px; padding: 3px 10px;
+            background: rgba(255,255,255,0.06);
+            border-radius: var(--radius-full);
+            font-size: 11px; color: var(--text-muted);
+            cursor: help;
+            transition: all 0.3s ease;
+        }
+
+        .external-route-badge.checking { animation: pulse 1s ease-in-out infinite; }
+
+        .external-route-badge.online {
+            background: rgba(92,219,149,0.18);
+            color: var(--success);
+        }
+
+        .external-route-badge.offline {
+            background: rgba(255,107,107,0.18);
+            color: var(--danger);
+        }
+
+        .route-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: var(--text-dim);
+            transition: background 0.3s ease;
+        }
+
+        .route-dot.online { background: var(--success); box-shadow: 0 0 8px var(--success); }
+        .route-dot.offline { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
+
+        /* ========== Glow Cursor ========== */
+        .glow-cursor {
+            position: fixed; width: 26px; height: 26px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,200,100,0.45) 0%, transparent 70%);
+            pointer-events: none; z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.3s;
+            mix-blend-mode: screen;
+        }
+
+        .glow-cursor.active {
+            width: 44px; height: 44px;
+            background: radial-gradient(circle, rgba(0,212,255,0.55) 0%, transparent 70%);
+        }
+
+        /* ========== Cursor Trail ========== */
+        .cursor-trail-particle {
+            position: fixed; width: 9px; height: 9px;
+            border-radius: 50%; pointer-events: none;
+            z-index: 9999;
+            animation: trailFade 0.9s ease-out forwards;
+        }
+
+        @keyframes trailFade {
+            0% { transform: scale(1); opacity: 0.85; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        /* ========== Heart Rain ========== */
+        @keyframes heartRain {
+            0% { transform: translateY(-25px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(120px) rotate(380deg); opacity: 0; }
+        }
+
+        .heart-rain {
+            position: absolute; font-size: 22px;
+            animation: heartRain 2.2s ease-out forwards;
+            pointer-events: none;
+        }
+
+        /* ========== Fox Happy ========== */
+        .fox-happy { animation: foxHappy 0.6s ease-out; }
+
+        @keyframes foxHappy {
+            0% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.12) rotate(-6deg); }
+            50% { transform: scale(1.18) rotate(6deg); }
+            75% { transform: scale(1.12) rotate(-4deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        /* ========== Noise Overlay ========== */
+        .noise-overlay {
+            position: fixed; inset: 0;
+            pointer-events: none; z-index: 9999;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        /* ========== Recovery Mode ========== */
+        .recovery-mode {
+            position: fixed; top: 12px; right: 12px;
+            background: rgba(255,200,100,0.22);
+            border: 1px solid var(--warning);
+            color: var(--warning);
+            padding: 7px 14px;
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            z-index: 1000;
+            animation: recoveryPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes recoveryPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.72; transform: scale(0.98); }
+        }
+
+        /* ========== Status Theme Colors ========== */
+        body.status-working { --theme-color: var(--accent); }
+        body.status-sleeping { --theme-color: var(--purple); }
+        body.status-excited { --theme-color: var(--pink); }
+        body.status-thinking { --theme-color: var(--purple); }
+        body.status-error { --theme-color: var(--danger); }
+        body.status-laughing { --theme-color: var(--primary); }
+        body.status-focused { --theme-color: var(--success); }
+        body.status-learning { --theme-color: var(--primary); }
+
+        /* ========== Scroll Progress Bar ========== */
+        .scroll-progress {
+            position: fixed; top: 0; left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--purple), var(--pink));
+            background-size: 300% 100%;
+            animation: scrollGradientShift 4s ease infinite;
+            z-index: 9998; width: 0%;
+            transition: width 0.1s linear;
+            box-shadow: 0 0 12px rgba(255,200,100,0.5), 0 0 24px rgba(0,212,255,0.3);
+        }
+        
+        @keyframes scrollGradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .scroll-progress::after {
+            content: '';
+            position: absolute;
+            right: 0; top: 50%;
+            transform: translateY(-50%);
+            width: 8px; height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 12px var(--primary-glow);
+        }
+
+        /* ========== Toast Queue ========== */
+        .toast-queue {
+            position: fixed; bottom: 24px; right: 24px;
+            display: flex; flex-direction: column-reverse; gap: 8px;
+            z-index: 9990; pointer-events: none;
+        }
+
+        .toast-v32 {
+            display: flex; align-items: center; gap: 12px;
+            background: rgba(12,12,20,0.92);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius-md);
+            padding: 12px 18px;
+            min-width: 240px; max-width: 340px;
+            font-size: 13px; color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            animation: toastSlideIn 0.3s var(--ease-spring);
+            pointer-events: auto;
+            position: relative; overflow: hidden;
+        }
+
+        .toast-v32.exiting { animation: toastSlideOut 0.25s ease forwards; }
+
+        @keyframes toastSlideIn {
+            from { opacity: 0; transform: translateX(40px) scale(0.9); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+
+        @keyframes toastSlideOut {
+            to { opacity: 0; transform: translateX(40px) scale(0.9); }
+        }
+
+        .toast-v32 .toast-bar {
+            position: absolute; bottom: 0; left: 0;
+            height: 2px; background: var(--primary);
+            width: 100%; transform-origin: left;
+            animation: toastBarShrink var(--dur, 3s) linear forwards;
+        }
+
+        @keyframes toastBarShrink { from { scale: 1; } to { scale: 0; } }
+
+        .toast-v32.success { border-color: rgba(92,219,149,0.3); }
+        .toast-v32.success .toast-bar { background: var(--success); }
+        .toast-v32.error { border-color: rgba(255,107,107,0.3); }
+        .toast-v32.error .toast-bar { background: var(--danger); }
+        .toast-v32.warning { border-color: rgba(254,202,87,0.3); }
+        .toast-v32.warning .toast-bar { background: var(--warning); }
+
+        .toast-v32 .toast-icon { font-size: 16px; flex-shrink: 0; }
+        .toast-v32 .toast-msg { flex: 1; line-height: 1.4; }
+
+        /* ========== Command Palette ========== */
+        .cmd-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex; align-items: flex-start; justify-content: center;
+            padding-top: 15vh;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .cmd-overlay.open { opacity: 1; pointer-events: all; }
+
+        .cmd-palette {
+            width: 540px; max-width: 92vw;
+            background: rgba(10,10,18,0.96);
+            border: 1px solid rgba(255,200,100,0.2);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 24px 80px rgba(0,0,0,0.7), 0 0 60px rgba(255,200,100,0.08);
+            overflow: hidden;
+            transform: translateY(-12px) scale(0.97);
+            transition: transform 0.22s var(--ease-out-expo);
+            backdrop-filter: blur(24px);
+        }
+
+        .cmd-overlay.open .cmd-palette { transform: translateY(0) scale(1); }
+
+        .cmd-search-wrap {
+            display: flex; align-items: center; gap: 12px;
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .cmd-search-wrap svg { flex-shrink: 0; color: var(--text-dim); }
+
+        .cmd-input {
+            flex: 1; background: none; border: none; outline: none;
+            color: var(--text); font-size: 16px; font-family: 'Outfit', sans-serif;
+        }
+
+        .cmd-input::placeholder { color: var(--text-dim); }
+
+        .cmd-kbd {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 5px; padding: 2px 7px;
+            font-size: 11px; color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .cmd-results { max-height: 360px; overflow-y: auto; padding: 8px; }
+        .cmd-results::-webkit-scrollbar { width: 4px; }
+        .cmd-results::-webkit-scrollbar-track { background: transparent; }
+        .cmd-results::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+
+        .cmd-group-label {
+            font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+            color: var(--text-dim); padding: 6px 10px 4px; font-weight: 600;
+        }
+
+        .cmd-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 12px; border-radius: var(--radius-sm);
+            cursor: pointer; transition: background 0.12s ease;
+        }
+
+        .cmd-item:hover, .cmd-item.selected { background: rgba(255,200,100,0.1); }
+
+        .cmd-item-icon { font-size: 16px; width: 24px; text-align: center; flex-shrink: 0; }
+        .cmd-item-label { flex: 1; font-size: 14px; color: var(--text); }
+        .cmd-item-hint { font-size: 11px; color: var(--text-dim); }
+        .cmd-item.selected .cmd-item-hint { color: var(--primary); }
+        .cmd-empty { text-align: center; padding: 32px; color: var(--text-dim); font-size: 14px; }
+
+        /* ========== Spring Number ========== */
+        @keyframes springPop {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.18) rotate(-1deg); }
+            60% { transform: scale(0.94) rotate(0.5deg); }
+            80% { transform: scale(1.04); }
+            100% { transform: scale(1); }
+        }
+
+        .spring-pop { animation: springPop 0.45s var(--ease-spring); }
+
+        /* ========== Sync Pulse ========== */
+        @keyframes syncPulseV2 {
+            0% { box-shadow: 0 0 0 0 rgba(255,200,100,0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(255,200,100,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,200,100,0); }
+        }
+
+        .sync-pulse-v2 { animation: syncPulseV2 0.8s ease-out; }
+
+        /* ========== Focus Ring ========== */
+        @keyframes focusRing {
+            0%, 100% { box-shadow: 0 0 0 0 var(--accent); }
+            50% { box-shadow: 0 0 0 12px transparent; }
+        }
+
+        .focus-ring-animate { animation: focusRing 2s ease-in-out infinite; }
+
+        /* ========== Data Ripple ========== */
+        @keyframes dataRipple {
+            0% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.45); }
+            100% { box-shadow: 0 0 0 14px rgba(0, 212, 255, 0); }
+        }
+
+        .data-pulse { animation: dataRipple 1s ease-out; }
+
+        /* ========== Loading State ========== */
+        body.loading .stat-card,
+        body.loading .mini-stat,
+        body.loading .timeline-item {
+            opacity: 0.5; pointer-events: none;
+        }
+
+        body.error .status-dot { background: var(--danger); }
+        body.error .status-badge { background: rgba(255,107,107,0.12); border-color: var(--danger); }
+
+        /* ========== Scroll Reveal ========== */
+        .reveal-up {
+            opacity: 0; transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s var(--ease-out-expo);
+        }
+
+        .reveal-up.visible { opacity: 1; transform: translateY(0); }
+
+        /* ========== Fade In ========== */
+        .fade-in { animation: fadeIn 0.5s ease forwards; }
+
+        /* ========== v35.1: Accessibility & Modern CSS Enhancements ========== */
+        
+        /* Enhanced Focus States */
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        button:focus-visible, .action-btn:focus-visible, .mood-btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.25);
+        }
+
+        /* View Transitions API Support */
+        @view-transition {
+            navigation: auto;
+        }
+
+        ::view-transition-old(stat-value),
+        ::view-transition-new(stat-value) {
+            animation-duration: 0.3s;
+            animation-timing-function: var(--ease-out-expo);
+        }
+
+        /* Modern Scroll-driven Animations */
+        @keyframes scrollProgress {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
+
+        .scroll-progress {
+            transform-origin: left center;
+            animation: scrollProgress linear;
+            animation-timeline: scroll();
+        }
+
+        /* Activity-Synced Pulse Ring */
+        @keyframes activityPulse {
+            0%, 100% { 
+                opacity: 0.6; 
+                transform: translate(-50%, -50%) scale(1);
+                box-shadow: 0 0 20px var(--accent);
+            }
+            50% { 
+                opacity: 1; 
+                transform: translate(-50%, -50%) scale(1.05);
+                box-shadow: 0 0 35px var(--accent);
+            }
+        }
+
+        .activity-sync-ring {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 240px; height: 240px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            opacity: 0;
+            pointer-events: none;
+            animation: activityPulse 2s ease-in-out infinite;
+            z-index: -2;
+        }
+
+        .activity-sync-ring.active {
+            opacity: 1;
+        }
+
+        /* Neural Sync Indicator */
+        @keyframes neuralPulse {
+            0%, 100% { 
+                opacity: 0.3;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% { 
+                opacity: 0.8;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+        }
+
+        .neural-sync-indicator {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 260px; height: 260px;
+            border-radius: 50%;
+            border: 1px dashed var(--purple);
+            opacity: 0;
+            pointer-events: none;
+            animation: neuralPulse 3s ease-in-out infinite;
+            z-index: -3;
+        }
+
+        .neural-sync-indicator.active {
+            opacity: 0.5;
+        }
+
+        /* Modern Glass Reflection */
+        .glass-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 100%);
+            pointer-events: none;
+            border-radius: inherit;
+        }
+
+        /* Stat Card Enhancement - Magnetic Hover */
+        .stat-card {
+            transition: transform 0.25s var(--ease-out-expo), 
+                        box-shadow 0.25s var(--ease-out-expo),
+                        border-color 0.25s ease;
+            will-change: transform;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--shadow-card-hover), 
+                        0 0 40px -10px var(--primary);
+        }
+
+        /* Toast Stack Enhancement */
+        .toast {
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            transform-origin: top right;
+            animation: toastIn 0.35s var(--ease-out-back) forwards;
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .toast.toast-out {
+            animation: toastOut 0.25s var(--ease-out-expo) forwards;
+        }
+
+        @keyframes toastOut {
+            to {
+                opacity: 0;
+                transform: translateX(100%) scale(0.9);
+            }
+        }
+
+        /* Data Flow Line Enhancement */
+        .data-stream-line {
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--accent) 50%, 
+                transparent 100%
+            );
+            background-size: 200% 100%;
+            animation: dataFlow 1.5s linear infinite;
+        }
+
+        @keyframes dataFlow {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Reduced Motion ========== */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .stat-card:hover, .mini-stat:hover, .timeline-item:hover, .action-btn:hover {
+                transform: none !important;
+            }
+        }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 300px 1fr;
+                gap: 20px; padding: 20px 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                padding: 16px; gap: 16px;
+            }
+            .dashboard-header { padding: 16px; }
+            .right-column { grid-template-columns: 1fr; }
+            .stats-row { grid-template-columns: 1fr; }
+            .charts-container { grid-template-columns: 1fr; }
+            .bottom-section { grid-template-columns: 1fr; }
+            .fox-container { width: 150px; height: 150px; }
+            .dashboard-footer { flex-direction: column; gap: 12px; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .header-right { width: 100%; justify-content: space-between; }
+            .stat-value { font-size: 26px; }
+            .stat-card { padding: 16px; }
+            .quick-stats { grid-template-columns: 1fr; }
+            .mood-selector { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body class="loading">
+    <!-- Scroll Progress -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Toast Queue -->
+    <div class="toast-queue" id="toastQueue"></div>
+
+    <!-- Command Palette -->
+    <div class="cmd-overlay" id="cmdOverlay" onclick="if(event.target===this)closeCommandPalette()">
+        <div class="cmd-palette">
+            <div class="cmd-search-wrap">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                </svg>
+                <input class="cmd-input" id="cmdInput" placeholder="Type a command..." autocomplete="off" oninput="filterCommands()"/>
+                <span class="cmd-kbd">ESC</span>
+            </div>
+            <div class="cmd-results" id="cmdResults"></div>
+        </div>
+    </div>
+
+    <!-- Background Effects -->
+    <div class="bg-mesh"></div>
+    <div class="bg-space"></div>
+    <div class="bg-stars" id="stars"></div>
+    <canvas class="bg-neural" id="neuralCanvas"></canvas>
+
+    <!-- Ambient Floating Orbs -->
+    <div class="ambient-orb ambient-orb-1"></div>
+    <div class="ambient-orb ambient-orb-2"></div>
+    <div class="ambient-orb ambient-orb-3"></div>
+    <div class="ambient-orb ambient-orb-4"></div>
+
+    <!-- Particle Mesh Background -->
+    <canvas class="particle-mesh-canvas" id="particleMeshCanvas"></canvas>
+
+    <!-- Glow Cursor -->
+    <div class="glow-cursor" id="glowCursor"></div>
+
+    <!-- Main Dashboard -->
+    <div class="dashboard-container">
+        <div class="glass-card">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <div class="header-left">
+                    <div class="status-badge">
+                        <div class="status-dot" id="statusDot"></div>
+                        <span id="statusText">Loading...</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="refresh-badge">
+                        <div class="dot"></div>
+                        <span id="refreshRate">Fast</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Left Column -->
+                <div class="left-column">
+                    <div class="avatar-section">
+                        <div class="fox-container" id="foxContainer">
+                            <div class="activity-sync-ring active" id="activitySyncRing"></div>
+                            <div class="neural-sync-indicator" id="neuralSyncIndicator"></div>
+                            <div class="mood-aura" id="moodAura"></div>
+                            <div class="energy-core">
+                                <div class="energy-ring"></div>
+                                <div class="energy-ring"></div>
+                                <div class="energy-ring"></div>
+                            </div>
+                            <div class="fox-canvas-wrapper">
+                                <div class="fox-shadow"></div>
+                                <div class="fox-glow-aura" id="foxGlowAura"></div>
+                                <canvas class="fox-canvas" id="foxCanvas"></canvas>
+                            </div>
+                            <div class="mood-sync-ring" id="moodSyncRing"></div>
+                            <div class="fox-expression" id="foxExpression">😺</div>
+                        </div>
+
+                        <h1 class="fox-name gradient-text-animated">MoShang</h1>
+                        <p class="fox-role">Digital Assistant</p>
+
+                        <div class="stats-row">
+                            <div class="mini-stat">
+                                <div class="mini-stat-value" id="miniHeartbeat">--</div>
+                                <div class="mini-stat-label">BPM</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-value" id="miniActivity">--</div>
+                                <div class="mini-stat-label">Activity</div>
+                            </div>
+                        </div>
+
+                        <div class="status-section">
+                            <div class="status-title">Current Status</div>
+                            <div class="status-value" id="statusValue">Idle</div>
+                        </div>
+
+                        <div class="quick-actions">
+                            <button class="action-btn" onclick="setMode('idle')">Idle</button>
+                            <button class="action-btn" onclick="setMode('working')">Work</button>
+                            <button class="action-btn" onclick="setMode('sleeping')">Sleep</button>
+                        </div>
+
+                        <div class="mood-selector" id="moodSelector">
+                            <button class="mood-btn" onclick="setMood('idle')" title="Idle">😺</button>
+                            <button class="mood-btn" onclick="setMood('excited')" title="Excited">🎉</button>
+                            <button class="mood-btn" onclick="setMood('thinking')" title="Thinking">🤔</button>
+                            <button class="mood-btn" onclick="setMood('laughing')" title="Laughing">😄</button>
+                            <button class="mood-btn" onclick="setMood('focused')" title="Focused">🎯</button>
+                        </div>
+
+                        <div class="quick-stats">
+                            <div class="quick-stat">
+                                <div class="quick-stat-value" id="quickMsgs">--</div>
+                                <div class="quick-stat-label">Msgs</div>
+                            </div>
+                            <div class="quick-stat">
+                                <div class="quick-stat-value" id="quickTasks">--</div>
+                                <div class="quick-stat-label">Tasks</div>
+                            </div>
+                            <div class="quick-stat">
+                                <div class="quick-stat-value" id="quickSkills">--</div>
+                                <div class="quick-stat-label">Skills</div>
+                            </div>
+                        </div>
+
+                        <div class="glass-divider"></div>
+
+                        <div class="session-journey" id="sessionJourney">
+                            <div class="journey-title">🚀 Today's Journey</div>
+                            <div class="journey-track">
+                                <div class="journey-fill" id="journeyFill" style="width: 0%"></div>
+                                <div class="journey-marker" id="journeyMarker" style="left: 0%"></div>
+                            </div>
+                            <div class="journey-label">
+                                <span>Session Start</span>
+                                <span id="journeyProgress">0%</span>
+                            </div>
+                        </div>
+
+                        <div class="time-greeting" id="timeGreeting">Loading...</div>
+
+                        <div class="story-card" id="storyCard">
+                            <div class="story-title">📊 Activity Story</div>
+                            <div class="story-text" id="storyText">Analyzing today's rhythm...</div>
+                        </div>
+
+                        <div class="task-progress" id="taskProgress" style="display:none;">
+                            <div class="task-progress-header">
+                                <span class="task-progress-label">Current Task</span>
+                                <span class="task-progress-value" id="taskProgressValue">0%</span>
+                            </div>
+                            <div class="task-progress-bar">
+                                <div class="task-progress-fill" id="taskProgressFill" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="thinking-chain" id="thinkingChain" style="display:none;">
+                            <div class="thinking-node"></div>
+                            <div class="thinking-node"></div>
+                            <div class="thinking-node"></div>
+                            <div class="thinking-node"></div>
+                            <div class="thinking-node"></div>
+                            <span class="thinking-label">Thinking...</span>
+                        </div>
+
+                        <div class="reputation-badge" id="reputationBadge" title="EvoMap Reputation">
+                            <span class="reputation-icon">⭐</span>
+                            <span id="reputationValue">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="right-column">
+                    <div class="stat-card spring-hover" onclick="copyStat('heartbeat')">
+                        <div class="corner-fold"></div>
+                        <div class="stat-card-header">
+                            <div class="stat-icon" style="background: rgba(255,200,100,0.12); color: var(--primary);">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                                </svg>
+                            </div>
+                            <div class="stat-value skeleton-loading" id="heartbeat">--</div>
+                        </div>
+                        <div class="stat-label">Heart Rate</div>
+                        <div class="stat-subtext">BPM • Click to copy</div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="heartbeatBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <svg class="mini-trend" id="heartbeatSparkline" viewBox="0 0 48 20" preserveAspectRatio="none"></svg>
+                    </div>
+
+                    <div class="stat-card" onclick="copyStat('activity')">
+                        <div class="stat-card-header">
+                            <div class="stat-icon" style="background: rgba(0,212,255,0.12); color: var(--accent);">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                                </svg>
+                            </div>
+                            <div class="stat-value skeleton-loading" id="activity">--</div>
+                        </div>
+                        <div class="stat-label">Activity Level</div>
+                        <div class="stat-subtext">0-100% • Click to copy</div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="activityBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <svg class="mini-trend" id="activitySparkline" viewBox="0 0 48 20" preserveAspectRatio="none"></svg>
+                    </div>
+
+                    <div class="stat-card spring-hover" onclick="copyStat('memory')">
+                        <div class="corner-fold"></div>
+                        <div class="stat-card-header">
+                            <div class="stat-icon" style="background: rgba(92,219,149,0.12); color: var(--success);">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="2" y="6" width="20" height="12" rx="2"/>
+                                    <path d="M6 12h4M8 10v4M14 12h.01M18 12h.01"/>
+                                </svg>
+                            </div>
+                            <div class="stat-value skeleton-loading" id="memory">--</div>
+                        </div>
+                        <div class="stat-label">Memory Usage</div>
+                        <div class="stat-subtext">MB • Click to copy</div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="memoryBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <svg class="mini-trend" id="memorySparkline" viewBox="0 0 48 20" preserveAspectRatio="none"></svg>
+                    </div>
+
+                    <div class="stat-card spring-hover" onclick="copyStat('cpu')">
+                        <div class="corner-fold"></div>
+                        <div class="stat-card-header">
+                            <div class="stat-icon" style="background: rgba(254,202,87,0.12); color: var(--warning);">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="4" y="4" width="16" height="16" rx="2"/>
+                                    <rect x="9" y="9" width="6" height="6"/>
+                                    <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/>
+                                </svg>
+                            </div>
+                            <div class="stat-value skeleton-loading" id="cpu">--</div>
+                        </div>
+                        <div class="stat-label">CPU Usage</div>
+                        <div class="stat-subtext">% • Click to copy</div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="cpuBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Section -->
+                    <div class="charts-section">
+                        <div class="charts-container">
+                            <div class="chart-card">
+                                <div class="chart-title">24h Activity Rhythm</div>
+                                <div class="chart-canvas-container">
+                                    <canvas class="chart-canvas" id="activityChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="chart-card">
+                                <div class="chart-title">Memory History</div>
+                                <div class="chart-canvas-container">
+                                    <canvas class="chart-canvas" id="memoryChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="chart-card">
+                                <div class="chart-title">CPU History</div>
+                                <div class="chart-canvas-container">
+                                    <canvas class="chart-canvas" id="cpuChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Section -->
+                    <div class="bottom-section">
+                        <div class="memory-timeline">
+                            <div class="timeline-header">
+                                <div class="timeline-title">Recent Memories</div>
+                            </div>
+                            <div class="timeline-items" id="timelineItems"></div>
+                        </div>
+
+                        <div class="skills-distribution">
+                            <div class="skills-title">Skills Distribution</div>
+                            <div id="skillsList"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="dashboard-footer">
+                <div class="data-route-map" id="dataRouteMap">
+                    <div class="route-node" id="routeSrc">
+                        <div class="route-dot"></div>
+                        <span>Source</span>
+                    </div>
+                    <div class="route-line"></div>
+                    <div class="route-node" id="routeGW">
+                        <div class="route-dot"></div>
+                        <span>Gateway</span>
+                    </div>
+                    <div class="route-line"></div>
+                    <div class="route-node" id="routeDash">
+                        <div class="route-dot"></div>
+                        <span>Dashboard</span>
+                    </div>
+                </div>
+                <div class="footer-info">
+                    Last updated: <span id="lastUpdated">--</span>
+                    <span id="dataSourceHealth" class="data-source-badge" title="Data Source Health">
+                        <span class="source-dot" id="sourceDot"></span>
+                        <span id="sourceName">--</span>
+                    </span>
+                    <span id="externalRouteStatus" class="external-route-badge" title="External Route Status">
+                        <span class="route-dot" id="routeDot"></span>
+                        <span id="routeName">Route</span>
+                    </span>
+                </div>
+                <div class="footer-info">
+                    <span class="footer-version" id="footerVersion">v37.0</span>
+                    <span id="uptime">--</span>
+                    <span id="reliabilityBadge" class="reliability-badge high" aria-label="Data Reliability Score">100%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== State Management v36 ==========
+        const state = {
+            heartbeat: '--',
+            activity: '--',
+            memory: '--',
+            cpu: '--',
+            status: 'idle',
+            uptime: '--',
+            lastUpdated: '--',
+            dataHistory: { heartbeat: [], activity: [], memory: [], cpu: [] },
+            maxHistory: 24,
+            dataSource: 'api',
+            dataAge: 0,
+            lastSuccessfulFetch: null,
+            consecutiveErrors: 0,
+            isOnline: true,
+            sessionStart: Date.now(),
+            peakActivityCount: 0,
+            lastPeakTime: null,
+            currentTask: null,
+            taskProgress: 0,
+            reputation: null,
+            activityPeaks: [],
+            msgCount: 0,
+            taskDone: 0,
+            skillsTotal: 0,
+            recoveryScheduled: false
+        };
+
+        // ========== DOM Elements ==========
+        const $ = id => document.getElementById(id);
+        const elements = {
+            body: document.body,
+            statusDot: $('statusDot'),
+            statusText: $('statusText'),
+            refreshRate: $('refreshRate'),
+            foxCanvas: $('foxCanvas'),
+            foxContainer: $('foxContainer'),
+            moodSyncRing: $('moodSyncRing'),
+            heartbeat: $('heartbeat'),
+            activity: $('activity'),
+            memory: $('memory'),
+            cpu: $('cpu'),
+            heartbeatBar: $('heartbeatBar'),
+            activityBar: $('activityBar'),
+            memoryBar: $('memoryBar'),
+            cpuBar: $('cpuBar'),
+            miniHeartbeat: $('miniHeartbeat'),
+            miniActivity: $('miniActivity'),
+            statusValue: $('statusValue'),
+            lastUpdated: $('lastUpdated'),
+            uptime: $('uptime'),
+            timelineItems: $('timelineItems'),
+            skillsList: $('skillsList'),
+            stars: $('stars'),
+            neuralCanvas: $('neuralCanvas'),
+            sourceDot: $('sourceDot'),
+            sourceName: $('sourceName'),
+            routeDot: $('routeDot'),
+            routeName: $('routeName'),
+            externalRouteBadge: $('externalRouteStatus')
+        };
+
+        // ========== Particle Burst ==========
+        function createParticleBurst(ctx, x, y) {
+            const particles = [];
+            const colors = ['#ffc864','#00d4ff','#5cdb95','#ff6b6b','#a855f7'];
+            for (let i = 0; i < 14; i++) {
+                const angle = (Math.PI * 2 / 14) * i;
+                const velocity = 5 + Math.random() * 6;
+                particles.push({
+                    x, y,
+                    vx: Math.cos(angle) * velocity,
+                    vy: Math.sin(angle) * velocity,
+                    life: 1,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    size: 3 + Math.random() * 4
+                });
+            }
+            function animate() {
+                let alive = false;
+                particles.forEach(p => {
+                    if (p.life > 0) {
+                        alive = true;
+                        p.x += p.vx; p.y += p.vy; p.vy += 0.15;
+                        p.life -= 0.03;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color;
+                        ctx.globalAlpha = p.life;
+                        ctx.fill();
+                        ctx.globalAlpha = 1;
+                    }
+                });
+                if (alive) requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // ========== Data Source Health v37 ==========
+        function updateDataSourceHealth(source, isHealthy) {
+            if (!elements.sourceDot || !elements.sourceName) return;
+            state.dataSource = source;
+            state.lastSuccessfulFetch = Date.now();
+            state.consecutiveErrors = 0;
+            state.isOnline = isHealthy;
+            elements.sourceDot.className = 'source-dot' + (isHealthy ? '' : ' error');
+            elements.sourceName.textContent = source;
+            elements.body.classList.remove('error');
+            updateReliabilityScore();
+        }
+        
+        // v37.0: Reliability Score System
+        function calculateReliabilityScore() {
+            let score = 100;
+            // Deduct for consecutive errors
+            score -= Math.min(state.consecutiveErrors * 15, 45);
+            // Deduct for old data
+            if (state.lastSuccessfulFetch) {
+                const age = (Date.now() - state.lastSuccessfulFetch) / 1000;
+                if (age > 60) score -= 20;
+                if (age > 300) score -= 25;
+            }
+            // Deduct for offline
+            if (!state.isOnline) score -= 40;
+            return Math.max(0, Math.min(100, score));
+        }
+        
+        function updateReliabilityScore() {
+            const score = calculateReliabilityScore();
+            state.reliabilityScore = score;
+            // Update UI if reliability indicator exists
+            const badge = document.getElementById('reliabilityBadge');
+            if (badge) {
+                badge.textContent = `${score}%`;
+                badge.className = 'reliability-badge ' + (score >= 80 ? 'high' : score >= 50 ? 'medium' : 'low');
+                badge.setAttribute('aria-label', `Data reliability: ${score}%`);
+            }
+        }
+
+        // ========== Connectivity Monitoring ==========
+        function setupConnectivityMonitoring() {
+            window.addEventListener('online', () => {
+                state.isOnline = true;
+                updateDataSourceHealth('api', true);
+            });
+            window.addEventListener('offline', () => {
+                state.isOnline = false;
+                if (elements.sourceDot) elements.sourceDot.className = 'source-dot error';
+                if (elements.sourceName) elements.sourceName.textContent = 'Offline';
+            });
+        }
+
+        // ========== External Route Status ==========
+        const EXTERNAL_URL = 'https://oclaw.mochencloud.cn:1443/onboard/';
+        let externalRouteCheckTimer = null;
+
+        function checkExternalRoute() {
+            if (!elements.routeDot || !elements.externalRouteBadge) return;
+            elements.externalRouteBadge.classList.add('checking');
+            elements.routeDot.className = 'route-dot';
+            elements.routeName.textContent = 'Checking...';
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+            fetch(EXTERNAL_URL, { method: 'HEAD', mode: 'no-cors', cache: 'no-cache' })
+                .then(() => { clearTimeout(timeoutId); updateExternalRouteStatus(true); })
+                .catch(() => { clearTimeout(timeoutId); updateExternalRouteStatus(false); });
+        }
+
+        function updateExternalRouteStatus(isOnline) {
+            if (!elements.routeDot || !elements.externalRouteBadge) return;
+            elements.externalRouteBadge.classList.remove('checking');
+            if (isOnline) {
+                elements.externalRouteBadge.classList.remove('offline');
+                elements.externalRouteBadge.classList.add('online');
+                elements.routeDot.className = 'route-dot online';
+                elements.routeName.textContent = 'Online';
+            } else {
+                elements.externalRouteBadge.classList.remove('online');
+                elements.externalRouteBadge.classList.add('offline');
+                elements.routeDot.className = 'route-dot offline';
+                elements.routeName.textContent = 'Route Down';
+            }
+        }
+
+        function startExternalRouteMonitoring() {
+            checkExternalRoute();
+            if (externalRouteCheckTimer) clearInterval(externalRouteCheckTimer);
+            externalRouteCheckTimer = setInterval(checkExternalRoute, 30000);
+        }
+
+        // ========== Time Greeting ==========
+        function updateTimeGreeting() {
+            const hour = new Date().getHours();
+            const greeting = $('timeGreeting');
+            if (!greeting) return;
+            let timeText = '';
+            if (hour >= 5 && hour < 12) timeText = '🌤️ 上午好，哥哥';
+            else if (hour >= 12 && hour < 14) timeText = '☀️ 中午好';
+            else if (hour >= 14 && hour < 18) timeText = '🌅 下午好';
+            else if (hour >= 18 && hour < 22) timeText = '🌙 晚上好';
+            else timeText = '🌛 夜深了';
+            greeting.textContent = timeText;
+        }
+
+        // ========== Activity Story ==========
+        function generateActivityStory() {
+            const storyText = $('storyText');
+            if (!storyText) return;
+            const sessionMinutes = Math.floor((Date.now() - state.sessionStart) / 60000);
+            const recentActivity = state.activityPeaks.length;
+            if (state.activity >= 80) {
+                storyText.innerHTML = `🔥 活跃高峰期！今天第<span class="story-highlight">${recentActivity + 1}</span>次高峰，状态极佳`;
+                state.activityPeaks.push(Date.now());
+            } else if (state.activity >= 50) {
+                storyText.innerHTML = `⚡ 稳定运行中，已活跃 <span class="story-highlight">${sessionMinutes || 1}</span> 分钟`;
+            } else if (state.status === 'sleeping') {
+                storyText.innerHTML = `😴 休息模式，恢复能量中...`;
+            } else if (state.status === 'thinking') {
+                storyText.innerHTML = `🧠 深度思考中...`;
+            } else {
+                storyText.innerHTML = `✨ 待命中，随时准备服务哥哥`;
+            }
+        }
+
+        function updateThinkingChain(show) {
+            const chain = $('thinkingChain');
+            if (chain) chain.style.display = show ? 'flex' : 'none';
+        }
+
+        function updateTaskProgress(task, progress) {
+            state.currentTask = task;
+            state.taskProgress = progress;
+            const container = $('taskProgress');
+            const value = $('taskProgressValue');
+            const fill = $('taskProgressFill');
+            if (container) {
+                if (task) {
+                    container.style.display = 'block';
+                    if (value) value.textContent = progress + '%';
+                    if (fill) fill.style.width = progress + '%';
+                } else {
+                    container.style.display = 'none';
+                }
+            }
+        }
+
+        function updateReputation(rep) {
+            state.reputation = rep;
+            const el = $('reputationValue');
+            if (el) el.textContent = rep !== null ? rep : '--';
+        }
+
+        // ========== Initialization ==========
+        async function init() {
+            setupConnectivityMonitoring();
+            startExternalRouteMonitoring();
+            initStars();
+            initNeuralNetwork();
+            initFoxCanvas();
+            initCharts();
+            await fetchData();
+            updateTimeGreeting();
+            generateActivityStory();
+            setInterval(updateData, 3000);
+            setInterval(() => { updateTimeGreeting(); generateActivityStory(); }, 30000);
+            setTimeout(() => { elements.body.classList.remove('loading'); }, 500);
+        }
+
+        // ========== Star Background ==========
+        function initStars() {
+            const starsContainer = elements.stars;
+            if (!starsContainer) return;
+            const starCount = 140;
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.style.cssText = `
+                    position: absolute;
+                    width: ${Math.random() * 2 + 1}px;
+                    height: ${Math.random() * 2 + 1}px;
+                    background: white;
+                    border-radius: 50%;
+                    opacity: ${Math.random() * 0.5 + 0.3};
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    animation: twinkle ${Math.random() * 3 + 2}s ease-in-out infinite;
+                    animation-delay: ${Math.random() * 2}s;
+                `;
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // ========== Neural Network Background ==========
+        function initNeuralNetwork() {
+            const canvas = elements.neuralCanvas;
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const nodes = [];
+            const nodeCount = 55;
+            for (let i = 0; i < nodeCount; i++) {
+                nodes.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    radius: Math.random() * 2 + 1
+                });
+            }
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                nodes.forEach(node => {
+                    node.x += node.vx; node.y += node.vy;
+                    if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+                    if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(0, 212, 255, 0.5)';
+                    ctx.fill();
+                    nodes.forEach(otherNode => {
+                        const dx = node.x - otherNode.x;
+                        const dy = node.y - otherNode.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 150) {
+                            ctx.beginPath();
+                            ctx.moveTo(node.x, node.y);
+                            ctx.lineTo(otherNode.x, otherNode.y);
+                            ctx.strokeStyle = `rgba(0, 212, 255, ${0.2 * (1 - dist / 150)})`;
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                        }
+                    });
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+        }
+
+        // ========== Fox Canvas v36 ==========
+        function initFoxCanvas() {
+            const canvas = elements.foxCanvas;
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = 210;
+            const height = canvas.height = 210;
+
+            let mouseX = width / 2, mouseY = height / 2;
+            let eyeX = 0, eyeY = 0;
+            let breathPhase = 0;
+
+            canvas.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouseX = e.clientX - rect.left;
+                mouseY = e.clientY - rect.top;
+            });
+
+            canvas.addEventListener('click', () => {
+                const colors = {
+                    idle: '#ffc864', working: '#00d4ff', sleeping: '#a855f7',
+                    excited: '#ec4899', error: '#ff6b6b', thinking: '#a855f7',
+                    laughing: '#ffc864', focused: '#5cdb95', learning: '#ffc864'
+                };
+                createParticleBurst(ctx, width / 2, height / 2);
+            });
+
+            let lastBlink = 0, isBlinking = false, blinkProgress = 0;
+
+            function blink() {
+                const now = Date.now();
+                if (!isBlinking && now - lastBlink > 3000 + Math.random() * 2000) {
+                    isBlinking = true; lastBlink = now; blinkProgress = 0;
+                }
+                if (isBlinking) {
+                    blinkProgress += 0.08;
+                    if (blinkProgress >= 1) { isBlinking = false; blinkProgress = 0; }
+                }
+                if (isBlinking) return Math.cos(blinkProgress * Math.PI) * 0.5 + 0.5;
+                return 0;
+            }
+
+            let earTwitchPhase = 0;
+
+            function drawFox() {
+                ctx.clearRect(0, 0, width, height);
+                breathPhase += 0.02;
+                const breathScale = 1 + Math.sin(breathPhase) * 0.02;
+                eyeX += (mouseX - width / 2 - eyeX) * 0.08;
+                eyeY += (mouseY - height / 2 - eyeY) * 0.08;
+                const cx = width / 2, cy = height / 2;
+                const blinkAmt = blink();
+                const eyeScaleY = Math.max(0.1, 1 - blinkAmt * 0.9);
+
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.scale(breathScale, breathScale);
+                ctx.translate(-cx, -cy);
+
+                // Shadow
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                ctx.beginPath();
+                ctx.ellipse(cx, cy + 70, 45 * breathScale, 14, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Body gradient
+                const bodyGrad = ctx.createRadialGradient(cx - 12, cy + 22, 0, cx, cy + 22, 65);
+                bodyGrad.addColorStop(0, '#ffe4a0');
+                bodyGrad.addColorStop(0.6, '#ffc864');
+                bodyGrad.addColorStop(1, '#e0a830');
+                ctx.fillStyle = bodyGrad;
+                ctx.beginPath();
+                ctx.ellipse(cx, cy + 24, 55, 42, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Chest highlight
+                const chestGrad = ctx.createRadialGradient(cx, cy + 16, 0, cx, cy + 16, 30);
+                chestGrad.addColorStop(0, 'rgba(255,255,220,0.6)');
+                chestGrad.addColorStop(1, 'rgba(255,255,220,0)');
+                ctx.fillStyle = chestGrad;
+                ctx.beginPath();
+                ctx.ellipse(cx, cy + 12, 30, 24, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Head gradient
+                const headGrad = ctx.createRadialGradient(cx - 10, cy - 28, 0, cx, cy - 22, 55);
+                headGrad.addColorStop(0, '#ffe4a0');
+                headGrad.addColorStop(0.6, '#ffc864');
+                headGrad.addColorStop(1, '#e0a830');
+                ctx.fillStyle = headGrad;
+                ctx.beginPath();
+                ctx.ellipse(cx, cy - 22, 48, 42, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Inner face light
+                const faceGrad = ctx.createRadialGradient(cx - 6, cy - 32, 0, cx, cy - 28, 34);
+                faceGrad.addColorStop(0, 'rgba(255,255,230,0.7)');
+                faceGrad.addColorStop(1, 'rgba(255,255,230,0)');
+                ctx.fillStyle = faceGrad;
+                ctx.beginPath();
+                ctx.ellipse(cx, cy - 28, 32, 26, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Ears
+                earTwitchPhase += 0.05;
+                const earTwitch = Math.sin(earTwitchPhase) * (state.status === 'idle' || state.status === 'working' ? 2 : 0);
+
+                // Left ear
+                ctx.fillStyle = '#ffc864';
+                ctx.beginPath();
+                ctx.moveTo(cx - 36, cy - 60);
+                ctx.lineTo(cx - 25 + earTwitch, cy - 98);
+                ctx.lineTo(cx - 12, cy - 60);
+                ctx.fill();
+                ctx.fillStyle = '#ffb8c0';
+                ctx.beginPath();
+                ctx.moveTo(cx - 32, cy - 60);
+                ctx.lineTo(cx - 25 + earTwitch * 0.5, cy - 86);
+                ctx.lineTo(cx - 19, cy - 60);
+                ctx.fill();
+
+                // Right ear
+                ctx.fillStyle = '#ffc864';
+                ctx.beginPath();
+                ctx.moveTo(cx + 36, cy - 60);
+                ctx.lineTo(cx + 25 - earTwitch, cy - 98);
+                ctx.lineTo(cx + 12, cy - 60);
+                ctx.fill();
+                ctx.fillStyle = '#ffb8c0';
+                ctx.beginPath();
+                ctx.moveTo(cx + 32, cy - 60);
+                ctx.lineTo(cx + 25 - earTwitch * 0.5, cy - 86);
+                ctx.lineTo(cx + 19, cy - 60);
+                ctx.fill();
+
+                // Eye glow
+                const eyeGlow = ctx.createRadialGradient(cx - 16, cy - 28, 0, cx - 16, cy - 28, 16);
+                eyeGlow.addColorStop(0, 'rgba(255,255,255,0.9)');
+                eyeGlow.addColorStop(1, 'rgba(255,255,255,0)');
+                ctx.fillStyle = eyeGlow;
+                ctx.beginPath();
+                ctx.ellipse(cx - 16, cy - 28, 16, 18 * eyeScaleY, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.ellipse(cx + 16, cy - 28, 16, 18 * eyeScaleY, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Eyes
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.ellipse(cx - 16, cy - 28, 12, 14 * eyeScaleY, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.ellipse(cx + 16, cy - 28, 12, 14 * eyeScaleY, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Pupils
+                if (blinkAmt < 0.5) {
+                    ctx.fillStyle = '#8B6914';
+                    ctx.beginPath();
+                    ctx.arc(cx - 16 + eyeX * 0.4, cy - 28 + eyeY * 0.4, 6, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(cx + 16 + eyeX * 0.4, cy - 28 + eyeY * 0.4, 6, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.fillStyle = '#1a1a1a';
+                    ctx.beginPath();
+                    ctx.arc(cx - 16 + eyeX * 0.4, cy - 28 + eyeY * 0.4, 3.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(cx + 16 + eyeX * 0.4, cy - 28 + eyeY * 0.4, 3.5, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+                    ctx.beginPath();
+                    ctx.arc(cx - 19 + eyeX * 0.2, cy - 32 + eyeY * 0.2, 1.8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(cx + 13 + eyeX * 0.2, cy - 32 + eyeY * 0.2, 1.8, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Nose
+                const noseGrad = ctx.createRadialGradient(cx - 1, cy - 13, 0, cx, cy - 11, 9);
+                noseGrad.addColorStop(0, '#555555');
+                noseGrad.addColorStop(1, '#222222');
+                ctx.fillStyle = noseGrad;
+                ctx.beginPath();
+                ctx.ellipse(cx, cy - 11, 7, 6, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = 'rgba(255,255,255,0.4)';
+                ctx.beginPath();
+                ctx.ellipse(cx - 2, cy - 13, 2.5, 2, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Blush
+                ctx.fillStyle = 'rgba(255, 150, 150, 0.35)';
+                ctx.beginPath();
+                ctx.ellipse(cx - 36, cy - 16, 10, 6, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.ellipse(cx + 36, cy - 16, 10, 6, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Mouth
+                ctx.strokeStyle = '#c08030';
+                ctx.lineWidth = 2.4;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.arc(cx, cy - 3, 12, 0.15 * Math.PI, 0.85 * Math.PI);
+                ctx.stroke();
+
+                // Whiskers
+                ctx.strokeStyle = 'rgba(200,160,50,0.5)';
+                ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.moveTo(cx - 12, cy - 8); ctx.lineTo(cx - 32, cy - 13); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(cx - 12, cy - 6); ctx.lineTo(cx - 32, cy - 5); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(cx + 12, cy - 8); ctx.lineTo(cx + 32, cy - 13); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(cx + 12, cy - 6); ctx.lineTo(cx + 32, cy - 5); ctx.stroke();
+
+                ctx.restore();
+
+                // State effects
+
+                if (state.status === 'excited') {
+                    ctx.fillStyle = 'rgba(255,100,150,0.7)';
+                    for (let i = 0; i < 3; i++) {
+                        const angle = (Date.now() / 500 + i * 2) % (Math.PI * 2);
+                        const sx = cx - 16 + Math.cos(angle) * 26;
+                        const sy = cy - 34 + Math.sin(angle) * 15;
+                        ctx.beginPath();
+                        ctx.arc(sx, sy, 2.4, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+
+                if (state.status === 'sleeping') {
+                    ctx.fillStyle = 'rgba(168,85,247,0.7)';
+                    ctx.font = 'bold 15px Outfit';
+                    const zzOffset = (Date.now() / 800) % 20;
+                    ctx.fillText('z', cx + 40 + zzOffset * 0.3, cy - 64 - zzOffset);
+                    ctx.fillText('z', cx + 48 + zzOffset * 0.5, cy - 78 - zzOffset * 0.8);
+                }
+
+                if (state.status === 'thinking') {
+                    ctx.fillStyle = 'rgba(168,85,247,0.6)';
+                    ctx.font = 'bold 13px Outfit';
+                    const bubbleX = cx + 45 + Math.sin(Date.now() / 600) * 5;
+                    const bubbleY = cy - 70 + Math.cos(Date.now() / 600) * 3;
+                    ctx.beginPath();
+                    ctx.arc(bubbleX, bubbleY, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(bubbleX - 12, bubbleY + 10, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(bubbleX - 20, bubbleY + 17, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                if (state.status === 'laughing') {
+                    ctx.strokeStyle = '#c08030';
+                    ctx.lineWidth = 2.4;
+                    ctx.lineCap = 'round';
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, 14, 0.1 * Math.PI, 0.9 * Math.PI);
+                    ctx.stroke();
+                }
+
+                requestAnimationFrame(drawFox);
+            }
+            drawFox();
+        }
+
+        // ========== Charts ==========
+        function initCharts() {
+            createLineChart('activityChart', state.dataHistory.activity, '#ffc864');
+            createLineChart('memoryChart', state.dataHistory.memory, '#5cdb95');
+            createLineChart('cpuChart', state.dataHistory.cpu, '#00d4ff');
+        }
+
+        function createLineChart(canvasId, data, color) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if (data.length < 2) return;
+                const max = Math.max(...data, 100);
+                const min = Math.min(...data, 0);
+                const range = max - min || 1;
+                // Gradient fill
+                const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                grad.addColorStop(0, color + '55');
+                grad.addColorStop(1, color + '05');
+                ctx.beginPath();
+                let prevX = 0, prevY = 0;
+                data.forEach((value, index) => {
+                    const x = (index / (data.length - 1)) * canvas.width;
+                    const y = canvas.height - ((value - min) / range) * canvas.height;
+                    if (index === 0) { ctx.moveTo(x, y); prevX = x; prevY = y; }
+                    else {
+                        const cpX = (prevX + x) / 2;
+                        ctx.bezierCurveTo(cpX, prevY, cpX, y, x, y);
+                        prevX = x; prevY = y;
+                    }
+                });
+                ctx.lineTo(canvas.width, canvas.height);
+                ctx.lineTo(0, canvas.height);
+                ctx.closePath();
+                ctx.fillStyle = grad;
+                ctx.fill();
+                // Line
+                ctx.beginPath();
+                data.forEach((value, index) => {
+                    const x = (index / (data.length - 1)) * canvas.width;
+                    const y = canvas.height - ((value - min) / range) * canvas.height;
+                    if (index === 0) ctx.moveTo(x, y);
+                    else {
+                        const cpX = (prevX + x) / 2;
+                        ctx.bezierCurveTo(cpX, prevY, cpX, y, x, y);
+                        prevX = x; prevY = y;
+                    }
+                });
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+            }
+            draw();
+        }
+
+        // ========== Fetch with Retry ==========
+        async function fetchWithRetry(url, options = {}, retries = 3, baseDelay = 1000) {
+            for (let attempt = 0; attempt <= retries; attempt++) {
+                try {
+                    const controller = new AbortController();
+                    const timeout = setTimeout(() => controller.abort(), 5000);
+                    const res = await fetch(url, { ...options, signal: controller.signal });
+                    clearTimeout(timeout);
+                    if (!res.ok && attempt < retries) {
+                        await sleep(baseDelay * Math.pow(2, attempt));
+                        continue;
+                    }
+                    return res;
+                } catch (err) {
+                    if (attempt === retries) throw err;
+                    await sleep(baseDelay * Math.pow(2, attempt));
+                }
+            }
+        }
+
+        function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+        async function fetchData() {
+            if (!state.isOnline) return;
+            try {
+                const heartbeatRes = await fetchWithRetry('/api/heartbeat');
+                if (!heartbeatRes.ok) throw new Error('Heartbeat API failed');
+                const heartbeatData = await heartbeatRes.json();
+                updateDataSourceHealth(heartbeatData.source || 'api', true);
+                if (heartbeatData.heartbeat) updateHeartbeat(heartbeatData.heartbeat);
+                if (heartbeatData.activity) updateActivity(heartbeatData.activity);
+                if (heartbeatData.status) updateStatus(heartbeatData.status);
+                if (heartbeatData.uptime) updateUptime(heartbeatData.uptime);
+                if (heartbeatData.reputation !== undefined) updateReputation(heartbeatData.reputation);
+                if (heartbeatData.currentTask) updateTaskProgress(heartbeatData.currentTask, heartbeatData.taskProgress || 0);
+
+                const systemRes = await fetchWithRetry('/api/system');
+                if (systemRes.ok) {
+                    const systemData = await systemRes.json();
+                    if (systemData.memory) updateMemory(systemData.memory);
+                    if (systemData.cpu !== undefined) updateCPU(systemData.cpu);
+                }
+
+                const memoriesRes = await fetchWithRetry('/api/memories');
+                if (memoriesRes.ok) {
+                    const memories = await memoriesRes.json();
+                    updateMemories(memories);
+                }
+
+                const skillsRes = await fetchWithRetry('/api/skills/detailed');
+                if (skillsRes.ok) {
+                    const skills = await skillsRes.json();
+                    updateSkills(skills);
+                    if (skills.summary) {
+                        state.skillsTotal = skills.summary.total || 0;
+                        updateQuickStats();
+                    }
+                }
+
+                const dashRes = await fetchWithRetry('/api/dashboard');
+                if (dashRes.ok) {
+                    const dashData = await dashRes.json();
+                    if (dashData.msgCount !== undefined) state.msgCount = dashData.msgCount;
+                    if (dashData.taskDone !== undefined) state.taskDone = dashData.taskDone;
+                    updateQuickStats();
+                }
+
+                if (elements.lastUpdated) elements.lastUpdated.textContent = new Date().toLocaleTimeString();
+                state.consecutiveErrors = 0;
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                state.consecutiveErrors++;
+                if (state.consecutiveErrors >= 2) {
+                    if (elements.sourceDot) {
+                        elements.sourceDot.className = 'source-dot stale';
+                        elements.sourceName.textContent = 'Stale';
+                    }
+                    if (!state.recoveryScheduled) {
+                        state.recoveryScheduled = true;
+                        setInterval(() => {
+                            if (state.consecutiveErrors >= 2 && state.isOnline) fetchData();
+                        }, 30000);
+                    }
+                }
+                if (elements.statusText) elements.statusText.textContent = 'Error';
+                if (elements.statusDot) elements.statusDot.classList.add('error');
+            }
+        }
+
+        function updateData() { fetchData(); }
+
+        // ========== Update Functions ==========
+        function springPopNumber(el) {
+            if (!el) return;
+            el.classList.remove('spring-pop');
+            void el.offsetWidth;
+            el.classList.add('spring-pop');
+        }
+
+        function updateHeartbeat(value) {
+            state.heartbeat = value;
+            if (elements.heartbeat) {
+                elements.heartbeat.classList.add('num-pop');
+                elements.heartbeat.classList.remove('skeleton-loading'); // v37.0: Remove skeleton on data load
+                setTimeout(() => elements.heartbeat.classList.remove('num-pop'), 350);
+                elements.heartbeat.textContent = value;
+            }
+            if (elements.miniHeartbeat) elements.miniHeartbeat.textContent = value;
+            const percent = Math.min((value / 180) * 100, 100);
+            if (elements.heartbeatBar) {
+                elements.heartbeatBar.style.width = percent + '%';
+                elements.heartbeatBar.className = 'progress-fill ' + getProgressClass(percent);
+            }
+            state.dataHistory.heartbeat.push(value);
+            if (state.dataHistory.heartbeat.length > state.maxHistory) state.dataHistory.heartbeat.shift();
+            updateSparkline('heartbeatSparkline', state.dataHistory.heartbeat.slice(-12), '#ffc864');
+            createLineChart('activityChart', state.dataHistory.activity, '#ffc864');
+        }
+
+        function updateActivity(value) {
+            state.activity = value;
+            if (elements.activity) {
+                elements.activity.classList.add('num-pop');
+                elements.activity.classList.remove('skeleton-loading'); // v37.0
+                setTimeout(() => elements.activity.classList.remove('num-pop'), 350);
+                elements.activity.textContent = value + '%';
+            }
+            if (elements.miniActivity) elements.miniActivity.textContent = value + '%';
+            if (elements.activityBar) {
+                elements.activityBar.style.width = value + '%';
+                elements.activityBar.className = 'progress-fill ' + getProgressClass(value);
+            }
+            
+            // v36.0: Activity-synced pulse ring - enhanced with aurora colors
+            const activityRing = $('activitySyncRing');
+            const neuralIndicator = $('neuralSyncIndicator');
+            if (activityRing) {
+                const pulseDuration = Math.max(1, 3 - (value / 50)); // 1s at 100%, 3s at 0%
+                activityRing.style.animationDuration = pulseDuration + 's';
+                activityRing.style.borderColor = value >= 70 ? '#5cdb95' : value >= 40 ? '#00d4ff' : '#a855f7';
+            }
+            if (neuralIndicator) {
+                neuralIndicator.style.opacity = value >= 50 ? '0.6' : '0.2';
+                neuralIndicator.style.animationDuration = (4 - value / 25) + 's';
+            }
+            
+            if (value >= 80 && (!state.lastPeakTime || Date.now() - state.lastPeakTime > 300000)) {
+                state.peakActivityCount++;
+                state.lastPeakTime = Date.now();
+            }
+            state.dataHistory.activity.push(value);
+            if (state.dataHistory.activity.length > state.maxHistory) state.dataHistory.activity.shift();
+            generateActivityStory();
+            updateSparkline('activitySparkline', state.dataHistory.activity.slice(-12), '#00d4ff');
+            createLineChart('activityChart', state.dataHistory.activity, '#ffc864');
+        }
+
+        function updateMemory(value) {
+            state.memory = value;
+            if (elements.memory) {
+                elements.memory.classList.add('num-pop');
+                elements.memory.classList.remove('skeleton-loading'); // v37.0
+                setTimeout(() => elements.memory.classList.remove('num-pop'), 350);
+                elements.memory.textContent = value;
+            }
+            const percent = Math.min((value / (state.memoryTotal || 1000)) * 100, 100);
+            if (elements.memoryBar) {
+                elements.memoryBar.style.width = percent + '%';
+                elements.memoryBar.className = 'progress-fill ' + getProgressClass(percent);
+            }
+            state.dataHistory.memory.push(value);
+            if (state.dataHistory.memory.length > state.maxHistory) state.dataHistory.memory.shift();
+            updateSparkline('memorySparkline', state.dataHistory.memory.slice(-12), '#5cdb95');
+            createLineChart('memoryChart', state.dataHistory.memory, '#5cdb95');
+        }
+
+        function updateCPU(value) {
+            state.cpu = value;
+            if (elements.cpu) {
+                elements.cpu.classList.add('num-pop');
+                elements.cpu.classList.remove('skeleton-loading'); // v37.0
+                setTimeout(() => elements.cpu.classList.remove('num-pop'), 350);
+                elements.cpu.textContent = value + '%';
+            }
+            if (elements.cpuBar) {
+                elements.cpuBar.style.width = value + '%';
+                elements.cpuBar.className = 'progress-fill ' + getProgressClass(value);
+            }
+            state.dataHistory.cpu.push(value);
+            if (state.dataHistory.cpu.length > state.maxHistory) state.dataHistory.cpu.shift();
+            createLineChart('cpuChart', state.dataHistory.cpu, '#00d4ff');
+        }
+
+        function updateStatus(status) {
+            state.status = status;
+            if (elements.statusValue) elements.statusValue.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            if (elements.statusText) elements.statusText.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            updateBodyStatusClass(status);
+            if (elements.moodSyncRing) {
+                elements.moodSyncRing.className = 'mood-sync-ring ' + status;
+                elements.moodSyncRing.classList.add('active');
+            }
+            if (elements.foxContainer) {
+                elements.foxContainer.className = 'fox-container ' + status;
+            }
+            if (elements.statusDot) {
+                elements.statusDot.classList.remove('warning', 'error', 'critical');
+                if (status === 'error') elements.statusDot.classList.add('error');
+                else if (status === 'sleeping') elements.statusDot.classList.add('warning');
+            }
+            updateThinkingChain(status === 'thinking' || status === 'working');
+            generateActivityStory();
+            updateMoodAura(status);
+            updateFoxExpression(status);
+        }
+
+        function updateUptime(value) {
+            state.uptime = value;
+            if (elements.uptime) elements.uptime.textContent = value;
+        }
+
+        function updateMemories(memories) {
+            if (!elements.timelineItems) return;
+            elements.timelineItems.innerHTML = memories.slice(0, 5).map(memory => `
+                <div class="timeline-item fade-in">
+                    <div class="timeline-icon" style="background: rgba(255,200,100,0.12); color: var(--primary);">📝</div>
+                    <div class="timeline-content">
+                        <div class="timeline-text">${memory.text || 'Memory'}</div>
+                        <div class="timeline-time">${memory.timestamp || new Date().toLocaleTimeString()}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateSkills(skills) {
+            if (!elements.skillsList) return;
+            elements.skillsList.innerHTML = skills.slice(0, 5).map(skill => `
+                <div class="skill-item fade-in">
+                    <div class="skill-header">
+                        <span class="skill-name">${skill.name}</span>
+                        <span class="skill-value">${skill.count} uses</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-fill" style="width: ${skill.count * 5}%; background: var(--primary);"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getProgressClass(value) {
+            if (value >= 80) return 'danger';
+            if (value >= 60) return 'warning';
+            return 'success';
+        }
+
+        function copyStat(type) {
+            const value = state[type];
+            if (value !== '--') {
+                navigator.clipboard.writeText(value).then(() => {
+                    showToastV32(`${type} copied: ${value}`, 'default', 2000);
+                });
+            }
+        }
+
+        function showToastV32(message, type = 'default', duration = 3000) {
+            const queue = $('toastQueue');
+            if (!queue) return;
+            const icons = { default: '💬', success: '✅', error: '❌', warning: '⚠️' };
+            const toast = document.createElement('div');
+            toast.className = `toast-v32 ${type}`;
+            toast.innerHTML = `
+                <span class="toast-icon">${icons[type] || icons.default}</span>
+                <span class="toast-msg">${message}</span>
+                <div class="toast-bar" style="--dur: ${duration}ms"></div>
+            `;
+            queue.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('exiting');
+                setTimeout(() => toast.remove(), 260);
+            }, duration);
+        }
+
+        function setMode(mode) {
+            updateStatus(mode);
+            showToastV32(`Mode changed to ${mode}`);
+        }
+
+        function setMood(mood) {
+            updateStatus(mood);
+            document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.querySelector(`.mood-btn[onclick="setMood('${mood}')"]`);
+            if (activeBtn) activeBtn.classList.add('active');
+            updateFoxExpression(mood);
+            showToastV32(`Mood: ${mood}`);
+        }
+
+        function updateFoxExpression(mood) {
+            const expressionEl = $('foxExpression');
+            if (!expressionEl) return;
+            const expressions = {
+                idle: '😺', working: '⚡', sleeping: '😴', excited: '🎉',
+                thinking: '🤔', laughing: '😄', error: '😿', focused: '🎯', learning: '📚'
+            };
+            expressionEl.textContent = expressions[mood] || '😺';
+            expressionEl.style.animation = 'none';
+            expressionEl.offsetHeight;
+            expressionEl.style.animation = 'expressionBounce 2.5s ease-in-out infinite';
+        }
+
+        function updateMoodAura(mood) {
+            const auraEl = $('moodAura');
+            if (!auraEl) return;
+            auraEl.className = 'mood-aura ' + mood;
+        }
+
+        function updateBodyStatusClass(status) {
+            const validStatuses = ['idle','working','sleeping','excited','thinking','laughing','error','focused','learning'];
+            validStatuses.forEach(s => document.body.classList.remove('status-' + s));
+            document.body.classList.add('status-' + (validStatuses.includes(status) ? status : 'idle'));
+        }
+
+        // ========== Cursor Trail ==========
+        let lastTrailTime = 0;
+        function createCursorTrail(e) {
+            const now = Date.now();
+            if (now - lastTrailTime < 80) return;
+            lastTrailTime = now;
+            const particle = document.createElement('div');
+            particle.className = 'cursor-trail-particle';
+            const colors = {
+                idle: '#ffc864', working: '#00d4ff', sleeping: '#a855f7',
+                excited: '#ec4899', error: '#ff6b6b', thinking: '#a855f7',
+                laughing: '#ffc864', focused: '#5cdb95', learning: '#ffc864'
+            };
+            const color = colors[state.status] || '#ffc864';
+            particle.style.left = e.clientX + 'px';
+            particle.style.top = e.clientY + 'px';
+            particle.style.background = color;
+            particle.style.boxShadow = `0 0 12px ${color}`;
+            document.body.appendChild(particle);
+            setTimeout(() => particle.remove(), 900);
+        }
+
+        // ========== Session Journey ==========
+        function updateSessionJourney() {
+            const sessionDuration = Date.now() - state.sessionStart;
+            const sessionHours = sessionDuration / (1000 * 60 * 60);
+            const maxHours = 24;
+            const progress = Math.min((sessionHours / maxHours) * 100, 100);
+            const fillEl = $('journeyFill');
+            const markerEl = $('journeyMarker');
+            const labelEl = $('journeyProgress');
+            if (fillEl) fillEl.style.width = progress + '%';
+            if (markerEl) markerEl.style.left = progress + '%';
+            if (labelEl) labelEl.textContent = Math.round(progress) + '%';
+        }
+
+        function updateQuickStats() {
+            const quickMsgs = $('quickMsgs');
+            const quickTasks = $('quickTasks');
+            const quickSkills = $('quickSkills');
+            if (quickMsgs) quickMsgs.textContent = state.msgCount || '--';
+            if (quickTasks) quickTasks.textContent = state.taskDone || '--';
+            if (quickSkills) quickSkills.textContent = state.skillsTotal || '--';
+        }
+
+        // ========== Pet Fox ==========
+        function initPetFox() {
+            const foxCanvas = elements.foxCanvas;
+            if (!foxCanvas) return;
+            let petCount = 0;
+            const petZone = document.createElement('div');
+            petZone.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:140px;height:140px;border-radius:50%;cursor:pointer;z-index:10;';
+            petZone.title = 'Click to pet MoShang!';
+            petZone.addEventListener('click', (e) => {
+                e.stopPropagation();
+                petCount++;
+                foxCanvas.classList.add('fox-happy');
+                setTimeout(() => foxCanvas.classList.remove('fox-happy'), 600);
+                createHeartBurst(foxCanvas);
+                const expression = $('foxExpression');
+                if (expression) {
+                    expression.textContent = '😻';
+                    setTimeout(() => updateFoxExpression(state.status), 1500);
+                }
+                if (petCount === 1) showToastV32('MoShang loved that! 😻 Keep going!', 'success');
+                else if (petCount === 5) showToastV32('MoShang is so happy! 5 pets! 🎉', 'success');
+                else if (petCount === 10) showToastV32('Wow! 10 pets! MoShang is blushing! 💕', 'success');
+            });
+            foxCanvas.parentElement.appendChild(petZone);
+        }
+
+        function createHeartBurst(canvas) {
+            const hearts = ['💕','💖','💗','💝','❤️','😻'];
+            const container = canvas.parentElement;
+            for (let i = 0; i < 6; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart-rain';
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = (Math.random() * 80 + 10) + '%';
+                heart.style.top = (Math.random() * 30 + 30) + '%';
+                heart.style.animationDelay = (Math.random() * 0.3) + 's';
+                container.appendChild(heart);
+                setTimeout(() => heart.remove(), 2200);
+            }
+        }
+
+        // ========== Particle Mesh Background ==========
+        function initParticleMesh() {
+            const canvas = document.getElementById('particleMeshCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+            resize();
+            window.addEventListener('resize', resize);
+            const particleCount = Math.min(65, Math.floor(window.innerWidth / 20));
+            const particles = [];
+            let mouseX = -1000, mouseY = -1000;
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    size: 1.5 + Math.random() * 2.2,
+                    color: `rgba(255,200,100,${0.3 + Math.random() * 0.45})`,
+                    pulse: Math.random() * Math.PI * 2
+                });
+            }
+            document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+            document.addEventListener('mouseleave', () => { mouseX = -1000; mouseY = -1000; });
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach((p, i) => {
+                    const dx = p.x - mouseX, dy = p.y - mouseY;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 150 && dist > 0) {
+                        const force = (150 - dist) / 150 * 0.32;
+                        p.vx += (dx / dist) * force; p.vy += (dy / dist) * force;
+                    }
+                    p.vx *= 0.98; p.vy *= 0.98;
+                    p.x += p.vx; p.y += p.vy;
+                    if (p.x < 0) p.x = canvas.width;
+                    if (p.x > canvas.width) p.x = 0;
+                    if (p.y < 0) p.y = canvas.height;
+                    if (p.y > canvas.height) p.y = 0;
+                    p.pulse += 0.03;
+                    const size = p.size * (0.8 + Math.sin(p.pulse) * 0.22);
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dx2 = p.x - p2.x, dy2 = p.y - p2.y;
+                        const dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+                        if (dist2 < 120) {
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.strokeStyle = `rgba(255,200,100,${(1 - dist2 / 120) * 0.18})`;
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                        }
+                    }
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // ========== Glow Cursor ==========
+        function initGlowCursor() {
+            const cursor = document.getElementById('glowCursor');
+            if (!cursor) return;
+            let mouseX = 0, mouseY = 0, curX = 0, curY = 0;
+            document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+            document.addEventListener('mousedown', () => cursor.classList.add('active'));
+            document.addEventListener('mouseup', () => cursor.classList.remove('active'));
+            function animate() {
+                curX += (mouseX - curX) * 0.15;
+                curY += (mouseY - curY) * 0.15;
+                cursor.style.left = curX + 'px';
+                cursor.style.top = curY + 'px';
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // ========== Sparkline ==========
+        function updateSparkline(svgId, data, color = '#ffc864') {
+            const svg = document.getElementById(svgId);
+            if (!svg || !data || data.length < 2) return;
+            const w = 48, h = 20;
+            const min = Math.min(...data);
+            const max = Math.max(...data);
+            const range = max - min || 1;
+            const points = data.map((v, i) => {
+                const x = (i / (data.length - 1)) * w;
+                const y = h - ((v - min) / range) * (h - 2) - 1;
+                return `${x.toFixed(1)},${y.toFixed(1)}`;
+            }).join(' ');
+            svg.innerHTML = `
+                <polyline points="${points}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+                <circle cx="${w}" cy="${h - ((data[data.length-1] - min) / range) * (h - 2) - 1}" r="2.2" fill="${color}" opacity="0.95"/>
+            `;
+        }
+
+        // ========== Command Palette ==========
+        const COMMANDS = [
+            { label: 'Refresh Data', icon: '🔄', hint: 'R', category: 'Actions', action: () => { fetchData(); showToastV32('Refreshing...', 'default', 1500); } },
+            { label: 'Toggle Focus Mode', icon: '🎯', hint: 'F', category: 'Actions', action: () => { document.body.classList.toggle('focus-mode'); showToastV32('Focus mode toggled'); } },
+            { label: 'Set Mood: Idle', icon: '😺', hint: '1', category: 'Moods', action: () => setMood('idle') },
+            { label: 'Set Mood: Working', icon: '⚡', hint: '2', category: 'Moods', action: () => setMood('working') },
+            { label: 'Set Mood: Sleeping', icon: '😴', hint: '3', category: 'Moods', action: () => setMood('sleeping') },
+            { label: 'Set Mood: Excited', icon: '🎉', hint: '4', category: 'Moods', action: () => setMood('excited') },
+            { label: 'Set Mood: Thinking', icon: '🤔', hint: '5', category: 'Moods', action: () => setMood('thinking') },
+            { label: 'View Skills Distribution', icon: '📊', hint: 'S', category: 'Skills', action: () => showToastV32('Skills panel active') },
+        ];
+        let cmdSelectedIndex = 0, cmdFiltered = [...COMMANDS];
+
+        function initCommandPalette() {
+            document.addEventListener('keydown', (e) => {
+                if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openCommandPalette(); }
+                if (e.key === 'Escape') closeCommandPalette();
+            });
+        }
+
+        function openCommandPalette() {
+            const overlay = $('cmdOverlay');
+            const input = $('cmdInput');
+            if (!overlay || !input) return;
+            overlay.classList.add('open');
+            input.value = '';
+            cmdFiltered = [...COMMANDS];
+            cmdSelectedIndex = 0;
+            renderCmdResults();
+            setTimeout(() => input.focus(), 50);
+        }
+
+        function closeCommandPalette() {
+            $('cmdOverlay')?.classList.remove('open');
+        }
+
+        function filterCommands() {
+            const q = ($('cmdInput')?.value || '').toLowerCase().trim();
+            if (!q) { cmdFiltered = [...COMMANDS]; cmdSelectedIndex = 0; renderCmdResults(); return; }
+            
+            // v37.0: Fuzzy search with scoring
+            const scored = COMMANDS.map(cmd => {
+                const label = cmd.label.toLowerCase();
+                const category = cmd.category.toLowerCase();
+                const hint = (cmd.hint || '').toLowerCase();
+                
+                let score = 0;
+                // Exact match
+                if (label === q || category === q) score = 100;
+                // Starts with
+                else if (label.startsWith(q) || category.startsWith(q)) score = 80;
+                // Contains
+                else if (label.includes(q) || category.includes(q)) score = 60;
+                // Hint match
+                else if (hint === q) score = 70;
+                // Fuzzy: each character must exist in order
+                else {
+                    let qi = 0;
+                    for (let i = 0; i < label.length && qi < q.length; i++) {
+                        if (label[i] === q[qi]) { qi++; score += 5; }
+                    }
+                    if (qi < q.length) score = 0; // Not all chars found
+                    else score = Math.min(score, 50); // Fuzzy match capped at 50
+                }
+                
+                return { cmd, score };
+            }).filter(s => s.score > 0);
+            
+            // Sort by score descending
+            scored.sort((a, b) => b.score - a.score);
+            cmdFiltered = scored.map(s => s.cmd);
+            cmdSelectedIndex = 0;
+            renderCmdResults();
+        }
+
+        function navigateCmd(dir) {
+            cmdSelectedIndex = Math.max(0, Math.min(cmdFiltered.length - 1, cmdSelectedIndex + dir));
+            renderCmdResults();
+            document.querySelectorAll('.cmd-item')[cmdSelectedIndex]?.scrollIntoView({ block: 'nearest' });
+        }
+
+        function executeSelectedCmd() {
+            const cmd = cmdFiltered[cmdSelectedIndex];
+            if (cmd) { closeCommandPalette(); cmd.action(); }
+        }
+
+        function renderCmdResults() {
+            const container = $('cmdResults');
+            if (!container) return;
+            if (cmdFiltered.length === 0) { container.innerHTML = '<div class="cmd-empty">No commands found</div>'; return; }
+            const groups = {};
+            cmdFiltered.forEach(c => { if (!groups[c.category]) groups[c.category] = []; groups[c.category].push(c); });
+            let html = '';
+            Object.entries(groups).forEach(([category, cmds]) => {
+                html += `<div class="cmd-group-label">${category}</div>`;
+                cmds.forEach((cmd, i) => {
+                    const globalIdx = cmdFiltered.indexOf(cmd);
+                    html += `<div class="cmd-item${globalIdx === cmdSelectedIndex ? ' selected' : ''}" onclick="closeCommandPalette(); COMMANDS[${COMMANDS.indexOf(cmd)}].action()">
+                        <span class="cmd-item-icon">${cmd.icon}</span>
+                        <span class="cmd-item-label">${cmd.label}</span>
+                        <span class="cmd-item-hint">${cmd.hint}</span>
+                    </div>`;
+                });
+            });
+            container.innerHTML = html;
+        }
+
+        // ========== Scroll Progress ==========
+        function initScrollProgress() {
+            const bar = $('scrollProgress');
+            if (!bar) return;
+            window.addEventListener('scroll', () => {
+                const scrollTop = window.scrollY;
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                bar.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
+            }, { passive: true });
+        }
+
+        // ========== Data Route Map ==========
+        function initDataRouteMap() {}
+
+        function updateDataRouteMap(srcStatus = 'ok') {
+            const src = $('routeSrc');
+            if (src) src.className = 'route-node ' + (srcStatus === 'ok' ? '' : srcStatus);
+        }
+
+        // ========== DOM Ready ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+            setTimeout(() => {
+                updateFoxExpression(state.status || 'idle');
+                updateMoodAura(state.status || 'idle');
+                updateSessionJourney();
+                updateQuickStats();
+                initPetFox();
+                const initialMoodBtn = document.querySelector(`.mood-btn[onclick="setMood('idle')"]`);
+                if (initialMoodBtn) initialMoodBtn.classList.add('active');
+            }, 600);
+            document.addEventListener('mousemove', createCursorTrail);
+            setInterval(updateSessionJourney, 30000);
+            setInterval(updateQuickStats, 5000);
+            initParticleMesh();
+            initGlowCursor();
+            initCommandPalette();
+            initScrollProgress();
+            initDataRouteMap();
+        });
+    </script>
+</body>
+</html>

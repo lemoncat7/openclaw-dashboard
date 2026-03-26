@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard">
+    <meta name="theme-color" content="#08080c">
+    <title>MoShang Status</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* v23.0: Next-Gen Dashboard - Quantum Glass Design */
+
+        /* ========== CSS Variables ========== */
+        :root {
+            /* Color System */
+            --primary: #ffc864;
+            --primary-glow: #ffaa33;
+            --primary-dim: rgba(255,200,100,0.3);
+            --primary-soft: color-mix(in srgb, var(--primary) 60%, transparent);
+
+            --accent: #00d4ff;
+            --accent-glow: #00ffff;
+            --accent-dim: rgba(0,212,255,0.3);
+            --accent-soft: color-mix(in srgb, var(--accent) 60%, transparent);
+
+            --success: #5cdb95;
+            --success-glow: #7fff7f;
+            --success-dim: rgba(92,219,149,0.3);
+            --success-soft: color-mix(in srgb, var(--success) 60%, transparent);
+
+            --warning: #feca57;
+            --warning-glow: #ffcc00;
+            --warning-dim: rgba(254,202,87,0.3);
+
+            --danger: #ff6b6b;
+            --danger-glow: #ff4444;
+            --danger-dim: rgba(255,107,107,0.3);
+
+            --purple: #a855f7;
+            --purple-glow: #c084fc;
+            --purple-dim: rgba(168,85,247,0.3);
+
+            --pink: #ec4899;
+            --pink-glow: #f472b6;
+            --pink-dim: rgba(236,72,153,0.3);
+
+            /* Backgrounds */
+            --bg-dark: #08080c;
+            --bg-dark-elevated: color-mix(in srgb, var(--bg-dark) 95%, var(--primary) 5%);
+            --bg-card: rgba(15,15,25,0.88);
+            --bg-card-hover: rgba(18,18,28,0.92);
+            --bg-glass: rgba(255,255,255,0.025);
+            --bg-glass-hover: rgba(255,255,255,0.035);
+
+            /* Text */
+            --text: #e8e8ec;
+            --text-dim: #5a5a6a;
+            --text-bright: #ffffff;
+            --text-muted: #8a8a9a;
+
+            /* Spacing & Radius */
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --radius-full: 9999px;
+
+            /* Shadows */
+            --shadow-soft: 0 4px 24px rgba(0,0,0,0.3);
+            --shadow-medium: 0 8px 32px rgba(0,0,0,0.4);
+            --shadow-glow: 0 0 80px -20px;
+            --shadow-glow-strong: 0 0 120px -20px;
+
+            /* Gradients */
+            --neon-gradient: linear-gradient(135deg, var(--primary), var(--accent));
+            --aurora-gradient: linear-gradient(135deg, #ff6b9d, #ffc864, #00d4ff, #5cdb95);
+            --cyber-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --glass-shimmer: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.1) 100%);
+            --space-gradient: radial-gradient(ellipse at center, rgba(30,30,60,0.8) 0%, transparent 70%);
+            --card-gradient: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+
+            /* Animation Timing */
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-in-out-circ: cubic-bezier(0.85, 0, 0.15, 1);
+            --spring-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+            /* Transitions */
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+
+        /* ========== Reset & Base ========== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, sans-serif;
+            background: var(--bg-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            position: relative;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            color: var(--text);
+        }
+
+        /* ========== Background Effects ========== */
+        .bg-space {
+            position: fixed;
+            inset: 0;
+            background: var(--space-gradient);
+            z-index: -3;
+        }
+
+        .bg-stars {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .bg-neural {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        /* ========== Main Container ========== */
+        .dashboard-container {
+            width: 100%;
+            max-width: 1200px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* ========== Glass Card ========== */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--bg-glass);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-soft), var(--shadow-glow);
+            overflow: hidden;
+            transition: all var(--transition-normal) var(--ease-out-expo);
+        }
+
+        .glass-card:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(255,255,255,0.1);
+            box-shadow: var(--shadow-medium), var(--shadow-glow-strong);
+            transform: translateY(-2px);
+        }
+
+        /* ========== Header ========== */
+        .dashboard-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--bg-glass);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: var(--radius-full);
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid var(--bg-glass);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .status-dot.warning { background: var(--warning); }
+        .status-dot.error { background: var(--danger); }
+
+        .status-dot.critical {
+            background: var(--danger);
+            animation: criticalPulse 0.5s ease-in-out infinite;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .refresh-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-muted);
+            background: rgba(255,255,255,0.03);
+            padding: 6px 12px;
+            border-radius: var(--radius-full);
+        }
+
+        .refresh-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* ========== Dashboard Grid ========== */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 24px;
+            padding: 24px 32px;
+        }
+
+        /* ========== Left Column - Avatar Section ========== */
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .avatar-section {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px;
+        }
+
+        .fox-container {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin-bottom: 20px;
+        }
+        
+        /* v23.0: Status whisper glow */
+        .fox-container::before {
+            content: '';
+            position: absolute;
+            inset: -20px;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0.2;
+            filter: blur(25px);
+            animation: statusWhisper 4s ease-in-out infinite;
+            z-index: -1;
+            transition: background 0.5s ease;
+        }
+        
+        /* Mood-aware whisper colors */
+        .fox-container.idle::before { background: var(--warning); }
+        .fox-container.working::before { background: var(--accent); }
+        .fox-container.sleeping::before { background: var(--purple); }
+        .fox-container.excited::before { background: var(--pink); }
+        .fox-container.error::before { background: var(--danger); }
+
+        .fox-canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: var(--radius-lg);
+        }
+
+        /* v22.0: Mood Sync Ring */
+        .mood-sync-ring {
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .mood-sync-ring.active {
+            opacity: 1;
+            animation: ringPulse 2s ease-in-out infinite;
+        }
+
+        /* Mood colors */
+        .mood-sync-ring.idle { border-color: var(--warning); box-shadow: 0 0 30px var(--warning); }
+        .mood-sync-ring.working { border-color: var(--accent); box-shadow: 0 0 30px var(--accent); }
+        .mood-sync-ring.sleeping { border-color: var(--purple); box-shadow: 0 0 30px var(--purple); }
+        .mood-sync-ring.excited { border-color: var(--pink); box-shadow: 0 0 30px var(--pink); }
+        .mood-sync-ring.thinking { border-color: var(--purple); box-shadow: 0 0 30px var(--purple); }
+        .mood-sync-ring.laughing { border-color: var(--warning); box-shadow: 0 0 30px var(--warning); }
+        .mood-sync-ring.error { border-color: var(--danger); box-shadow: 0 0 30px var(--danger); }
+        .mood-sync-ring.focused { border-color: var(--success); box-shadow: 0 0 30px var(--success); }
+        .mood-sync-ring.learning { border-color: var(--primary); box-shadow: 0 0 30px var(--primary); }
+
+        @keyframes ringPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        /* v23.0: Quantum Glass Animations */
+        
+        /* Heartbeat Sync Pulse - Cards breathe with heartbeat */
+        @keyframes heartbeatPulse {
+            0%, 100% { transform: scale(1); box-shadow: var(--shadow-soft), var(--shadow-glow); }
+            50% { transform: scale(1.005); box-shadow: var(--shadow-soft), 0 0 100px -30px var(--accent); }
+        }
+        
+        /* Data Wave Effect - Ripple on data update */
+        @keyframes dataWave {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.02); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Sparkle shimmer for stat cards */
+        @keyframes sparkleShimmer {
+            0%, 100% { background-position: -200% center; }
+            50% { background-position: 200% center; }
+        }
+        
+        /* Status Whisper - Subtle glow around fox */
+        @keyframes statusWhisper {
+            0%, 100% { opacity: 0.3; transform: scale(1); filter: blur(20px); }
+            50% { opacity: 0.6; transform: scale(1.1); filter: blur(25px); }
+        }
+        
+        /* Sync Wave - Data sync ripple effect */
+        @keyframes syncWave {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        
+        /* Number morph animation */
+        @keyframes numberPop {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* Card breathing effect */
+        .card-breathe {
+            animation: heartbeatPulse 3s ease-in-out infinite;
+        }
+        
+        /* Data update wave effect */
+        .data-wave {
+            animation: dataWave 0.6s ease-out;
+        }
+        
+        /* Stat sparkle effect */
+        .stat-sparkle {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            background-size: 200% 100%;
+            animation: sparkleShimmer 3s ease-in-out infinite;
+        }
+        
+        /* Status whisper glow */
+        .status-whisper {
+            position: absolute;
+            inset: -20px;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0.3;
+            filter: blur(20px);
+            animation: statusWhisper 4s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        /* Sync ripple container */
+        .sync-ripple {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .sync-ripple::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 2px solid var(--accent);
+            border-radius: inherit;
+            animation: syncWave 1.5s ease-out infinite;
+        }
+        
+        /* Number update pop */
+        .num-pop {
+            animation: numberPop 0.3s ease-out;
+        }
+
+        .fox-name {
+            font-size: 24px;
+            font-weight: 600;
+            background: var(--neon-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .fox-role {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        /* v22.0: Stats Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .mini-stat {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--bg-glass);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            text-align: center;
+            transition: all var(--transition-fast);
+        }
+
+        .mini-stat:hover {
+            background: rgba(255,255,255,0.06);
+            transform: translateY(-2px);
+        }
+
+        .mini-stat-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-bright);
+            margin-bottom: 4px;
+        }
+
+        .mini-stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ========== Right Column - Stats Cards ========== */
+        .right-column {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-glass);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all var(--transition-normal) var(--ease-out-expo);
+            cursor: pointer;
+        }
+        
+        /* v23.0: Card breathe animation synced to heartbeat */
+        .stat-card.card-breathe {
+            animation: heartbeatPulse 3s ease-in-out infinite;
+        }
+        
+        /* v23.0: Data update wave effect */
+        .stat-card.data-wave {
+            animation: dataWave 0.6s ease-out;
+        }
+        
+        /* v23.0: Sparkle overlay on hover */
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+            background-size: 200% 100%;
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+        }
+        
+        .stat-card:hover::before {
+            opacity: 1;
+            animation: sparkleShimmer 1.5s ease-in-out infinite;
+        }
+        
+        /* v23.0: Sync ripple on data fetch */
+        .stat-card .sync-ripple {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            overflow: hidden;
+            pointer-events: none;
+            opacity: 0;
+        }
+        
+        .stat-card.syncing .sync-ripple {
+            opacity: 1;
+        }
+        
+        .stat-card.syncing .sync-ripple::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 2px solid var(--accent);
+            border-radius: inherit;
+            animation: syncWave 1s ease-out;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(255,255,255,0.15);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .stat-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .stat-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        /* v23.0: Stat value with pop animation */
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-bright);
+            margin-bottom: 4px;
+            font-variant-numeric: tabular-nums;
+            transition: transform 0.15s ease;
+        }
+        
+        .stat-value.num-pop {
+            animation: numberPop 0.3s ease-out;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-subtext {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        /* ========== Progress Bars ========== */
+        .progress-container {
+            margin-top: 12px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: var(--radius-full);
+            transition: width 0.5s var(--ease-out-expo);
+        }
+
+        .progress-fill.success { background: var(--success); }
+        .progress-fill.warning { background: var(--warning); }
+        .progress-fill.danger { background: var(--danger); }
+
+        /* ========== Status Section ========== */
+        .status-section {
+            margin-top: 20px;
+            padding: 16px;
+            background: rgba(255,255,255,0.03);
+            border-radius: var(--radius-md);
+        }
+
+        .status-title {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .status-value {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-bright);
+        }
+
+        /* ========== Quick Actions ========== */
+        .quick-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--bg-glass);
+            border-radius: var(--radius-md);
+            color: var(--text);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .action-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .action-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--bg-dark);
+        }
+
+        /* ========== Charts Section ========== */
+        .charts-section {
+            grid-column: 1 / -1;
+            margin-top: 8px;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .chart-card {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-glass);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+        }
+
+        .chart-title {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .chart-canvas-container {
+            height: 120px;
+            position: relative;
+        }
+
+        .chart-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ========== Bottom Section ========== */
+        .bottom-section {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        /* ========== Memory Timeline ========== */
+        .memory-timeline {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-glass);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+        }
+
+        .timeline-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .timeline-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-bright);
+        }
+
+        .timeline-items {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px;
+            background: rgba(255,255,255,0.03);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+        }
+
+        .timeline-item:hover {
+            background: rgba(255,255,255,0.06);
+        }
+
+        .timeline-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-text {
+            font-size: 13px;
+            color: var(--text-bright);
+            margin-bottom: 4px;
+        }
+
+        .timeline-time {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* ========== Skills Distribution ========== */
+        .skills-distribution {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-glass);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+        }
+
+        .skills-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-bright);
+            margin-bottom: 16px;
+        }
+
+        .skill-item {
+            margin-bottom: 12px;
+        }
+
+        .skill-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .skill-name {
+            font-size: 13px;
+            color: var(--text-bright);
+        }
+
+        .skill-value {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .skill-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .skill-fill {
+            height: 100%;
+            border-radius: var(--radius-full);
+            transition: width 0.5s var(--ease-out-expo);
+        }
+
+        /* ========== Footer ========== */
+        .dashboard-footer {
+            padding: 20px 32px;
+            border-top: 1px solid var(--bg-glass);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .footer-info {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .footer-info span {
+            color: var(--text-bright);
+        }
+
+        /* ========== Animations ========== */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes criticalPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* ========== Utility Classes ========== */
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .slide-in {
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        .scale-in {
+            animation: scaleIn 0.3s ease forwards;
+        }
+
+        /* ========== Responsive Design ========== */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                padding: 16px;
+            }
+
+            .dashboard-header {
+                padding: 16px;
+            }
+
+            .dashboard-grid {
+                gap: 16px;
+            }
+
+            .right-column {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+
+            .bottom-section {
+                grid-template-columns: 1fr;
+            }
+
+            .fox-container {
+                width: 140px;
+                height: 140px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .stat-value {
+                font-size: 24px;
+            }
+
+            .stat-card {
+                padding: 16px;
+            }
+        }
+
+        /* ========== Reduced Motion ========== */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .stat-card:hover,
+            .mini-stat:hover,
+            .timeline-item:hover,
+            .action-btn:hover {
+                transform: none !important;
+            }
+        }
+
+        /* ========== Loading State ========== */
+        body.loading .stat-card,
+        body.loading .mini-stat,
+        body.loading .timeline-item {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* ========== Error State ========== */
+        body.error .status-dot {
+            background: var(--danger);
+        }
+
+        body.error .status-badge {
+            background: rgba(255,107,107,0.1);
+            border-color: var(--danger);
+        }
+    </style>
+</head>
+<body class="loading">
+    <!-- Background Effects -->
+    <div class="bg-space"></div>
+    <div class="bg-stars" id="stars"></div>
+    <canvas class="bg-neural" id="neuralCanvas"></canvas>
+
+    <!-- Main Dashboard -->
+    <div class="dashboard-container">
+        <div class="glass-card">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <div class="header-left">
+                    <div class="status-badge">
+                        <div class="status-dot" id="statusDot"></div>
+                        <span id="statusText">Loading...</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="refresh-badge">
+                        <div class="dot"></div>
+                        <span id="refreshRate">Fast</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Left Column -->
+                <div class="left-column">
+                    <!-- Avatar Section -->
+                    <div class="avatar-section">
+                        <div class="fox-container">
+                            <canvas class="fox-canvas" id="foxCanvas"></canvas>
+                            <div class="mood-sync-ring" id="moodSyncRing"></div>
+                        </div>
+                        <h1 class="fox-name">MoShang</h1>
+                        <p class="fox-role">Digital Assistant</p>
+
+                        <!-- Mini Stats -->
+                        <div class="stats-row">
+                            <div class="mini-stat">
+                                <div class="mini-stat-value" id="miniHeartbeat">--</div>
+                                <div class="mini-stat-label">BPM</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-value" id="miniActivity">--</div>
+                                <div class="mini-stat-label">Activity</div>
+                            </div>
+                        </div>
+
+                        <!-- Status Section -->
+                        <div class="status-section">
+                            <div class="status-title">Current Status</div>
+                            <div class="status-value" id="statusValue">Idle</div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="quick-actions">
+                            <button class="action-btn" onclick="setMode('idle')">Idle</button>
+                            <button class="action-btn" onclick="setMode('working')">Work</button>
+                            <button class="action-btn" onclick="setMode('sleeping')">Sleep</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="right-column">
+                    <!-- Stat Cards -->
+                    <div class="stat-card" onclick="copyStat('heartbeat')">
+                        <div class="stat-card-header">
+                            <div class="stat-icon" style="background: rgba(255,200,100,0.1); color: var(--primary);">❤️</div>
+                            <div class="stat-value" id="heartbeat">--</div>
+                        </div>
+                        <div class="stat-label">Heart Rate</div>
+                        <div class="stat-subtext">BPM • Click to copy</div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="heartbeatBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card" onclick="copyStat('activity')">
+                        <div class="stat-card-header">
+                            <div class="stat-icon" style="background: rgba(0,212,255,0.1); color: var(--accent);">⚡</div>
+                            <div class="stat-value" id="activity">--</div>
+                        </div>
+                        <div class="stat-label">Activity Level</div>
+                        <div class="stat-subtext">0-100% • Click to copy</div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="activityBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card" onclick="copyStat('memory')">
+                        <div class="stat-card-header">
+                            <div class="stat-icon" style="background: rgba(92,219,149,0.1); color: var(--success);">💾</div>
+                            <div class="stat-value" id="memory">--</div>
+                        </div>
+                        <div class="stat-label">Memory Usage</div>
+                        <div class="stat-subtext">MB • Click to copy</div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="memoryBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card" onclick="copyStat('cpu')">
+                        <div class="stat-card-header">
+                            <div class="stat-icon" style="background: rgba(254,202,87,0.1); color: var(--warning);">🖥️</div>
+                            <div class="stat-value" id="cpu">--</div>
+                        </div>
+                        <div class="stat-label">CPU Usage</div>
+                        <div class="stat-subtext">% • Click to copy</div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="cpuBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Section -->
+                    <div class="charts-section">
+                        <div class="charts-container">
+                            <div class="chart-card">
+                                <div class="chart-title">24h Activity Rhythm</div>
+                                <div class="chart-canvas-container">
+                                    <canvas class="chart-canvas" id="activityChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="chart-card">
+                                <div class="chart-title">Memory History</div>
+                                <div class="chart-canvas-container">
+                                    <canvas class="chart-canvas" id="memoryChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="chart-card">
+                                <div class="chart-title">CPU History</div>
+                                <div class="chart-canvas-container">
+                                    <canvas class="chart-canvas" id="cpuChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Section -->
+                    <div class="bottom-section">
+                        <!-- Memory Timeline -->
+                        <div class="memory-timeline">
+                            <div class="timeline-header">
+                                <div class="timeline-title">Recent Memories</div>
+                            </div>
+                            <div class="timeline-items" id="timelineItems">
+                                <!-- Timeline items will be inserted here -->
+                            </div>
+                        </div>
+
+                        <!-- Skills Distribution -->
+                        <div class="skills-distribution">
+                            <div class="skills-title">Skills Distribution</div>
+                            <div id="skillsList">
+                                <!-- Skills will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="dashboard-footer">
+                <div class="footer-info">
+                    Last updated: <span id="lastUpdated">--</span>
+                </div>
+                <div class="footer-info">
+                    v22.0 • <span id="uptime">--</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== State Management ==========
+        const state = {
+            heartbeat: '--',
+            activity: '--',
+            memory: '--',
+            cpu: '--',
+            status: 'idle',
+            uptime: '--',
+            lastUpdated: '--',
+            dataHistory: {
+                heartbeat: [],
+                activity: [],
+                memory: [],
+                cpu: []
+            },
+            maxHistory: 24
+        };
+
+        // ========== DOM Elements ==========
+        const elements = {
+            body: document.body,
+            statusDot: document.getElementById('statusDot'),
+            statusText: document.getElementById('statusText'),
+            refreshRate: document.getElementById('refreshRate'),
+            foxCanvas: document.getElementById('foxCanvas'),
+            moodSyncRing: document.getElementById('moodSyncRing'),
+            heartbeat: document.getElementById('heartbeat'),
+            activity: document.getElementById('activity'),
+            memory: document.getElementById('memory'),
+            cpu: document.getElementById('cpu'),
+            heartbeatBar: document.getElementById('heartbeatBar'),
+            activityBar: document.getElementById('activityBar'),
+            memoryBar: document.getElementById('memoryBar'),
+            cpuBar: document.getElementById('cpuBar'),
+            miniHeartbeat: document.getElementById('miniHeartbeat'),
+            miniActivity: document.getElementById('miniActivity'),
+            statusValue: document.getElementById('statusValue'),
+            lastUpdated: document.getElementById('lastUpdated'),
+            uptime: document.getElementById('uptime'),
+            timelineItems: document.getElementById('timelineItems'),
+            skillsList: document.getElementById('skillsList'),
+            stars: document.getElementById('stars'),
+            neuralCanvas: document.getElementById('neuralCanvas')
+        };
+
+        // ========== Initialization ==========
+        async function init() {
+            // Initialize star background
+            initStars();
+
+            // Initialize neural network background
+            initNeuralNetwork();
+
+            // Initialize fox canvas
+            initFoxCanvas();
+
+            // Initialize charts
+            initCharts();
+
+            // Load initial data
+            await fetchData();
+
+            // Start periodic updates
+            setInterval(updateData, 3000);
+
+            // Remove loading state
+            setTimeout(() => {
+                elements.body.classList.remove('loading');
+            }, 500);
+        }
+
+        // ========== Star Background ==========
+        function initStars() {
+            const starsContainer = elements.stars;
+            const starCount = 100;
+
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.style.cssText = `
+                    position: absolute;
+                    width: ${Math.random() * 2 + 1}px;
+                    height: ${Math.random() * 2 + 1}px;
+                    background: white;
+                    border-radius: 50%;
+                    opacity: ${Math.random() * 0.5 + 0.3};
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    animation: twinkle ${Math.random() * 3 + 2}s ease-in-out infinite;
+                `;
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // ========== Neural Network Background ==========
+        function initNeuralNetwork() {
+            const canvas = elements.neuralCanvas;
+            const ctx = canvas.getContext('2d');
+
+            // Set canvas size
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const nodes = [];
+            const nodeCount = 50;
+
+            // Create nodes
+            for (let i = 0; i < nodeCount; i++) {
+                nodes.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    radius: Math.random() * 2 + 1
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Update and draw nodes
+                nodes.forEach(node => {
+                    node.x += node.vx;
+                    node.y += node.vy;
+
+                    // Bounce off edges
+                    if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+                    if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+
+                    // Draw node
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(0, 212, 255, 0.5)';
+                    ctx.fill();
+
+                    // Draw connections
+                    nodes.forEach(otherNode => {
+                        const dx = node.x - otherNode.x;
+                        const dy = node.y - otherNode.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < 150) {
+                            ctx.beginPath();
+                            ctx.moveTo(node.x, node.y);
+                            ctx.lineTo(otherNode.x, otherNode.y);
+                            ctx.strokeStyle = `rgba(0, 212, 255, ${0.2 * (1 - distance / 150)})`;
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                        }
+                    });
+                });
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+
+            // Resize handler
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+        }
+
+        // ========== Fox Canvas ==========
+        function initFoxCanvas() {
+            const canvas = elements.foxCanvas;
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = 180;
+            const height = canvas.height = 180;
+
+            let mouseX = width / 2;
+            let mouseY = height / 2;
+            let eyeX = 0;
+            let eyeY = 0;
+
+            // Mouse tracking
+            canvas.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouseX = e.clientX - rect.left;
+                mouseY = e.clientY - rect.top;
+            });
+
+            // Click effect
+            canvas.addEventListener('click', () => {
+                // Create particle burst
+                createParticleBurst(ctx, width / 2, height / 2);
+            });
+
+            // Blinking
+            let lastBlink = 0;
+            function blink() {
+                const now = Date.now();
+                if (now - lastBlink > 3000 + Math.random() * 2000) {
+                    lastBlink = now;
+                    return true;
+                }
+                return false;
+            }
+
+            function drawFox() {
+                ctx.clearRect(0, 0, width, height);
+
+                // Smooth eye tracking
+                eyeX += (mouseX - width / 2 - eyeX) * 0.1;
+                eyeY += (mouseY - height / 2 - eyeY) * 0.1;
+
+                // Draw fox body
+                ctx.fillStyle = '#ffc864';
+
+                // Body
+                ctx.beginPath();
+                ctx.ellipse(width / 2, height / 2 + 20, 50, 40, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Head
+                ctx.beginPath();
+                ctx.ellipse(width / 2, height / 2 - 20, 45, 40, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Ears
+                ctx.beginPath();
+                ctx.moveTo(width / 2 - 30, height / 2 - 55);
+                ctx.lineTo(width / 2 - 20, height / 2 - 90);
+                ctx.lineTo(width / 2 - 10, height / 2 - 55);
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.moveTo(width / 2 + 30, height / 2 - 55);
+                ctx.lineTo(width / 2 + 20, height / 2 - 90);
+                ctx.lineTo(width / 2 + 10, height / 2 - 55);
+                ctx.fill();
+
+                // Eyes
+                const blinkAmount = blink() ? 0.1 : 1;
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.ellipse(width / 2 - 15, height / 2 - 25, 10 * blinkAmount, 12 * blinkAmount, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.ellipse(width / 2 + 15, height / 2 - 25, 10 * blinkAmount, 12 * blinkAmount, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Pupils
+                ctx.fillStyle = '#000000';
+                ctx.beginPath();
+                ctx.arc(width / 2 - 15 + eyeX * 0.5, height / 2 - 25 + eyeY * 0.5, 4 * blinkAmount, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(width / 2 + 15 + eyeX * 0.5, height / 2 - 25 + eyeY * 0.5, 4 * blinkAmount, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Nose
+                ctx.fillStyle = '#333333';
+                ctx.beginPath();
+                ctx.ellipse(width / 2, height / 2 - 10, 6, 5, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Mouth
+                ctx.strokeStyle = '#333333';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(width / 2, height / 2 - 5, 10, 0.1 * Math.PI, 0.9 * Math.PI);
+                ctx.stroke();
+
+                requestAnimationFrame(drawFox);
+            }
+
+            drawFox();
+        }
+
+        // ========== Particle Burst Effect ==========
+        function createParticleBurst(ctx, x, y) {
+            const particles = [];
+            const particleCount = 12;
+
+            for (let i = 0; i < particleCount; i++) {
+                const angle = (Math.PI * 2 / particleCount) * i;
+                const velocity = 5 + Math.random() * 5;
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: Math.cos(angle) * velocity,
+                    vy: Math.sin(angle) * velocity,
+                    life: 1,
+                    color: ['#ffc864', '#00d4ff', '#5cdb95', '#ff6b6b'][Math.floor(Math.random() * 4)]
+                });
+            }
+
+            function animate() {
+                let alive = false;
+
+                particles.forEach(p => {
+                    if (p.life > 0) {
+                        alive = true;
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.life -= 0.05;
+
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, 4 * p.life, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color;
+                        ctx.globalAlpha = p.life;
+                        ctx.fill();
+                        ctx.globalAlpha = 1;
+                    }
+                });
+
+                if (alive) {
+                    requestAnimationFrame(animate);
+                }
+            }
+
+            animate();
+        }
+
+        // ========== Charts ==========
+        function initCharts() {
+            // Initialize empty charts
+            createLineChart('activityChart', state.dataHistory.activity, '#ffc864');
+            createLineChart('memoryChart', state.dataHistory.memory, '#5cdb95');
+            createLineChart('cpuChart', state.dataHistory.cpu, '#00d4ff');
+        }
+
+        function createLineChart(canvasId, data, color) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+
+            // Set canvas size
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                if (data.length < 2) return;
+
+                const max = Math.max(...data, 100);
+                const min = Math.min(...data, 0);
+                const range = max - min || 1;
+
+                // Draw line
+                ctx.beginPath();
+                data.forEach((value, index) => {
+                    const x = (index / (data.length - 1)) * canvas.width;
+                    const y = canvas.height - ((value - min) / range) * canvas.height;
+                    if (index === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                });
+
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Fill area
+                ctx.lineTo(canvas.width, canvas.height);
+                ctx.lineTo(0, canvas.height);
+                ctx.closePath();
+                ctx.fillStyle = color + '20';
+                ctx.fill();
+            }
+
+            draw();
+        }
+
+        // ========== Data Fetching ==========
+        async function fetchData() {
+            try {
+                // Fetch heartbeat data
+                const heartbeatRes = await fetch('/api/heartbeat');
+                const heartbeatData = await heartbeatRes.json();
+
+                if (heartbeatData.heartbeat) {
+                    updateHeartbeat(heartbeatData.heartbeat);
+                }
+
+                if (heartbeatData.activity) {
+                    updateActivity(heartbeatData.activity);
+                }
+
+                if (heartbeatData.status) {
+                    updateStatus(heartbeatData.status);
+                }
+
+                if (heartbeatData.uptime) {
+                    updateUptime(heartbeatData.uptime);
+                }
+
+                // Fetch system data
+                const systemRes = await fetch('/api/system');
+                const systemData = await systemRes.json();
+
+                if (systemData.memory) {
+                    updateMemory(systemData.memory);
+                }
+
+                if (systemData.cpu) {
+                    updateCPU(systemData.cpu);
+                }
+
+                // Fetch memories
+                const memoriesRes = await fetch('/api/memories');
+                if (memoriesRes.ok) {
+                    const memories = await memoriesRes.json();
+                    updateMemories(memories);
+                }
+
+                // Fetch skills
+                const skillsRes = await fetch('/api/skills/detailed');
+                if (skillsRes.ok) {
+                    const skills = await skillsRes.json();
+                    updateSkills(skills);
+                }
+
+                // Update last updated time
+                elements.lastUpdated.textContent = new Date().toLocaleTimeString();
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                elements.statusText.textContent = 'Error';
+                elements.statusDot.classList.add('error');
+            }
+        }
+
+        function updateData() {
+            fetchData();
+        }
+
+        function updateHeartbeat(value) {
+            state.heartbeat = value;
+            
+            // v23.0: Num pop animation
+            elements.heartbeat.classList.add('num-pop');
+            setTimeout(() => elements.heartbeat.classList.remove('num-pop'), 300);
+            
+            elements.heartbeat.textContent = value;
+            elements.miniHeartbeat.textContent = value;
+
+            // Update progress bar
+            const percent = Math.min((value / 180) * 100, 100);
+            elements.heartbeatBar.style.width = percent + '%';
+            elements.heartbeatBar.className = 'progress-fill ' + getProgressClass(percent);
+
+            // Update history
+            state.dataHistory.heartbeat.push(value);
+            if (state.dataHistory.heartbeat.length > state.maxHistory) {
+                state.dataHistory.heartbeat.shift();
+            }
+
+            // Update chart
+            createLineChart('activityChart', state.dataHistory.activity, '#ffc864');
+        }
+
+        function updateActivity(value) {
+            state.activity = value;
+            
+            // v23.0: Num pop animation
+            elements.activity.classList.add('num-pop');
+            setTimeout(() => elements.activity.classList.remove('num-pop'), 300);
+            
+            elements.activity.textContent = value + '%';
+            elements.miniActivity.textContent = value + '%';
+
+            // Update progress bar
+            elements.activityBar.style.width = value + '%';
+            elements.activityBar.className = 'progress-fill ' + getProgressClass(value);
+
+            // Update history
+            state.dataHistory.activity.push(value);
+            if (state.dataHistory.activity.length > state.maxHistory) {
+                state.dataHistory.activity.shift();
+            }
+
+            // Update chart
+            createLineChart('activityChart', state.dataHistory.activity, '#ffc864');
+        }
+
+        function updateMemory(value) {
+            state.memory = value;
+            
+            // v23.0: Num pop animation
+            elements.memory.classList.add('num-pop');
+            setTimeout(() => elements.memory.classList.remove('num-pop'), 300);
+            
+            elements.memory.textContent = value;
+
+            // Update progress bar
+            const percent = Math.min((value / state.memoryTotal) * 100, 100);
+            elements.memoryBar.style.width = percent + '%';
+            elements.memoryBar.className = 'progress-fill ' + getProgressClass(percent);
+
+            // Update history
+            state.dataHistory.memory.push(value);
+            if (state.dataHistory.memory.length > state.maxHistory) {
+                state.dataHistory.memory.shift();
+            }
+
+            // Update chart
+            createLineChart('memoryChart', state.dataHistory.memory, '#5cdb95');
+        }
+
+        function updateCPU(value) {
+            state.cpu = value;
+            
+            // v23.0: Num pop animation
+            elements.cpu.classList.add('num-pop');
+            setTimeout(() => elements.cpu.classList.remove('num-pop'), 300);
+            
+            elements.cpu.textContent = value + '%';
+
+            // Update progress bar
+            elements.cpuBar.style.width = value + '%';
+            elements.cpuBar.className = 'progress-fill ' + getProgressClass(value);
+
+            // Update history
+            state.dataHistory.cpu.push(value);
+            if (state.dataHistory.cpu.length > state.maxHistory) {
+                state.dataHistory.cpu.shift();
+            }
+
+            // Update chart
+            createLineChart('cpuChart', state.dataHistory.cpu, '#00d4ff');
+        }
+
+        function updateStatus(status) {
+            state.status = status;
+            elements.statusValue.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+
+            // Update mood ring
+            elements.moodSyncRing.className = 'mood-sync-ring ' + status;
+            elements.moodSyncRing.classList.add('active');
+            
+            // v23.0: Update fox container mood class
+            elements.foxCanvas.parentElement.className = 'fox-container ' + status;
+
+            // Update status dot
+            elements.statusDot.classList.remove('warning', 'error', 'critical');
+            if (status === 'error') {
+                elements.statusDot.classList.add('error');
+            } else if (status === 'sleeping') {
+                elements.statusDot.classList.add('warning');
+            }
+        }
+
+        function updateUptime(value) {
+            state.uptime = value;
+            elements.uptime.textContent = value;
+        }
+
+        function updateMemories(memories) {
+            elements.timelineItems.innerHTML = memories.slice(0, 5).map(memory => `
+                <div class="timeline-item fade-in">
+                    <div class="timeline-icon" style="background: rgba(255,200,100,0.1); color: var(--primary);">
+                        📝
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-text">${memory.text || 'Memory'}</div>
+                        <div class="timeline-time">${memory.timestamp || new Date().toLocaleTimeString()}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateSkills(skills) {
+            elements.skillsList.innerHTML = skills.slice(0, 5).map(skill => `
+                <div class="skill-item fade-in">
+                    <div class="skill-header">
+                        <span class="skill-name">${skill.name}</span>
+                        <span class="skill-value">${skill.count} uses</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-fill" style="width: ${skill.count * 5}%; background: var(--primary);"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getProgressClass(value) {
+            if (value >= 80) return 'danger';
+            if (value >= 60) return 'warning';
+            return 'success';
+        }
+
+        // ========== Copy Stat ==========
+        function copyStat(type) {
+            const value = state[type];
+            if (value !== '--') {
+                navigator.clipboard.writeText(value).then(() => {
+                    showToast(`${type} copied: ${value}`);
+                });
+            }
+        }
+
+        // ========== Toast Notification ==========
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: rgba(255,255,255,0.1);
+                backdrop-filter: blur(10px);
+                padding: 12px 24px;
+                border-radius: var(--radius-md);
+                color: white;
+                font-size: 14px;
+                animation: slideIn 0.3s ease;
+                z-index: 1000;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'fadeOut 0.3s ease forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+
+        // ========== Mode Selection ==========
+        function setMode(mode) {
+            updateStatus(mode);
+            showToast(`Mode changed to ${mode}`);
+        }
+
+        // ========== Start ==========
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
