@@ -9,6 +9,31 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+- v89.0: 全息玻璃面板（彩虹折射 + 动态扫光 + 悬停变形边框）
+- v89.0: 空间音频可视化条（8条动态高度柱状图，反应活动等级）
+- v89.0: 神经网格背景（20个动态脉冲节点，随活动状态调整速度）
+- v89.0: 粒子生命系统（30个自主漂浮粒子，Canvas实时渲染）
+- v89.0: 智能上下文工具提示（悬停显示标题+描述说明）
+- v89.0: 动态状态栏（实时显示Optimal/Degraded/Critical状态）
+- v89.0: 统计数值翻转动画（数值更新时3D透视翻转反馈）
+- v89.0: 发光文字效果（狐狸名字光晕脉冲动画）
+- v89.0: 渐变流动文字（彩虹渐变位移动画）
+- v89.0: 实时指示环（脉冲动画指示在线状态）
+- v89.0: 呼吸边框效果（悬停时彩虹边框渐变动画）
+- v89.0: 交错入场动画（卡片组自动延迟依次入场）
+- v89.0: 微交互系统（弹性按压 + 点击涟漪 + 悬停上浮）
+- v89.0: 状态感知玻璃态卡片（多层扫光 + 折射光效）
+- v89.0: 状态感知RGB变量（--accent-rgb随状态动态变化）
+- v88.0: 活动感知狐狸光晕（activity-low/mid/high/max四种颜色强度变化）
+- v88.0: 统计数值变化Delta指示器（+/-变化量徽章动画）
+- v88.0: 数据到达涟漪动画（stat卡片更新时环形扩散效果）
+- v88.0: 可靠性评分条（实时百分比 + 颜色编码 + 动态连接环）
+- v88.0: 迷你在场事件推送（右下角最近5条数据事件滚动显示）
+- v88.0: 增强型键盘导航（方向键切换stat卡片 + 高亮聚焦边框动画）
+- v88.0: 统计数值范围颜色（low=绿/mid=黄/high=红/max=红+发光）
+- v88.0: 增强型骨架屏流光（1.8秒周期对称渐变扫光）
+- v88.0: 玻璃边缘卡片效果（顶部高光 + 底部阴影线条）
+- v88.0: API数据源修复（/api/heartbeat端点补全，Node.js服务端适配）
 - v84.0: 数据可靠性增强系统（电路断路器模式 + 多源验证 + 指数退避）
 - v84.0: 增强型@property动画变量（--v84-reliability/--v84-pulse-scale/--v84-morph-radius）
 - v84.0: @when条件CSS规则支持 + scroll-driven动画增强
@@ -173,20 +198,38 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 - **Status-aware CSS Variables**: body.status-* 类自动设置 --status-color CSS变量
 - **版本更新至 v82.0**
 
-### v87.0 (2026-03-26)
-- **v87 AI Context Bar**: 智能悬浮状态栏，显示AI处理上下文，带动画脉冲点阵和状态文字
-- **v87 Sound Wave Visualizer**: 音频风格可视化条形图，根据活动等级动态调整动画速度
-- **v87 3D Fox Stage**: 狐狸容器3D透视舞台效果，鼠标驱动倾斜角度旋转
-- **v87 Morph Card**: 动态变形边框卡片，悬停时显示彩虹渐变旋转边框
-- **v87 Event Ribbon**: 底部滚动事件时间线带，显示最近数据同步和状态变更事件
-- **v87 Mood Meter**: 心情仪表条，5个高度动态变化的进度条反映活动等级
-- **v87 Particle Burst Enhancement**: 增强型粒子爆发效果，12方向物理扩散动画
-- **v87 Ambient Mesh Overlay**: 鼠标跟随渐变网格叠加层，营造沉浸式氛围
-- **v87 Scroll Reveal**: 原生scroll-driven滚动驱动入场动画
-- **v87 Heartbeat Waveform**: SVG心电图波形显示，实时反映心跳节律
-- **v87 Focus Bloom**: 焦点开花效果，聚焦时显示径向渐变光晕
-- **v87 Stagger Entrance**: 交错入场动画，支持自动延迟计算
-- **版本更新至 v87.0**
+### v89.0 (2026-03-26)
+- **v89 Holographic Glass Panel**: 全息玻璃面板效果，带彩虹折射、动态扫光和悬停变形边框动画
+- **v89 Spatial Audio Visualizer**: 空间音频可视化条，8条动态高度柱状图随活动等级实时变化
+- **v89 Neural Mesh Background**: 神经网格背景，20个动态脉冲节点随活动状态调整动画速度
+- **v89 Particle Life System**: 粒子生命系统，30个自主漂浮粒子Canvas实时渲染，营造沉浸氛围
+- **v89 Smart Context Tooltips**: 智能上下文工具提示，悬停stat卡片显示标题和描述说明
+- **v89 Dynamic Status Bar**: 动态状态栏，实时显示Optimal/Degraded/Critical健康状态
+- **v89 Stat Value Flip Animation**: 统计数值翻转动画，数值更新时触发3D透视翻转反馈
+- **v89 Glow Text Effect**: 发光文字效果，狐狸名字带光晕脉冲动画增强视觉效果
+- **v89 Gradient Text Flow**: 渐变流动文字，彩虹渐变位移动画循环效果
+- **v89 Live Ring Indicator**: 实时指示环，脉冲动画显示在线状态
+- **v89 Breathing Border**: 呼吸边框效果，悬停时显示彩虹渐变边框动画
+- **v89 Stagger Entrance**: 交错入场动画，统计卡片组自动延迟依次入场
+- **v89 Micro-interaction System**: 微交互系统，弹性按压、点击涟漪、悬停上浮效果
+- **v89 Card Shine Sweep**: 卡片扫光效果，悬停时光束扫过表面
+- **v89 Status-aware RGB Variables**: 状态感知RGB变量，--accent-rgb随状态动态变化
+- **版本更新至 v89.0**
+
+### v88.0 (2026-03-26)
+- **v88 AI Context Bar**: 智能悬浮状态栏，显示AI处理上下文，带动画脉冲点阵和状态文字
+- **v88 Sound Wave Visualizer**: 音频风格可视化条形图，根据活动等级动态调整动画速度
+- **v88 3D Fox Stage**: 狐狸容器3D透视舞台效果，鼠标驱动倾斜角度旋转
+- **v88 Morph Card**: 动态变形边框卡片，悬停时显示彩虹渐变旋转边框
+- **v88 Event Ribbon**: 底部滚动事件时间线带，显示最近数据同步和状态变更事件
+- **v88 Mood Meter**: 心情仪表条，5个高度动态变化的进度条反映活动等级
+- **v88 Particle Burst Enhancement**: 增强型粒子爆发效果，12方向物理扩散动画
+- **v88 Ambient Mesh Overlay**: 鼠标跟随渐变网格叠加层，营造沉浸式氛围
+- **v88 Scroll Reveal**: 原生scroll-driven滚动驱动入场动画
+- **v88 Heartbeat Waveform**: SVG心电图波形显示，实时反映心跳节律
+- **v88 Focus Bloom**: 焦点开花效果，聚焦时显示径向渐变光晕
+- **v88 Stagger Entrance**: 交错入场动画，支持自动延迟计算
+- **版本更新至 v88.0**
 
 ### v84.0 (2026-03-26)
 - **Enhanced Data Reliability System**: 电路断路器模式 + 多源数据验证 + 指数退避算法（带抖动）
