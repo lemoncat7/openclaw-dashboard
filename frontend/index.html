@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v94.0">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v95.0">
     <meta name="theme-color" content="#08080c">
-    <title>MoShang Status v94.0</title>
+    <title>MoShang Status v95.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -22170,6 +22170,318 @@
         .v94-trend-indicator.declining { color: var(--danger); background: rgba(255,59,48,0.1); }
         .v94-trend-indicator.stable { color: var(--text-muted); }
 
+        /* ========== v95.0: Modern CSS 2026 Enhancements ========== */
+
+        /* v95.0: @property for enhanced animations */
+        @property --v95-hue {
+            syntax: '<angle>';
+            inherits: false;
+            initial-value: 0deg;
+        }
+        @property --v95-glow-intensity {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 0.5;
+        }
+        @property --v95-morph {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 0;
+        }
+        @property --v95-ripple-radius {
+            syntax: '<length>';
+            inherits: false;
+            initial-value: 0;
+        }
+
+        /* v95.0: Smooth entrance animation with @starting-style */
+        @starting-style {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* v95.0: Modern scroll-driven animations */
+        .v95-scroll-reveal {
+            animation: v95FadeSlide linear;
+            animation-timeline: view();
+            animation-range: entry 0% entry 100%;
+        }
+
+        @keyframes v95FadeSlide {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* v95.0: Staggered entrance with CSS counter */
+        .v95-stagger-container {
+            counter-reset: stagger 0;
+        }
+
+        .v95-stagger-item {
+            animation: v95StaggerIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+            animation-delay: calc(var(--stagger-index, 0) * 80ms);
+        }
+
+        @keyframes v95StaggerIn {
+            from { opacity: 0; transform: translateY(16px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* v95.0: Enhanced glass effect with backdrop-filter */
+        .v95-glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .v95-glass:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* v95.0: Pulse glow animation */
+        .v95-pulse-glow {
+            animation: v95GlowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes v95GlowPulse {
+            0%, 100% { box-shadow: 0 0 8px var(--primary), 0 0 16px rgba(255, 136, 51, 0.3); }
+            50% { box-shadow: 0 0 16px var(--primary), 0 0 32px rgba(255, 136, 51, 0.5); }
+        }
+
+        /* v95.0: Ripple effect for interactions */
+        .v95-ripple {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .v95-ripple::after {
+            content: '';
+            position: absolute;
+            top: var(--ripple-y, 50%);
+            left: var(--ripple-x, 50%);
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            animation: v95RippleExpand 0.6s ease-out forwards;
+        }
+
+        @keyframes v95RippleExpand {
+            to { width: 300%; height: 300%; opacity: 0; }
+        }
+
+        /* v95.0: Morphing border animation */
+        .v95-morph-border {
+            position: relative;
+        }
+
+        .v95-morph-border::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: inherit;
+            background: conic-gradient(from var(--v95-hue), #ff6b6b, #feca57, #48dbfb, #ff9ff3, #ff6b6b);
+            animation: v95HueRotate 4s linear infinite;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .v95-morph-border:hover::before {
+            opacity: 1;
+        }
+
+        @keyframes v95HueRotate {
+            to { --v95-hue: 360deg; }
+        }
+
+        /* v95.0: Text gradient flow */
+        .v95-text-gradient {
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: v95TextFlow 3s linear infinite;
+        }
+
+        @keyframes v95TextFlow {
+            to { background-position: 200% center; }
+        }
+
+        /* v95.0: Floating animation */
+        .v95-float {
+            animation: v95Floating 3s ease-in-out infinite;
+        }
+
+        @keyframes v95Floating {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* v95.0: Breathing animation */
+        .v95-breathe {
+            animation: v95Breathing 4s ease-in-out infinite;
+        }
+
+        @keyframes v95Breathing {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        /* v95.0: Shimmer sweep effect */
+        .v95-shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .v95-shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: v95ShimmerSweep 2s ease-in-out infinite;
+        }
+
+        @keyframes v95ShimmerSweep {
+            to { left: 200%; }
+        }
+
+        /* v95.0: Neural pulse animation */
+        .v95-neural-pulse {
+            position: relative;
+        }
+
+        .v95-neural-pulse::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent, var(--primary), transparent);
+            animation: v95NeuralSpin 2s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .v95-neural-pulse:hover::before {
+            opacity: 0.6;
+        }
+
+        @keyframes v95NeuralSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* v95.0: Spring bounce hover */
+        .v95-spring-hover {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .v95-spring-hover:hover {
+            transform: scale(1.05) translateY(-2px);
+        }
+
+        /* v95.0: Card depth effect */
+        .v95-depth-card {
+            box-shadow:
+                0 2px 4px rgba(0, 0, 0, 0.1),
+                0 4px 8px rgba(0, 0, 0, 0.1),
+                0 8px 16px rgba(0, 0, 0, 0.1),
+                0 16px 32px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .v95-depth-card:hover {
+            transform: translateY(-4px);
+            box-shadow:
+                0 4px 8px rgba(0, 0, 0, 0.15),
+                0 8px 16px rgba(0, 0, 0, 0.15),
+                0 16px 32px rgba(0, 0, 0, 0.2),
+                0 32px 64px rgba(0, 0, 0, 0.25);
+        }
+
+        /* v95.0: Focus ring with blur */
+        .v95-focus-ring:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--primary), 0 0 20px rgba(255, 136, 51, 0.4);
+        }
+
+        /* v95.0: Status indicator dots */
+        .v95-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-dim);
+            transition: all 0.3s ease;
+        }
+
+        .v95-status-dot.online {
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success);
+            animation: v95Pulse 2s ease-in-out infinite;
+        }
+
+        .v95-status-dot.warning {
+            background: var(--warning);
+            box-shadow: 0 0 8px var(--warning);
+        }
+
+        .v95-status-dot.error {
+            background: var(--danger);
+            box-shadow: 0 0 8px var(--danger);
+            animation: v95Blink 0.5s ease-in-out infinite;
+        }
+
+        @keyframes v95Pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        @keyframes v95Blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* v95.0: Toast notification animation */
+        .v95-toast {
+            animation: v95ToastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes v95ToastIn {
+            from { opacity: 0; transform: translateX(20px) scale(0.9); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+
+        /* v95.0: Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            .v95-scroll-reveal,
+            .v95-stagger-item,
+            .v95-pulse-glow,
+            .v95-float,
+            .v95-breathe,
+            .v95-shimmer::after,
+            .v95-neural-pulse::before,
+            .v95-text-gradient {
+                animation: none !important;
+            }
+        }
+
+        /* v95.0: High contrast mode */
+        @media (prefers-contrast: more) {
+            .v95-glass {
+                border-width: 2px;
+                background: rgba(0, 0, 0, 0.8);
+            }
+        }
+
     </style>
 </head>
 <body class="loading">
@@ -22997,8 +23309,8 @@
                     <span id="routeStatusDisplay" class="route-check-time" title="Last Check">--</span>
                 </div>
                 <div class="footer-info">
-                    <span class="footer-version v42-version-glow v43-version-badge v66-version-flash v72-version-glow v73-version-glow v76-version-glow v77-version-glow v78-version-glow v82-version-glow" id="footerVersion">v93.0</span>
-                    <span class="v48-footer-badge" id="v50FooterBadge">✨ v93.0</span>
+                    <span class="footer-version v42-version-glow v43-version-badge v66-version-flash v72-version-glow v73-version-glow v76-version-glow v77-version-glow v78-version-glow v82-version-glow" id="footerVersion">v95.0</span>
+                    <span class="v48-footer-badge" id="v50FooterBadge">✨ v95.0</span>
                     <span id="uptime">--</span>
                     <span id="reliabilityBadge" class="reliability-badge high" aria-label="Data Reliability Score">100%</span>
                     <!-- v40.0: Connection Quality -->
@@ -32597,12 +32909,40 @@
         function initV94Features() {
             v94InitHealthTrends();
         }
-        
+
+        // ========== v95.0: Modern CSS 2026 Enhancements ==========
+        function initV95Features() {
+            // Add v95 classes to interactive elements
+            document.querySelectorAll('.stat-card').forEach((card, i) => {
+                card.classList.add('v95-stagger-item');
+                card.style.setProperty('--stagger-index', i % 6);
+            });
+
+            // Add v95-glass to cards
+            document.querySelectorAll('.glass-card').forEach(card => {
+                card.classList.add('v95-glass');
+            });
+
+            // Add ripple effect to buttons
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.classList.add('v95-ripple');
+                btn.addEventListener('click', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    btn.style.setProperty('--ripple-x', x + '%');
+                    btn.style.setProperty('--ripple-y', y + '%');
+                });
+            });
+
+            console.log('✨ v95.0 initialized - Modern CSS 2026 enhancements');
+        }
+
         // Initialize all features after DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); });
+            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); });
         } else {
-            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); }, 100);
+            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); }, 100);
         }
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); });
@@ -32792,7 +33132,7 @@
 
     <!-- v82.0: Command Palette Hint -->
     <div class="v82-version-badge v81-version-badge" id="v78VersionHint" style="position:fixed;bottom:20px;left:20px;opacity:0.5;font-size:10px;cursor:pointer;" onclick="toggleV78CmdPalette()" title="Open Command Palette (Ctrl+K)">
-        ⚡ v93.0 · Ctrl+K
+        ⚡ v95.0 · Ctrl+K
     </div>
     
     <!-- v80.0: Demo Mode Badge (shown when API unavailable) -->

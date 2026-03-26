@@ -9,6 +9,19 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+- v95.0: Modern CSS 2026 增强（@property多属性/交错入场/stagger动画/v95-glass玻璃效果）
+- v95.0: v95-pulse-glow脉冲发光动画
+- v95.0: v95-ripple涟漪点击效果
+- v95.0: v95-morph-border彩虹渐变边框
+- v95.0: v95-text-gradient渐变流动文字
+- v95.0: v95-float/v95-breathe/v95-shimmer/v95-neural-pulse系列动画
+- v95.0: v95-depth-card多层深度阴影卡片
+- v95.0: v95-stagger-container交错入场容器
+- v95.0: 增强型reduced motion和无障碍支持
+- v94.0: 健康趋势追踪（Memory/CPU/Reliability 历史记录）
+- v94.0: 趋势检测算法（improving ↗ / declining ↘ / stable →）
+- v94.0: 健康面板趋势指标可视化
+- v94.0: 快捷状态栏趋势指示器（MEM/CPU 趋势箭头）
 - v93.0: 数据可靠性增强（电路断路器优化/多源验证/指数退避）
 - v93.0: Modern CSS 2025+ Features（@property增强/interpolate-size/Anchor定位/native dialog）
 - v93.0: :has()状态管理（stat卡片边框颜色随数值状态变化）
