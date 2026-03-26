@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v97.0">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v98.0">
     <meta name="theme-color" content="#08080c">
-    <title>MoShang Status v97.0</title>
+    <title>MoShang Status v98.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -23517,6 +23517,52 @@
             to { transform: translateX(0); opacity: 1; }
         }
         
+        /* v98.0: Fox state change bounce animation */
+        @keyframes v98FoxStateBounce {
+            0%   { transform: scale(1); }
+            25%  { transform: scale(1.12) translateY(-4px); }
+            50%  { transform: scale(0.96) translateY(1px); }
+            75%  { transform: scale(1.03) translateY(-1px); }
+            100% { transform: scale(1) translateY(0); }
+        }
+        
+        .fox-canvas-wrapper.v98-state-bounce {
+            animation: v98FoxStateBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        /* v98.0: State change toast enhancements */
+        .v98-state-toast {
+            border-left: 3px solid var(--status-color, var(--primary));
+            background: linear-gradient(135deg, rgba(var(--status-rgb, 255,136,51), 0.12), transparent);
+        }
+        
+        .v98-state-toast .toast-icon {
+            font-size: 16px;
+        }
+        
+        /* v98.0: Mood aura pulse on state change */
+        @keyframes v98AuraPulse {
+            0%   { opacity: 0.4; transform: scale(1); }
+            50%  { opacity: 0.8; transform: scale(1.15); }
+            100% { opacity: 0.4; transform: scale(1); }
+        }
+        
+        .mood-aura.v98-aura-active {
+            animation: v98AuraPulse 0.6s ease-out;
+        }
+        
+        /* v98.0: Stat counter flip animation */
+        @keyframes v98StatFlip {
+            0%   { transform: rotateX(0deg); opacity: 1; }
+            50%  { transform: rotateX(90deg); opacity: 0.3; }
+            100% { transform: rotateX(0deg); opacity: 1; }
+        }
+        
+        .v98-stat-flip {
+            animation: v98StatFlip 0.35s ease-in-out;
+            display: inline-block;
+        }
+
         /* v97.0: Reduced motion support */
         @media (prefers-reduced-motion: reduce) {
             .v97-*,
@@ -28015,6 +28061,37 @@
             flash.offsetHeight; // Trigger reflow
             flash.classList.add('active');
             setTimeout(() => flash.classList.remove('active'), 600);
+            
+            // v98.0: Fox canvas bounce on state change
+            const foxWrapper = document.querySelector('.fox-canvas-wrapper');
+            if (foxWrapper) {
+                foxWrapper.classList.remove('v98-state-bounce');
+                foxWrapper.offsetHeight; // Trigger reflow
+                foxWrapper.classList.add('v98-state-bounce');
+                setTimeout(() => foxWrapper.classList.remove('v98-state-bounce'), 600);
+            }
+            
+            // v98.0: Mood aura pulse on state change
+            const moodAura = $('moodAura');
+            if (moodAura) {
+                moodAura.classList.remove('v98-aura-active');
+                moodAura.offsetHeight; // Trigger reflow
+                moodAura.classList.add('v98-aura-active');
+                setTimeout(() => moodAura.classList.remove('v98-aura-active'), 700);
+            }
+            
+            // v98.0: State change toast notification
+            const stateNames = {
+                idle: 'Idle', working: 'Working', sleeping: 'Sleeping',
+                excited: 'Excited!', error: 'Error', thinking: 'Thinking',
+                laughing: 'Laughing', focused: 'Focused', learning: 'Learning'
+            };
+            const stateIcons = {
+                idle: '😺', working: '⚡', sleeping: '😴',
+                excited: '🎉', error: '❌', thinking: '💭',
+                laughing: '😂', focused: '🎯', learning: '📚'
+            };
+            showToastV32(`${stateIcons[mood] || '🔄'} ${stateNames[mood] || mood} mode`, 'default', 2000);
         }
 
         // v38: Number Pop Animation on Value Change
@@ -34227,14 +34304,25 @@
             console.log('✨ v97.0 initialized - 2026 Modern Visual Enhancements');
         }
 
+        // ========== v98.0: State Change Enhancement & Interactive Feedback ==========
+        function initV98Features() {
+            // v98.0: Attach state-change bounce to fox canvas wrapper
+            // (The bounce is triggered via triggerV38StateFlash, this just ensures wrapper exists)
+            const foxWrapper = document.querySelector('.fox-canvas-wrapper');
+            if (foxWrapper) {
+                foxWrapper.style.transformOrigin = 'center center';
+            }
+            console.log('✨ v98.0 initialized - State Change Enhancement & Interactive Feedback');
+        }
+
         // Initialize all features after DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); });
+            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); });
         } else {
-            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); }, 100);
+            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); }, 100);
         }
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); });
+            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); });
         } else {
             setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); }, 100);
         }
@@ -34421,7 +34509,7 @@
 
     <!-- v82.0: Command Palette Hint -->
     <div class="v82-version-badge v81-version-badge" id="v78VersionHint" style="position:fixed;bottom:20px;left:20px;opacity:0.5;font-size:10px;cursor:pointer;" onclick="toggleV78CmdPalette()" title="Open Command Palette (Ctrl+K)">
-        ⚡ v97.0 · Ctrl+K
+        ⚡ v98.0 · Ctrl+K
     </div>
     
     <!-- v80.0: Demo Mode Badge (shown when API unavailable) -->
