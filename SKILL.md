@@ -9,6 +9,10 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+- v108.0: Dynamic Fox Animation速度根据状态动态调整（working时加快/sleeping时减慢）
+- v108.0: Fox Expression动画时长根据心情变化（excited更快/sleeping更慢）
+- v108.0: Tail Wag幅度根据状态变化（excited时更剧烈/laughing时摆动更大）
+- v108.0: Breathing Amplitude动态调整（excited时振幅增大/sleeping时振幅减小）
 - v107.0: Enhanced Light Mode增强型浅色模式（更丰富的色彩/更好的对比度/玻璃高光优化）
 - v107.0: Accessibility Skip Link无障碍跳转链接（Skip to main content）
 - v107.0: Next-Gen CSS 2026 Animations（scroll-driven reveal/spring physics/stagger entrance）
