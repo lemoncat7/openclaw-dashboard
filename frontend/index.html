@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v99.0">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v100.0">
     <meta name="theme-color" content="#08080c">
-    <title>MoShang Status v99.0</title>
+    <title>MoShang Status v100.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -24272,6 +24272,271 @@
             }
         }
 
+        /* ========== v100.0: Interactive Canvas Fox & Real-time State Timeline ========== */
+
+        /* v100.0: State Timeline - Horizontal scrolling state history */
+        @keyframes v100StateTimelineSlide {
+            from { transform: translateX(0); opacity: 0.8; }
+            to { transform: translateX(-50%); opacity: 1; }
+        }
+
+        .v100-state-timeline {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .v100-state-timeline::before,
+        .v100-state-timeline::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 30px;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .v100-state-timeline::before {
+            left: 0;
+            background: linear-gradient(90deg, rgba(8,8,12,0.9) 0%, transparent 100%);
+        }
+        .v100-state-timeline::after {
+            right: 0;
+            background: linear-gradient(270deg, rgba(8,8,12,0.9) 0%, transparent 100%);
+        }
+
+        .v100-timeline-track {
+            display: flex;
+            gap: 16px;
+            animation: v100StateTimelineSlide 20s linear infinite;
+            white-space: nowrap;
+        }
+
+        .v100-timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .v100-timeline-item:hover {
+            background: rgba(255,255,255,0.1);
+            transform: scale(1.05);
+        }
+
+        .v100-timeline-item.active {
+            background: rgba(var(--accent-rgb, 255,136,51), 0.15);
+            border-color: rgba(var(--accent-rgb, 255,136,51), 0.3);
+        }
+
+        .v100-timeline-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .v100-timeline-time {
+            color: var(--text-dim);
+            font-size: 10px;
+        }
+
+        .v100-timeline-label {
+            color: var(--text-muted);
+            font-size: 10px;
+        }
+
+        /* v100.0: Contextual Emoji - Time-of-day aware indicator */
+        @keyframes v100ContextEmojiPulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px currentColor); }
+            50% { transform: scale(1.15); filter: drop-shadow(0 0 10px currentColor); }
+        }
+
+        .v100-context-emoji {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            font-size: 18px;
+            border-radius: var(--radius-full);
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            animation: v100ContextEmojiPulse 3s ease-in-out infinite;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .v100-context-emoji:hover {
+            transform: scale(1.2);
+            background: rgba(255,255,255,0.15);
+        }
+
+        .v100-context-emoji .emoji-inner {
+            transition: all 0.3s ease;
+        }
+
+        /* v100.0: Mouse proximity glow - Fox aura reacts to cursor */
+        .v100-proximity-glow {
+            transition: box-shadow 0.5s ease, transform 0.3s ease;
+        }
+
+        /* v100.0: Real-time Activity Ticker */
+        @keyframes v100ActivityTicker {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(-20px); opacity: 0; }
+        }
+
+        .v100-activity-ticker {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-height: 60px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .v100-activity-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 3px 8px;
+            font-size: 11px;
+            color: var(--text-muted);
+            background: rgba(255,255,255,0.03);
+            border-radius: var(--radius-sm);
+            animation: v100ActivityTicker 4s ease-in-out forwards;
+            opacity: 0;
+        }
+
+        .v100-activity-item.show {
+            opacity: 1;
+        }
+
+        .v100-activity-icon {
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        /* v100.0: Task progress drain animation */
+        @keyframes v100TaskDrain {
+            0% { stroke-dashoffset: 0; filter: brightness(1.2); }
+            70% { stroke-dashoffset: var(--drain-offset, 0); filter: brightness(1); }
+            100% { stroke-dashoffset: var(--drain-offset, 0); filter: brightness(1); }
+        }
+
+        .v100-task-progress-ring {
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .v100-task-progress-ring.draining {
+            animation: v100TaskDrain 1.5s ease-out forwards;
+        }
+
+        /* v100.0: Stat number roll animation */
+        @keyframes v100StatRoll {
+            0% { transform: translateY(0) rotateX(0); opacity: 1; }
+            45% { transform: translateY(-8px) rotateX(-90deg); opacity: 0; }
+            55% { transform: translateY(8px) rotateX(90deg); opacity: 0; }
+            100% { transform: translateY(0) rotateX(0); opacity: 1; }
+        }
+
+        .v100-stat-roll {
+            animation: v100StatRoll 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* v100.0: Fox canvas click ripple */
+        @keyframes v100FoxRipple {
+            0% { transform: scale(0); opacity: 0.6; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+
+        .v100-fox-ripple {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,200,100,0.5) 0%, transparent 70%);
+            transform: translate(-50%, -50%) scale(0);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .v100-fox-ripple.active {
+            animation: v100FoxRipple 0.6s ease-out forwards;
+        }
+
+        /* v100.0: Version badge shine effect */
+        @keyframes v100BadgeShine {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .v100-version-badge {
+            background: linear-gradient(
+                90deg,
+                var(--primary) 0%,
+                var(--v99-neon-cyan) 25%,
+                var(--accent) 50%,
+                var(--v99-neon-coral) 75%,
+                var(--primary) 100%
+            );
+            background-size: 200% auto;
+            animation: v100BadgeShine 3s linear infinite;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* v100.0: Mini sparkline for stat cards */
+        .v100-mini-sparkline {
+            display: inline-block;
+            width: 40px;
+            height: 16px;
+            vertical-align: middle;
+        }
+
+        /* v100.0: Connection quality meter */
+        .v100-connection-quality {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 14px;
+        }
+
+        .v100-connection-bar {
+            width: 3px;
+            border-radius: 2px;
+            background: var(--text-dim);
+            transition: all 0.3s ease;
+        }
+
+        .v100-connection-bar:nth-child(1) { height: 4px; }
+        .v100-connection-bar:nth-child(2) { height: 7px; }
+        .v100-connection-bar:nth-child(3) { height: 10px; }
+        .v100-connection-bar:nth-child(4) { height: 14px; }
+
+        .v100-connection-quality.excellent .v100-connection-bar { background: var(--success); }
+        .v100-connection-quality.good .v100-connection-bar:nth-child(-n+3) { background: var(--success); }
+        .v100-connection-quality.good .v100-connection-bar:nth-child(4) { background: var(--text-dim); }
+        .v100-connection-quality.fair .v100-connection-bar:nth-child(-n+2) { background: var(--warning); }
+        .v100-connection-quality.poor .v100-connection-bar:nth-child(1) { background: var(--danger); }
+
     </style>
 </head>
 <body class="loading">
@@ -24290,6 +24555,11 @@
         <span class="v87-ai-context-close" onclick="v87HideAIContext()" title="Dismiss">✕</span>
     </div>
     
+    <!-- v100.0: Contextual Emoji - Time-of-day aware indicator -->
+    <div class="v100-context-emoji" id="v100ContextEmoji" title="Loading...">
+        <span class="emoji-inner">😺</span>
+    </div>
+    
     <!-- v87.0: Sound Wave Visualizer (inside header) -->
     <div class="v87-sound-bars" id="v87SoundBars">
         <div class="v87-sound-bar"></div>
@@ -24304,6 +24574,17 @@
         <span class="alert-icon">⚠️</span>
         <span class="alert-text" id="v85AlertText"></span>
         <span class="alert-dismiss" id="v85AlertDismiss" onclick="v85DismissAlert()">✕</span>
+    </div>
+
+    <!-- v100.0: State Timeline - Real-time state history ticker -->
+    <div class="v100-state-timeline" id="v100StateTimeline" title="Recent State Changes">
+        <div class="v100-timeline-track" id="v100TimelineTrack">
+            <div class="v100-timeline-item active">
+                <div class="v100-timeline-dot" style="background: #ffc864"></div>
+                <span class="v100-timeline-label">😺 idle</span>
+                <span class="v100-timeline-time">--:--:--</span>
+            </div>
+        </div>
     </div>
 
     <!-- v52.0: Background Effects -->
@@ -24564,6 +24845,8 @@
                                 <div class="fox-glow-aura v77-enhanced" id="foxGlowAura"></div>
                                 <div class="v69-fox-aura-ring" aria-hidden="true"></div>
                                 <canvas class="fox-canvas" id="foxCanvas"></canvas>
+                                <!-- v100.0: Fox click ripple effect container -->
+                                <div class="v100-fox-ripple" id="v100FoxRipple"></div>
                             </div>
                             <div class="mood-sync-ring" id="moodSyncRing"></div>
                             <div class="fox-expression" id="foxExpression">😺</div>
@@ -24576,6 +24859,9 @@
 
                         <h1 class="fox-name gradient-text-animated">MoShang</h1>
                         <p class="fox-role">Digital Assistant</p>
+
+                        <!-- v100.0: Real-time Activity Ticker -->
+                        <div class="v100-activity-ticker" id="v100ActivityTicker"></div>
 
                         <div class="stats-row v38-entrance v38-entrance-1">
                             <div class="mini-stat">
@@ -25099,8 +25385,8 @@
                     <span id="routeStatusDisplay" class="route-check-time" title="Last Check">--</span>
                 </div>
                 <div class="footer-info">
-                    <span class="footer-version v42-version-glow v43-version-badge v66-version-flash v72-version-glow v73-version-glow v76-version-glow v77-version-glow v78-version-glow v82-version-glow" id="footerVersion">v96.0</span>
-                    <span class="v48-footer-badge" id="v50FooterBadge">✨ v96.0</span>
+                    <span class="footer-version v42-version-glow v43-version-badge v66-version-flash v72-version-glow v73-version-glow v76-version-glow v77-version-glow v78-version-glow v82-version-glow v100-version-badge" id="footerVersion">v100.0</span>
+                    <span class="v48-footer-badge" id="v50FooterBadge">✨ v100.0</span>
                     <span id="uptime">--</span>
                     <span id="reliabilityBadge" class="reliability-badge high" aria-label="Data Reliability Score">100%</span>
                     <!-- v40.0: Connection Quality -->
@@ -25109,6 +25395,13 @@
                         <div class="v39-connection-bar v43-connection-bar"></div>
                         <div class="v39-connection-bar v43-connection-bar"></div>
                         <div class="v39-connection-bar v43-connection-bar"></div>
+                    </div>
+                    <!-- v100.0: Enhanced Connection Quality Meter -->
+                    <div class="v100-connection-quality excellent" id="v100ConnectionQuality" title="API Latency Quality">
+                        <div class="v100-connection-bar"></div>
+                        <div class="v100-connection-bar"></div>
+                        <div class="v100-connection-bar"></div>
+                        <div class="v100-connection-bar"></div>
                     </div>
                     <!-- v48.0: Reliability Ring Badge -->
                     <div class="v48-reliability-ring high" id="v48ReliabilityRing" data-value="100" title="Data Reliability Score">
@@ -27662,6 +27955,8 @@
                 createParticleBurst(ctx, width / 2, height / 2);
                 // v70.0: Fox reaction on canvas click (safe call)
                 try { if (typeof foxPet === 'function') { v70FoxState.lastInteraction = Date.now(); foxPet(); } } catch(e) {}
+                // v100.0: Fox ripple on click
+                triggerV100FoxRipple(colors[state.status] || '#ffc864');
             });
 
             let lastBlink = 0, isBlinking = false, blinkProgress = 0;
@@ -35115,11 +35410,283 @@
             console.log('✨ v99.0 initialized - Next-Gen 2026 Enhancements Active');
         }
 
+        // ========== v100.0: Interactive Canvas Fox & Real-time State Timeline ==========
+        function initV100Features() {
+            // v100.0: Initialize state timeline
+            initV100StateTimeline();
+            
+            // v100.0: Initialize contextual emoji
+            initV100ContextEmoji();
+            
+            // v100.0: Initialize activity ticker
+            initV100ActivityTicker();
+            
+            // v100.0: Initialize fox proximity effect
+            initV100FoxProximity();
+            
+            // v100.0: Initialize connection quality meter
+            initV100ConnectionQuality();
+            
+            // Add v100-ready class
+            document.body.classList.add('v100-ready');
+            
+            console.log('✨ v100.0 initialized - Interactive Canvas Fox & Real-time State Timeline');
+        }
+
+        // v100.0: Fox click ripple effect
+        function triggerV100FoxRipple(color) {
+            const ripple = document.getElementById('v100FoxRipple');
+            if (!ripple) return;
+            ripple.style.background = `radial-gradient(circle, ${color}80 0%, transparent 70%)`;
+            ripple.classList.remove('active');
+            void ripple.offsetWidth;
+            ripple.classList.add('active');
+            setTimeout(() => ripple.classList.remove('active'), 600);
+        }
+
+        // v100.0: State Timeline Manager
+        const _v100StateHistory = [];
+        const _v100MaxHistory = 8;
+
+        function initV100StateTimeline() {
+            const timeline = document.getElementById('v100StateTimeline');
+            if (!timeline) return;
+            
+            // Initial state
+            addV100StateEntry('idle', 'Initializing...');
+            
+            // Observe state changes via existing updateStatus function hooks
+            _v100OriginalUpdateStatus = window.updateStatusV50 || window.updateStatus;
+            window.updateStatusV50 = function(status) {
+                if (_v100OriginalUpdateStatus) _v100OriginalUpdateStatus.apply(this, arguments);
+                addV100StateEntry(status, getV100TimeLabel());
+                updateV100TimelineUI();
+            };
+        }
+
+        function addV100StateEntry(status, label) {
+            const entry = {
+                status: status,
+                label: label || status,
+                time: Date.now(),
+                icon: _v100StateIcons[status] || '🔄'
+            };
+            _v100StateHistory.unshift(entry);
+            if (_v100StateHistory.length > _v100MaxHistory) {
+                _v100StateHistory.pop();
+            }
+        }
+
+        function updateV100TimelineUI() {
+            const timeline = document.getElementById('v100StateTimeline');
+            if (!timeline) return;
+            
+            const track = timeline.querySelector('.v100-timeline-track');
+            if (!track) return;
+            
+            // Build timeline HTML (duplicate for seamless loop)
+            const items = [..._v100StateHistory, ..._v100StateHistory];
+            track.innerHTML = items.map((item, i) => `
+                <div class="v100-timeline-item ${i < _v100StateHistory.length && i === 0 ? 'active' : ''}">
+                    <div class="v100-timeline-dot" style="background: ${_v100StateColors[item.status] || '#ffc864'}"></div>
+                    <span class="v100-timeline-label">${item.icon} ${item.status}</span>
+                    <span class="v100-timeline-time">${i < _v100StateHistory.length ? item.label : ''}</span>
+                </div>
+            `).join('');
+        }
+
+        function getV100TimeLabel() {
+            const now = new Date();
+            return now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+
+        const _v100StateIcons = {
+            idle: '😺', working: '⚡', sleeping: '💤', excited: '🎉',
+            thinking: '💭', laughing: '😂', focused: '🎯', learning: '📚', error: '❌'
+        };
+
+        const _v100StateColors = {
+            idle: '#ffc864', working: '#00d4ff', sleeping: '#a855f7', excited: '#ec4899',
+            thinking: '#a855f7', laughing: '#ffc864', focused: '#5cdb95', learning: '#ffc864', error: '#ff6b6b'
+        };
+
+        // v100.0: Contextual Emoji
+        function initV100ContextEmoji() {
+            const emojiEl = document.getElementById('v100ContextEmoji');
+            if (!emojiEl) return;
+            
+            updateV100ContextEmoji();
+            // Update every minute
+            setInterval(updateV100ContextEmoji, 60000);
+        }
+
+        function updateV100ContextEmoji() {
+            const emojiEl = document.getElementById('v100ContextEmoji');
+            if (!emojiEl) return;
+            
+            const hour = new Date().getHours();
+            let emoji, tooltip;
+            
+            if (hour >= 6 && hour < 9) {
+                emoji = '🌅'; tooltip = '早安~新的一天开始啦';
+            } else if (hour >= 9 && hour < 12) {
+                emoji = '⚡'; tooltip = '上午黄金时间，加劲干活！';
+            } else if (hour >= 12 && hour < 14) {
+                emoji = '🍜'; tooltip = '午餐时间，休息一下~';
+            } else if (hour >= 14 && hour < 18) {
+                emoji = '💪'; tooltip = '下午也要加油哦';
+            } else if (hour >= 18 && hour < 21) {
+                emoji = '🌙'; tooltip = '傍晚时分，轻松一下';
+            } else if (hour >= 21 || hour < 6) {
+                emoji = '😴'; tooltip = '夜深了，该休息啦';
+            } else {
+                emoji = '😺'; tooltip = '莫殇状态看板';
+            }
+            
+            emojiEl.innerHTML = `<span class="emoji-inner">${emoji}</span>`;
+            emojiEl.title = tooltip;
+            
+            // Pulse color based on time
+            const colors = {
+                '🌅': '#FFB347', '⚡': '#00d4ff', '🍜': '#FF6B6B',
+                '💪': '#5cdb95', '🌙': '#a855f7', '😴': '#6366F1', '😺': '#ffc864'
+            };
+            emojiEl.style.color = colors[emoji] || '#ffc864';
+        }
+
+        // v100.0: Activity Ticker
+        const _v100ActivityQueue = [];
+
+        function initV100ActivityTicker() {
+            const ticker = document.getElementById('v100ActivityTicker');
+            if (!ticker) return;
+            
+            // Listen to activity events
+            document.addEventListener('fox-state-change', (e) => {
+                pushV100Activity(e.detail.icon + ' ' + e.detail.message, 'state');
+            });
+            
+            // Demo: periodic activity pulse
+            setInterval(() => {
+                const activities = ['✨ 实时监控中', '🎯 任务进度更新', '📊 数据同步', '⚡ 状态检查'];
+                const icon = ['✨', '🎯', '📊', '⚡'][Math.floor(Math.random() * 4)];
+                pushV100Activity(icon + ' ' + activities[Math.floor(Math.random() * activities.length)], 'system');
+            }, 8000);
+        }
+
+        function pushV100Activity(message, type = 'system') {
+            const ticker = document.getElementById('v100ActivityTicker');
+            if (!ticker) return;
+            
+            const item = document.createElement('div');
+            item.className = 'v100-activity-item';
+            item.innerHTML = `<span class="v100-activity-icon">${type === 'state' ? '🔄' : '⚡'}</span><span>${message}</span>`;
+            ticker.appendChild(item);
+            
+            requestAnimationFrame(() => item.classList.add('show'));
+            
+            setTimeout(() => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(-10px)';
+                setTimeout(() => item.remove(), 400);
+            }, 3500);
+        }
+
+        // v100.0: Fox Proximity Effect
+        function initV100FoxProximity() {
+            const foxContainer = document.querySelector('.fox-canvas-wrapper');
+            if (!foxContainer) return;
+            
+            let proximityTimeout;
+            
+            document.addEventListener('mousemove', (e) => {
+                const rect = foxContainer.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const distance = Math.sqrt(Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2));
+                const maxDist = Math.max(rect.width, rect.height);
+                
+                const proximity = Math.max(0, 1 - distance / (maxDist * 1.2));
+                
+                // Adjust aura intensity based on proximity
+                const moodAura = document.getElementById('moodAura');
+                if (moodAura) {
+                    const baseIntensity = 0.5;
+                    const extraIntensity = proximity * 0.5;
+                    moodAura.style.setProperty('--aura-intensity', baseIntensity + extraIntensity);
+                    moodAura.style.opacity = baseIntensity + extraIntensity * 0.7;
+                }
+                
+                // Scale fox slightly on close proximity
+                const foxCanvas = document.getElementById('foxCanvas');
+                if (foxCanvas) {
+                    foxCanvas.style.transform = `scale(${1 + proximity * 0.08})`;
+                }
+                
+                clearTimeout(proximityTimeout);
+                proximityTimeout = setTimeout(() => {
+                    if (moodAura) {
+                        moodAura.style.setProperty('--aura-intensity', 0.5);
+                        moodAura.style.opacity = '';
+                    }
+                    if (foxCanvas) {
+                        foxCanvas.style.transform = '';
+                    }
+                }, 1000);
+            });
+        }
+
+        // v100.0: Connection Quality Meter
+        function initV100ConnectionQuality() {
+            const meter = document.getElementById('v100ConnectionQuality');
+            if (!meter) return;
+            
+            // Monitor API latency
+            let latencySamples = [];
+            const originalFetch = window.fetch;
+            
+            window.fetch = async function(...args) {
+                const start = Date.now();
+                try {
+                    const result = await originalFetch.apply(this, args);
+                    const latency = Date.now() - start;
+                    latencySamples.push(latency);
+                    if (latencySamples.length > 5) latencySamples.shift();
+                    updateV100ConnectionMeter();
+                    return result;
+                } catch (e) {
+                    latencySamples.push(5000);
+                    if (latencySamples.length > 5) latencySamples.shift();
+                    updateV100ConnectionMeter();
+                    throw e;
+                }
+            };
+            
+            updateV100ConnectionMeter();
+            setInterval(updateV100ConnectionMeter, 10000);
+        }
+
+        function updateV100ConnectionMeter() {
+            const meter = document.getElementById('v100ConnectionQuality');
+            if (!meter) return;
+            
+            const avg = latencySamples => latencySamples.length 
+                ? latencySamples.reduce((a,b) => a+b, 0) / latencySamples.length 
+                : 0;
+            const latency = avg(latencySamples);
+            
+            meter.className = 'v100-connection-quality';
+            if (latency < 100) meter.classList.add('excellent');
+            else if (latency < 300) meter.classList.add('good');
+            else if (latency < 800) meter.classList.add('fair');
+            else meter.classList.add('poor');
+        }
+
         // Initialize all features after DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); });
+            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); });
         } else {
-            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); }, 100);
+            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); }, 100);
         }
 
     </script>
