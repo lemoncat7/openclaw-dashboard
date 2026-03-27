@@ -9,7 +9,15 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
-- v105.0: Frosted Ribbon毛玻璃缎带/动态岛通知/Dynamic Island悬浮通知
+- v107.0: Enhanced Light Mode增强型浅色模式（更丰富的色彩/更好的对比度/玻璃高光优化）
+- v107.0: Accessibility Skip Link无障碍跳转链接（Skip to main content）
+- v107.0: Next-Gen CSS 2026 Animations（scroll-driven reveal/spring physics/stagger entrance）
+- v107.0: Enhanced Focus Indicators增强焦点指示器（发光轮廓/更好的可见性）
+- v107.0: Print Styles优化打印样式
+- v107.0: Card Entrance Orchestration卡片入场动画编排
+- v107.0: Status-aware Text Contrast状态感知文字对比度
+- v107.0: Light Mode Fox Enhancements浅色模式狐狸光晕效果
+- v106.0: Frosted Ribbon毛玻璃缎带/动态岛通知/Dynamic Island悬浮通知
 - v105.0: Motion Blur Text文字动态模糊残影效果
 - v105.0: Liquid Morph Blob v2增强型液态变形背景（18秒有机变形周期）
 - v105.0: Data Pulse Grid数据脉冲网格背景
@@ -645,6 +653,17 @@ python3 ~/.openclaw/workspace/skills/dashboard-service/scripts/server.py &
 - https://oclaw.mochencloud.cn:1443/onboard → localhost:19000
 
 ## 更新日志
+
+### v107.0 (2026-03-28)
+- **Enhanced Light Mode增强型浅色模式**: 全面重新设计的浅色主题，使用#f0f4f8背景配合透明玻璃卡片inset高光边，浅色模式下狐狸名渐变色更鲜艳（橙黄渐变），狐狸容器添加温暖光晕阴影，所有交互元素浅色模式优化
+- **Accessibility Skip Link无障碍跳转链接**: 新增"Skip to main content"跳过链接，键盘用户可快速导航到主要内容，v107-skip-link类支持焦点激活样式
+- **Next-Gen CSS 2026 Animations**: 新增v107-scroll-reveal（scroll-driven视口入场动画）、v107-spring-in（物理弹性弹入动画，带overshoot回弹效果）、v107-stagger（8档交错延迟动画）
+- **Enhanced Focus Indicators增强焦点指示器**: 升级:focus-visible样式，添加2px primary色轮廓+6px模糊光晕+20px发光阴影，浅色模式下同样清晰可见，改善键盘导航体验
+- **Light Mode Fox Enhancements浅色模式狐狸优化**: 狐狸容器添加drop-shadow光晕，fox-glow-aura使用橙色径向渐变，ambient-orb降低透明度至0.12并优化blur效果，neural-sync-indicator边框颜色适配浅色主题
+- **Card Entrance Orchestration卡片入场动画**: 主玻璃卡片新增v107-entrance类，使用3D透视旋转+滑动的入场动画（translateY+rotateX），cubic-bezier(0.34, 1.2, 0.64, 1)弹性曲线
+- **Status-aware Text Contrast状态感知对比度**: stat-value根据数值级别自动变色（low=绿色/mid=黄色/high=红色/max=红色+发光），改善数据可读性
+- **Print Styles优化**: 新增@media print样式，浅色模式打印时自动使用白色背景隐藏所有canvas和装饰元素，优化纸质输出
+- **版本更新至 v107.0**
 
 ### v105.0 (2026-03-28)
 - **Frosted Ribbon毛玻璃缎带**: 全新毛玻璃效果，带动态扫光动画，营造深度感
