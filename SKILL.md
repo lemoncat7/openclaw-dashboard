@@ -9,6 +9,23 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+- v105.0: Frosted Ribbon毛玻璃缎带/动态岛通知/Dynamic Island悬浮通知
+- v105.0: Motion Blur Text文字动态模糊残影效果
+- v105.0: Liquid Morph Blob v2增强型液态变形背景（18秒有机变形周期）
+- v105.0: Data Pulse Grid数据脉冲网格背景
+- v105.0: Smart Context Bar智能上下文浮动栏
+- v105.0: 3D Flip Card Effect卡片3D翻转效果
+- v105.0: Ink Spread Hover墨水扩散悬停效果
+- v105.0: Neon Ring Spin霓虹光环旋转动画
+- v105.0: Glassmorphic Card with Inner Glow玻璃态内发光卡片
+- v105.0: Particle Burst & Confetti Effects粒子爆发和彩屑庆祝效果
+- v105.0: Magnetic Button Effect磁性按钮悬停效果
+- v105.0: Cursor Trail Enhanced增强型光标轨迹
+- v105.0: Glitch Text v2增强型故障文字效果
+- v105.0: Ambient Noise Texture环境噪点纹理层
+- v105.0: Spring Bounce Entrance弹簧弹跳入场动画
+- v105.0: Dynamic Island Notification动态岛通知系统
+- v105.0: Complete Reduced Motion & High Contrast Support完整无障碍支持
 - v104.0: Next-Gen交互功能（Activity Ring状态感知光环/Click Burst点击爆裂/Count动画）
 - v104.0: Mini Dock快捷工具栏（刷新/庆祝/命令面板/全屏）
 - v104.0: Pulse Dots三色活跃指示器/Gradient Border旋转彩色边框
@@ -628,6 +645,25 @@ python3 ~/.openclaw/workspace/skills/dashboard-service/scripts/server.py &
 - https://oclaw.mochencloud.cn:1443/onboard → localhost:19000
 
 ## 更新日志
+
+### v105.0 (2026-03-28)
+- **Frosted Ribbon毛玻璃缎带**: 全新毛玻璃效果，带动态扫光动画，营造深度感
+- **Dynamic Island Notification动态岛通知**: 顶部中央悬浮通知，融合现代iOS动态岛风格，带弹性滑入/出动画
+- **Motion Blur Text文字动态模糊残影**: 文字悬停时产生彩色动态模糊残影效果，增强动感
+- **Liquid Morph Blob v2增强型液态变形**: 18秒有机变形周期，更自然的border-radius和transform组合
+- **Data Pulse Grid数据脉冲网格**: 固定网格背景随数据更新脉冲动画，增强数据感知
+- **Smart Context Bar智能上下文栏**: AI上下文智能浮动栏，脉冲动画图标+打字点阵
+- **3D Flip Card Effect卡片3D翻转**: 悬停时卡片绕Y轴180度翻转reveal背面内容
+- **Ink Spread Hover墨水扩散**: 鼠标位置驱动的径向渐变悬停效果
+- **Neon Ring Spin霓虹光环**: 悬停触发锥形渐变彩虹光环旋转动画
+- **Glassmorphic Inner Glow玻璃态内发光**: 带旋转彩虹光泽层的增强玻璃卡片
+- **Particle Burst & Confetti Effects**: 粒子爆发效果（12方向）和40片彩屑庆祝动画
+- **Magnetic Button磁性按钮**: 鼠标位置驱动微位移+发光阴影
+- **Cursor Trail Enhanced增强型光标轨迹**: 渐隐消失的光点拖尾效果
+- **Glitch Text v2增强型故障文字**: 悬停时左右分离的clip-path故障效果
+- **Ambient Noise Texture环境噪点**: 全屏噪点纹理叠加层，增强质感
+- **Complete Accessibility完整无障碍**: prefers-reduced-motion和prefers-contrast:more全面支持
+- **版本更新至 v105.0**
 
 ### v48.1 (2026-03-23)
 - **Liquid Glass 2.0**: 全新玻璃态效果，灵感来自 iOS 26 的深度效果，包含多层渐变、内阴影高光、更强的模糊和饱和度
