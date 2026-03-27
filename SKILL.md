@@ -9,6 +9,11 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+- v104.0: Next-Gen交互功能（Activity Ring状态感知光环/Click Burst点击爆裂/Count动画）
+- v104.0: Mini Dock快捷工具栏（刷新/庆祝/命令面板/全屏）
+- v104.0: Pulse Dots三色活跃指示器/Gradient Border旋转彩色边框
+- v104.0: Timeline增强（悬停左侧高亮）/Ambient Float漂浮动画/Scan Line扫描线
+- v104.0: Light Trail悬停光迹效果
 - v103.0: View Transitions API原生支持（状态切换平滑过渡）
 - v103.0: 增强型空间音频可视化（12条物理弹簧动画柱/OKLCH渐变色彩）
 - v103.0: AI洞察系统增强（跨指标综合分析/时间上下文感知/趋势计算）
