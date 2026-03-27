@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v102.0">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v104.0">
     <meta name="theme-color" content="#08080c">
-    <title>MoShang Status v102.0</title>
+    <title>MoShang Status v104.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -26335,6 +26335,128 @@
             }
         }
         
+        /* ========== v103.0: View Transitions API & OKLCH Enhancements ========== */
+        
+        /* v103.0: View Transitions API native support */
+        @supports (view-transition-name: none) {
+            ::view-transition-old(root),
+            ::view-transition-new(root) {
+                animation-duration: 0.3s;
+                animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            
+            ::view-transition-old(fox-container) {
+                animation: v103FoxFadeOut 0.25s ease-out forwards;
+            }
+            
+            ::view-transition-new(fox-container) {
+                animation: v103FoxFadeIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            }
+        }
+        
+        @keyframes v103FoxFadeOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.9); }
+        }
+        
+        @keyframes v103FoxFadeIn {
+            from { opacity: 0; transform: scale(1.1); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        /* v103.0: OKLCH-based gradient backgrounds for stat cards */
+        .v103-oklch-gradient {
+            background: linear-gradient(
+                135deg,
+                oklch(75% 0.12 250) 0%,
+                oklch(70% 0.14 200) 50%,
+                oklch(78% 0.1 170) 100%
+            );
+        }
+        
+        .v103-oklch-accent-gradient {
+            background: linear-gradient(
+                135deg,
+                oklch(65% 0.18 320) 0%,
+                oklch(70% 0.16 280) 50%,
+                oklch(75% 0.14 240) 100%
+            );
+        }
+        
+        /* v103.0: Enhanced audio viz with OKLCH glow */
+        .v103-audio-glow {
+            filter: drop-shadow(0 0 8px oklch(80% 0.2 170));
+            transition: filter 0.3s ease;
+        }
+        
+        .v103-audio-glow.active {
+            filter: drop-shadow(0 0 16px oklch(80% 0.25 160));
+        }
+        
+        /* v103.0: Smooth height transitions with interpolate-size */
+        @supports (interpolate-size: allow-keywords) {
+            .v103-expandable {
+                transition: height 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            }
+        }
+        
+        /* v103.0: Anchor positioning fallback for older browsers */
+        @supports not (anchor-name: none) {
+            .v103-tooltip-anchor {
+                position: absolute;
+                top: var(--anchor-top, auto);
+                bottom: var(--anchor-bottom, auto);
+                left: var(--anchor-left, auto);
+                right: var(--anchor-right, auto);
+            }
+        }
+        
+        /* v103.0: Native color() function with OKLCH fallback */
+        .v103-oklch-text {
+            color: oklch(95% 0.01 85);
+        }
+        
+        .v103-oklch-muted {
+            color: oklch(70% 0.02 85);
+        }
+        
+        /* v103.0: Selection styling with OKLCH */
+        ::selection {
+            background: oklch(80% 0.15 250 / 0.3);
+            color: oklch(98% 0 0);
+        }
+        
+        /* v103.0: Scroll-driven reveal animation enhancement */
+        .v103-scroll-reveal {
+            animation: v103Reveal linear both;
+            animation-timeline: view();
+            animation-range: entry 0% entry 100%;
+        }
+        
+        @keyframes v103Reveal {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px) scale(0.95);
+                filter: blur(4px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+        
+        /* v103.0: Reduced motion - disable all v103 animations */
+        @media (prefers-reduced-motion: reduce) {
+            .v103-scroll-reveal,
+            .v103-expandable,
+            .v103-oklch-text,
+            .v103-oklch-muted {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+        
         /* v102.0: Print styles for accessibility */
         @media print {
             .v102-insight-panel,
@@ -26343,6 +26465,475 @@
                 border: 1px solid #ccc !important;
                 color: #333 !important;
             }
+        }
+
+        /* ========== v104.0: Next-Gen Interactive Dashboard ========== */
+
+        /* v104.0: @property for dynamic status animations */
+        @property --v104-hue {
+            syntax: '<angle>';
+            inherits: false;
+            initial-value: 0deg;
+        }
+        @property --v104-morph {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 0;
+        }
+        @property --v104-glow-radius {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 20;
+        }
+        @property --v104-brightness {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 1;
+        }
+
+        /* v104.0: Status-aware activity ring around fox */
+        .v104-activity-ring {
+            position: absolute;
+            inset: -60px;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .v104-activity-ring.active {
+            opacity: 1;
+        }
+
+        .v104-activity-ring svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .v104-activity-ring-bg {
+            fill: none;
+            stroke: rgba(255,255,255,0.05);
+            stroke-width: 3;
+        }
+
+        .v104-activity-ring-fill {
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-dasharray: 400;
+            stroke-dashoffset: 400;
+            transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s ease;
+            filter: drop-shadow(0 0 6px var(--primary));
+        }
+
+        .v104-activity-ring-fill.working {
+            stroke: var(--accent);
+            filter: drop-shadow(0 0 6px var(--accent));
+        }
+        .v104-activity-ring-fill.sleeping {
+            stroke: var(--purple);
+            filter: drop-shadow(0 0 6px var(--purple));
+        }
+        .v104-activity-ring-fill.excited {
+            stroke: var(--pink);
+            filter: drop-shadow(0 0 6px var(--pink));
+        }
+        .v104-activity-ring-fill.focused {
+            stroke: var(--success);
+            filter: drop-shadow(0 0 6px var(--success));
+        }
+        .v104-activity-ring-fill.error {
+            stroke: var(--danger);
+            filter: drop-shadow(0 0 6px var(--danger));
+        }
+
+        /* v104.0: Dynamic stat card click burst effect */
+        @keyframes v104BurstRipple {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(3);
+                opacity: 0;
+            }
+        }
+
+        .v104-stat-burst {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: v104BurstRipple 0.6s ease-out forwards;
+        }
+
+        .v104-stat-burst.idle { background: radial-gradient(circle, rgba(254,202,87,0.6) 0%, transparent 70%); }
+        .v104-stat-burst.working { background: radial-gradient(circle, rgba(0,212,255,0.6) 0%, transparent 70%); }
+        .v104-stat-burst.excited { background: radial-gradient(circle, rgba(236,72,153,0.6) 0%, transparent 70%); }
+        .v104-stat-burst.sleeping { background: radial-gradient(circle, rgba(168,85,247,0.6) 0%, transparent 70%); }
+        .v104-stat-burst.focused { background: radial-gradient(circle, rgba(92,219,149,0.6) 0%, transparent 70%); }
+        .v104-stat-burst.error { background: radial-gradient(circle, rgba(255,107,107,0.6) 0%, transparent 70%); }
+
+        /* v104.0: Chromatic aberration glass panel */
+        .v104-chrome-panel {
+            position: relative;
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .v104-chrome-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(255,0,0,0.05) 0%,
+                transparent 30%,
+                transparent 70%,
+                rgba(0,255,255,0.05) 100%
+            );
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .v104-chrome-panel:hover::before {
+            opacity: 1;
+        }
+
+        .v104-chrome-panel:hover {
+            border-color: rgba(255,255,255,0.15);
+            transform: translateY(-4px);
+            box-shadow:
+                0 16px 48px rgba(0,0,0,0.4),
+                0 0 0 1px rgba(255,255,255,0.05) inset,
+                -2px 0 12px rgba(255,0,0,0.05),
+                2px 0 12px rgba(0,255,255,0.05);
+        }
+
+        /* v104.0: Animated gradient border on focus */
+        .v104-gradient-border {
+            position: relative;
+        }
+
+        .v104-gradient-border::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: inherit;
+            background: linear-gradient(
+                var(--v104-angle, 0deg),
+                var(--primary),
+                var(--accent),
+                var(--success),
+                var(--warning),
+                var(--primary)
+            );
+            background-size: 300% 300%;
+            animation: v104GradientRotate 4s linear infinite;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .v104-gradient-border:hover::after,
+        .v104-gradient-border:focus-within::after {
+            opacity: 1;
+        }
+
+        @keyframes v104GradientRotate {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* v104.0: Quick action mini-dock */
+        .v104-mini-dock {
+            display: flex;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius-full);
+            backdrop-filter: blur(16px);
+        }
+
+        .v104-dock-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-muted);
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .v104-dock-btn:hover {
+            background: rgba(255,255,255,0.12);
+            color: var(--primary);
+            transform: translateY(-4px) scale(1.15);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .v104-dock-btn:active {
+            transform: translateY(-1px) scale(0.95);
+        }
+
+        /* v104.0: Smooth counter animation */
+        .v104-counter {
+            display: inline-block;
+            transition: transform 0.15s ease;
+        }
+
+        .v104-counter.counting {
+            animation: v104CounterPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes v104CounterPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* v104.0: Activity pulse dots */
+        .v104-pulse-dots {
+            display: inline-flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .v104-pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--text-dim);
+            transition: all 0.3s ease;
+        }
+
+        .v104-pulse-dot.active:nth-child(1) {
+            background: var(--primary);
+            box-shadow: 0 0 8px var(--primary);
+            animation: v104PulseDot 1.2s ease-in-out infinite;
+        }
+        .v104-pulse-dot.active:nth-child(2) {
+            background: var(--accent);
+            box-shadow: 0 0 8px var(--accent);
+            animation: v104PulseDot 1.2s ease-in-out 0.2s infinite;
+        }
+        .v104-pulse-dot.active:nth-child(3) {
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success);
+            animation: v104PulseDot 1.2s ease-in-out 0.4s infinite;
+        }
+
+        @keyframes v104PulseDot {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.4); opacity: 1; }
+        }
+
+        /* v104.0: Timeline item hover reveal */
+        .v104-timeline-item {
+            position: relative;
+            padding: 10px 14px;
+            border-left: 2px solid rgba(255,255,255,0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .v104-timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -5px;
+            top: 14px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-dim);
+            transition: all 0.3s ease;
+        }
+
+        .v104-timeline-item:hover {
+            border-left-color: var(--primary);
+            background: rgba(255,255,255,0.04);
+            padding-left: 18px;
+        }
+
+        .v104-timeline-item:hover::before {
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+            transform: scale(1.3);
+        }
+
+        /* v104.0: Floating notification badge */
+        .v104-notif-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            background: var(--danger);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            box-shadow: 0 2px 8px rgba(255,107,107,0.5);
+            animation: v104BadgePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes v104BadgePop {
+            0% { transform: scale(0); }
+            60% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* v104.0: Glassmorphism tooltip */
+        .v104-tooltip {
+            position: absolute;
+            background: rgba(10,10,20,0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: var(--radius-lg);
+            padding: 10px 14px;
+            font-size: 12px;
+            color: var(--text);
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(6px) scale(0.95);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            max-width: 200px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+
+        .v104-tooltip.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* v104.0: Ambient float animation */
+        @keyframes v104AmbientFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-8px) rotate(1deg); }
+            75% { transform: translateY(6px) rotate(-1deg); }
+        }
+
+        .v104-ambient-float {
+            animation: v104AmbientFloat 5s ease-in-out infinite;
+        }
+
+        /* v104.0: Scan line enhanced */
+        .v104-scan-line {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .v104-scan-line::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                var(--primary),
+                var(--accent),
+                transparent
+            );
+            animation: v104ScanLine 3s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes v104ScanLine {
+            0% { top: 0; opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        /* v104.0: Status light trail */
+        .v104-light-trail {
+            position: relative;
+        }
+
+        .v104-light-trail::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+            transition: width 0.4s ease;
+            transform: translateY(-50%);
+        }
+
+        .v104-light-trail:hover::after {
+            width: 100%;
+        }
+
+        /* v104.0: Responsive mini-dock for mobile */
+        @media (max-width: 768px) {
+            .v104-mini-dock {
+                gap: 6px;
+                padding: 6px 10px;
+            }
+            .v104-dock-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+        }
+
+        /* v104.0: Dark mode enhancement */
+        .v104-dark-toggle {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .v104-dark-toggle::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 8px var(--primary);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .v104-dark-toggle.active {
+            background: rgba(255,200,100,0.2);
+            border-color: var(--primary);
+        }
+
+        .v104-dark-toggle.active::after {
+            left: 23px;
         }
     </style>
     <script>
@@ -27354,7 +27945,7 @@
             el.innerHTML = context + '<span class="ai-context-cursor"></span>';
         }
         
-        // ========== v102.0: Smart Data Narrative System ==========
+        // ========== v103.0: Enhanced Smart Data Narrative System ==========
         
         const v102Narratives = {
             heartbeat: {
@@ -27382,6 +27973,156 @@
                 max: "CPU is heavily loaded"
             }
         };
+        
+        // v103.0: Enhanced narratives with cross-metric analysis
+        const v103Narratives = {
+            composite: {
+                high_cpu_high_mem: "⚠️ High CPU + Memory pressure detected - monitoring for bottlenecks",
+                high_cpu_low_mem: "CPU intensive but memory healthy ✅",
+                low_cpu_high_mem: "Memory allocation high, CPU efficient 💾",
+                low_cpu_low_mem: "Optimal resource utilization - system at ease 🌟",
+                all_high: "🔥 All metrics elevated - system working hard!",
+                all_low: "💤 System in power-saving mode"
+            },
+            recommendations: {
+                memory_pressure: "Consider clearing cache if memory remains high",
+                cpu_spike: "CPU spike detected - long-running process may need attention",
+                activity_surge: "Activity surge - multiple tasks in progress",
+                steady_state: "System stable - no action needed"
+            },
+            timeContext: {
+                morning: "Good morning! System warming up ☀️",
+                afternoon: "Afternoon peak - full operational capacity",
+                evening: "Evening wind-down mode 🌙",
+                night: "Night mode - reduced activity expected"
+            }
+        };
+        
+        function v103GetTimeContext() {
+            const hour = new Date().getHours();
+            if (hour >= 5 && hour < 12) return v103Narratives.timeContext.morning;
+            if (hour >= 12 && hour < 17) return v103Narratives.timeContext.afternoon;
+            if (hour >= 17 && hour < 21) return v103Narratives.timeContext.evening;
+            return v103Narratives.timeContext.night;
+        }
+        
+        function v103AnalyzeCompositeMetrics(data) {
+            const insights = [];
+            const cpu = parseInt(data.cpu) || 0;
+            const mem = parseInt(data.memory) || 0;
+            const act = parseInt(data.activity) || 0;
+            
+            // Cross-metric analysis
+            const cpuHigh = cpu > 70;
+            const memHigh = mem > 70;
+            const actHigh = act > 70;
+            const cpuLow = cpu < 30;
+            const memLow = mem < 30;
+            const actLow = act < 30;
+            
+            if (cpuHigh && memHigh) {
+                insights.push(v103Narratives.composite.high_cpu_high_mem);
+            } else if (cpuHigh && memLow) {
+                insights.push(v103Narratives.composite.high_cpu_low_mem);
+            } else if (cpuLow && memHigh) {
+                insights.push(v103Narratives.composite.low_cpu_high_mem);
+            } else if (cpuLow && memLow && actLow) {
+                insights.push(v103Narratives.composite.all_low);
+            } else if (cpuHigh || memHigh || actHigh) {
+                if (cpuHigh && memHigh && actHigh) {
+                    insights.push(v103Narratives.composite.all_high);
+                }
+            }
+            
+            // Recommendations based on patterns
+            if (mem > 85) {
+                insights.push(v103Narratives.recommendations.memory_pressure);
+            }
+            if (cpu > 90) {
+                insights.push(v103Narratives.recommendations.cpu_spike);
+            }
+            if (act > 80 && act - (state.lastActivity || 0) > 30) {
+                insights.push(v103Narratives.recommendations.activity_surge);
+            }
+            
+            // Update last activity for next comparison
+            state.lastActivity = act;
+            
+            return insights;
+        }
+        
+        function v103GenerateEnhancedInsight(data) {
+            const insights = [];
+            const contextTags = [];
+            
+            // v103.0: Add time context
+            const timeContext = v103GetTimeContext();
+            insights.push(timeContext);
+            
+            // Original per-metric analysis
+            if (data.heartbeat && data.heartbeat !== '--') {
+                const hbLevel = v102GetActivityLevel(data.heartbeat, 120);
+                insights.push(v102Narratives.heartbeat[hbLevel]);
+            }
+            
+            if (data.activity && data.activity !== '--') {
+                const actLevel = v102GetActivityLevel(data.activity);
+                insights.push(v102Narratives.activity[actLevel]);
+            }
+            
+            if (data.memory && data.memory !== '--') {
+                const memValue = parseInt(data.memory);
+                const memLevel = v102GetActivityLevel(memValue, 100);
+                insights.push(v102Narratives.memory[memLevel]);
+            }
+            
+            if (data.cpu && data.cpu !== '--') {
+                const cpuValue = parseInt(data.cpu);
+                const cpuLevel = v102GetActivityLevel(cpuValue, 100);
+                insights.push(v102Narratives.cpu[cpuLevel]);
+            }
+            
+            // v103.0: Cross-metric composite analysis
+            const compositeInsights = v103AnalyzeCompositeMetrics(data);
+            insights.push(...compositeInsights);
+            
+            // Generate enhanced context tags
+            if (data.status) {
+                contextTags.push(data.status.charAt(0).toUpperCase() + data.status.slice(1));
+            }
+            if (data.currentTask) {
+                contextTags.push('Task: ' + data.currentTask.substring(0, 15));
+            }
+            if (data.uptime && data.uptime !== '--') {
+                contextTags.push('Uptime: ' + data.uptime);
+            }
+            if (data.msgCount > 0) {
+                contextTags.push(`${data.msgCount} msgs`);
+            }
+            if (data.taskDone > 0) {
+                contextTags.push(`${data.taskDone} tasks done`);
+            }
+            // v103.0: Add trend indicators
+            if (data.heartbeat && data.heartbeat !== '--') {
+                const trend = v103CalculateTrend(state.dataHistory.heartbeat);
+                if (trend !== 'stable') contextTags.push(`HB ${trend}`);
+            }
+            
+            return {
+                insight: insights.length > 0 ? insights.join(' · ') : 'System operating normally',
+                tags: contextTags
+            };
+        }
+        
+        function v103CalculateTrend(history) {
+            if (!history || history.length < 3) return 'stable';
+            const recent = history.slice(-3);
+            const avg = recent.reduce((a, b) => a + b, 0) / recent.length;
+            const first = recent[0];
+            const diff = avg - first;
+            if (Math.abs(diff) < 5) return 'stable';
+            return diff > 0 ? '↗' : '↘';
+        }
         
         function v102GetActivityLevel(value, max = 100) {
             const pct = (parseInt(value) / max) * 100;
@@ -27451,7 +28192,10 @@
             
             if (!insightPanel || !insightText) return;
             
-            const narrative = v102GenerateInsight(data);
+            // v103.0: Use enhanced insight generation with cross-metric analysis
+            const narrative = typeof v103GenerateEnhancedInsight === 'function' 
+                ? v103GenerateEnhancedInsight(data) 
+                : v102GenerateInsight(data);
             insightText.textContent = narrative.insight;
             
             // Update context tags
@@ -31428,8 +32172,16 @@
         }
         
         function updateStatusV50(status) {
-            updateStatus(status);
-            updateMoodTimeline(status);
+            // v103.0: View Transitions API for smooth state changes
+            if (document.startViewTransition) {
+                document.startViewTransition(() => {
+                    updateStatus(status);
+                    updateMoodTimeline(status);
+                });
+            } else {
+                updateStatus(status);
+                updateMoodTimeline(status);
+            }
             
             // Control sound wave based on status
             if (status === 'working' || status === 'excited') {
@@ -35340,8 +36092,10 @@
             });
         }
 
-        // ========== v89.0: Audio Visualizer Bars ==========
-        function v89InitAudioVisualizer() {
+        // ========== v103.0: Enhanced Audio Visualizer with Physics ==========
+        let v103AudioBarHeights = [];
+        
+        function v103InitAudioVisualizer() {
             const header = document.querySelector('.dashboard-header');
             if (!header) return;
             
@@ -35350,33 +36104,60 @@
                 viz = document.createElement('div');
                 viz.id = 'v89AudioViz';
                 viz.className = 'v89-audio-viz';
-                for (let i = 0; i < 8; i++) {
+                // v103.0: Enhanced to 12 bars with physics-based animation
+                for (let i = 0; i < 12; i++) {
                     const bar = document.createElement('div');
                     bar.className = 'v89-audio-bar';
                     bar.style.height = '4px';
+                    // v103.0: OKLCH-based gradient colors
+                    const hue = (i / 12) * 60 + 170; // cyan to mint range
+                    bar.style.background = `oklch(80% 0.15 ${hue})`;
                     viz.appendChild(bar);
+                    v103AudioBarHeights[i] = 4;
                 }
                 header.appendChild(viz);
             }
         }
         
-        function v89UpdateAudioViz(activityLevel) {
+        function v103UpdateAudioViz(activityLevel) {
             const viz = document.getElementById('v89AudioViz');
             if (!viz) return;
             
             const bars = viz.querySelectorAll('.v89-audio-bar');
+            const now = Date.now();
+            
             bars.forEach((bar, i) => {
-                const baseHeight = 4 + (activityLevel / 100) * 20;
-                const variance = Math.sin(Date.now() / 200 + i) * 4;
-                const height = Math.max(4, Math.min(24, baseHeight + variance));
+                // v103.0: Physics-based spring animation
+                const targetHeight = 4 + (activityLevel / 100) * 24;
+                // Frequency variation creates wave pattern
+                const freqOffset = Math.sin(now / 150 + i * 0.5) * 6;
+                const noise = Math.cos(now / 200 + i * 0.7) * 3;
+                const target = Math.max(4, Math.min(28, targetHeight + freqOffset + noise));
+                
+                // Spring physics: damped harmonic oscillator
+                const stiffness = 0.15;
+                const damping = 0.75;
+                v103AudioBarHeights[i] = v103AudioBarHeights[i] + (target - v103AudioBarHeights[i]) * stiffness;
+                v103AudioBarHeights[i] *= damping + (1 - damping);
+                
+                const height = Math.max(4, Math.min(28, v103AudioBarHeights[i]));
                 bar.style.height = `${height}px`;
                 
-                if (activityLevel > 30) {
+                // v103.0: Dynamic glow based on activity
+                if (activityLevel > 50) {
                     bar.classList.add('active');
+                    const glowIntensity = (activityLevel - 50) / 50;
+                    bar.style.boxShadow = `0 0 ${8 * glowIntensity}px oklch(80% 0.2 170)`;
                 } else {
                     bar.classList.remove('active');
+                    bar.style.boxShadow = '';
                 }
             });
+            
+            // v103.0: Trigger View Transition for state change
+            if (document.startViewTransition) {
+                document.startViewTransition(() => {});
+            }
         }
 
         // ========== v89.0: Neural Mesh Background ==========
@@ -37006,11 +37787,241 @@
             console.log('✨ v102.0: All features initialized');
         }
 
+        // ========== v104.0: Next-Gen Interactive Features ==========
+
+        // v104.0: Activity Ring - Circular progress around fox
+        function initV104ActivityRing() {
+            const foxContainer = document.getElementById('foxContainer');
+            if (!foxContainer) return;
+
+            // Create ring element
+            const ring = document.createElement('div');
+            ring.className = 'v104-activity-ring';
+            ring.id = 'v104ActivityRing';
+            ring.innerHTML = `
+                <svg viewBox="0 0 200 200">
+                    <circle class="v104-activity-ring-bg" cx="100" cy="100" r="96"/>
+                    <circle class="v104-activity-ring-fill" id="v104ActivityRingFill" cx="100" cy="100" r="96"/>
+                </svg>
+            `;
+            foxContainer.appendChild(ring);
+
+            // Activate ring
+            setTimeout(() => ring.classList.add('active'), 500);
+
+            // Update ring based on status
+            const originalSetMood = window.setMood;
+            window.setMood = function(mood) {
+                if (originalSetMood) originalSetMood.apply(this, arguments);
+                const fill = document.getElementById('v104ActivityRingFill');
+                if (fill) {
+                    fill.className = 'v104-activity-ring-fill ' + (mood || 'idle');
+                }
+            };
+
+            console.log('✨ v104.0: Activity ring initialized');
+        }
+
+        // v104.0: Stat card click burst effect
+        function initV104StatBurst() {
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const burst = document.createElement('div');
+                    burst.className = 'v104-stat-burst ' + (state.status || 'idle');
+                    burst.style.left = (x - 25) + 'px';
+                    burst.style.top = (y - 25) + 'px';
+                    this.appendChild(burst);
+
+                    setTimeout(() => burst.remove(), 600);
+                });
+            });
+
+            console.log('✨ v104.0: Stat burst initialized');
+        }
+
+        // v104.0: Smooth counter animation
+        function initV104Counter() {
+            const counters = document.querySelectorAll('.v104-counter, .stat-value, .mini-stat-value');
+            const observer = new MutationObserver(mutations => {
+                mutations.forEach(mutation => {
+                    if (mutation.type === 'characterData' || mutation.type === 'childList') {
+                        const target = mutation.target.parentElement || mutation.target;
+                        if (target.classList.contains('stat-value') ||
+                            target.classList.contains('mini-stat-value') ||
+                            target.classList.contains('v104-counter')) {
+                            target.classList.add('v104-counter.counting');
+                            setTimeout(() => target.classList.remove('v104-counter.counting'), 300);
+                        }
+                    }
+                });
+            });
+
+            counters.forEach(counter => {
+                observer.observe(counter, { childList: true, characterData: true, subtree: true });
+            });
+
+            console.log('✨ v104.0: Counter animation initialized');
+        }
+
+        // v104.0: Mini dock for quick actions
+        function initV104MiniDock() {
+            const headerRight = document.querySelector('.header-right');
+            if (!headerRight) return;
+
+            // Create mini dock
+            const dock = document.createElement('div');
+            dock.className = 'v104-mini-dock';
+            dock.innerHTML = `
+                <button class="v104-dock-btn" onclick="fetchDashboardData()" title="Refresh Data">🔄</button>
+                <button class="v104-dock-btn" onclick="setMood('excited')" title="Celebrate!">🎉</button>
+                <button class="v104-dock-btn" onclick="toggleV78CmdPalette()" title="Command Palette">⚡</button>
+                <button class="v104-dock-btn" onclick="document.body.requestFullscreen?.()" title="Fullscreen">⛶</button>
+            `;
+
+            // Insert before refresh button
+            const refreshBtn = headerRight.querySelector('#v85RefreshBtn');
+            if (refreshBtn) {
+                headerRight.insertBefore(dock, refreshBtn);
+            }
+
+            console.log('✨ v104.0: Mini dock initialized');
+        }
+
+        // v104.0: Pulse dots for activity indicator
+        function initV104PulseDots() {
+            const liveIndicator = document.getElementById('v38LiveIndicator');
+            if (!liveIndicator) return;
+
+            const dots = document.createElement('span');
+            dots.className = 'v104-pulse-dots';
+            dots.innerHTML = '<span class="v104-pulse-dot"></span><span class="v104-pulse-dot"></span><span class="v104-pulse-dot"></span>';
+            liveIndicator.appendChild(dots);
+
+            // Activate dots when data is live
+            const originalFetch = window.fetchDashboardData;
+            window.fetchDashboardData = function() {
+                dots.querySelectorAll('.v104-pulse-dot').forEach(d => d.classList.add('active'));
+                if (originalFetch) originalFetch.apply(this, arguments);
+            };
+
+            console.log('✨ v104.0: Pulse dots initialized');
+        }
+
+        // v104.0: Status-aware gradient border animation
+        function initV104GradientBorder() {
+            const cards = document.querySelectorAll('.stat-card, .glass-card');
+            cards.forEach(card => {
+                card.classList.add('v104-gradient-border');
+            });
+
+            // Animate gradient angle
+            let angle = 0;
+            function updateAngle() {
+                angle = (angle + 0.5) % 360;
+                document.documentElement.style.setProperty('--v104-angle', angle + 'deg');
+                requestAnimationFrame(updateAngle);
+            }
+            updateAngle();
+
+            console.log('✨ v104.0: Gradient border initialized');
+        }
+
+        // v104.0: Interactive timeline enhancement
+        function initV104TimelineEnhance() {
+            const timeline = document.getElementById('timelineItems');
+            if (!timeline) return;
+
+            const items = timeline.querySelectorAll('.timeline-item');
+            items.forEach(item => {
+                item.classList.add('v104-timeline-item');
+            });
+
+            console.log('✨ v104.0: Timeline enhanced');
+        }
+
+        // v104.0: Smooth number transitions for stat values
+        function initV104SmoothNumbers() {
+            const statValues = document.querySelectorAll('.stat-value');
+            statValues.forEach(el => {
+                el.classList.add('v104-counter');
+            });
+
+            // Observe changes
+            const observer = new MutationObserver(mutations => {
+                mutations.forEach(m => {
+                    if (m.type === 'childList') {
+                        const val = m.target.querySelector('.stat-value');
+                        if (val) {
+                            val.classList.add('v104-counter.counting');
+                            setTimeout(() => val.classList.remove('v104-counter.counting'), 300);
+                        }
+                    }
+                });
+            });
+
+            const statsGrid = document.querySelector('.stats-grid');
+            if (statsGrid) {
+                observer.observe(statsGrid, { childList: true, subtree: true });
+            }
+
+            console.log('✨ v104.0: Smooth numbers initialized');
+        }
+
+        // v104.0: Ambient float for fox container
+        function initV104AmbientFloat() {
+            const foxContainer = document.getElementById('foxContainer');
+            if (!foxContainer) return;
+            foxContainer.classList.add('v104-ambient-float');
+
+            console.log('✨ v104.0: Ambient float initialized');
+        }
+
+        // v104.0: Scan line effect for active cards
+        function initV104ScanLine() {
+            const cards = document.querySelectorAll('.stat-card');
+            cards.forEach(card => {
+                card.classList.add('v104-scan-line');
+            });
+
+            console.log('✨ v104.0: Scan line initialized');
+        }
+
+        // v104.0: Light trail on stat cards hover
+        function initV104LightTrail() {
+            const cards = document.querySelectorAll('.stat-card');
+            cards.forEach(card => {
+                card.classList.add('v104-light-trail');
+            });
+
+            console.log('✨ v104.0: Light trail initialized');
+        }
+
+        // v104.0: Initialize all v104 features
+        function initV104Features() {
+            initV104ActivityRing();
+            initV104StatBurst();
+            initV104Counter();
+            initV104MiniDock();
+            initV104PulseDots();
+            initV104GradientBorder();
+            initV104TimelineEnhance();
+            initV104SmoothNumbers();
+            initV104AmbientFloat();
+            initV104ScanLine();
+            initV104LightTrail();
+            console.log('✨ v104.0: All features initialized');
+        }
+
         // Initialize all features after DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); });
+            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); });
         } else {
-            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); }, 100);
+            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); }, 100);
         }
 
     </script>
@@ -37195,7 +38206,7 @@
 
     <!-- v82.0: Command Palette Hint -->
     <div class="v82-version-badge v81-version-badge" id="v78VersionHint" style="position:fixed;bottom:20px;left:20px;opacity:0.5;font-size:10px;cursor:pointer;" onclick="toggleV78CmdPalette()" title="Open Command Palette (Ctrl+K)">
-        ⚡ v99.0 · Ctrl+K
+        ⚡ v104.0 · Ctrl+K
     </div>
     
     <!-- v80.0: Demo Mode Badge (shown when API unavailable) -->

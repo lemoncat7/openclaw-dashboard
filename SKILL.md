@@ -9,6 +9,12 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+- v103.0: View Transitions API原生支持（状态切换平滑过渡）
+- v103.0: 增强型空间音频可视化（12条物理弹簧动画柱/OKLCH渐变色彩）
+- v103.0: AI洞察系统增强（跨指标综合分析/时间上下文感知/趋势计算）
+- v103.0: OKLCH色彩空间增强（渐变背景/文字色彩/选中效果）
+- v103.0: scroll-driven动画增强（模糊渐变入场效果）
+- v103.0: interpolate-size高度动画支持
 - v99.0: Next-Gen 2026视觉增强（v99-glass超现代毛玻璃/霓虹脉冲/动画组合）
 - v99.0: 全新霓虹色彩体系（v99-neon-mint/v99-neon-coral/v99-neon-cyan/v99-neon-violet等）
 - v99.0: 状态切换全屏闪光效果（v99StatusFlash径向渐变脉冲）
