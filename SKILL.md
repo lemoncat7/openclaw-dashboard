@@ -52,6 +52,12 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 - v101.0: 变形背景Blob（三个大圆角形状随机morph变形动画）
 - v101.0: 缩减动作模式完整支持（v101全系列动画禁用）
 - v101.0: 高对比度无障碍优化（v101全系列增强）
+- v102.0: 智能数据叙事系统（AI Insight Panel - 实时解读数据含义）
+- v102.0: 智能叙事标签（v102-insight-tag活动/任务/状态上下文标签）
+- v102.0: 数据健康指示器（v102-data-health绿/黄/红三色状态显示）
+- v102.0: 无障碍增强（v102-focus-ring焦点环/v102-skip-link跳转链接）
+- v102.0: 增强型 stat 标签提示（data-description属性悬停说明）
+- v102.0: Reduced Motion 完整支持（v102全系列动画尊重系统偏好）
 - v95.0: Modern CSS 2026 增强（@property多属性/交错入场/stagger动画/v95-glass玻璃效果）
 - v95.0: v95-pulse-glow脉冲发光动画
 - v95.0: v95-ripple涟漪点击效果
