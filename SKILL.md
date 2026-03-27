@@ -39,6 +39,19 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 - v99.0: 高对比度模式优化（prefers-contrast: more）
 - v99.0: 深色/浅色模式适配（prefers-color-scheme自动切换）
 - v99.0: 增强型reduced motion支持（v99-*全系列）
+- v101.0: 粒子星群系统（60个粒子自动连线和鼠标交互/形成星座网络）
+- v101.0: 宇宙尘埃效果（100个微小粒子随鼠标散开/产生星尘轨迹）
+- v101.0: 液态玻璃效果（v101-liquid-glass多层折射光效/动态扫光）
+- v101.0: 弹簧悬停动画（v101-spring-hover物理弹性bounce效果）
+- v101.0: 发光边框（v101-glow-border彩虹渐变动态边框）
+- v101.0: 数据到达涟漪动画（stat卡片数值更新时脉冲波纹扩散）
+- v101.0: 浮动入场动画（v101-float-entrance模糊→清晰渐变入场）
+- v101.0: 狐狸心情神经环（310px Canvas环形节点/连线可视化）
+- v101.0: 数据获取流动条（顶部光流条实时反馈API请求状态）
+- v101.0: @property物理引擎（spring-x/spring-y/spring-scale定义）
+- v101.0: 变形背景Blob（三个大圆角形状随机morph变形动画）
+- v101.0: 缩减动作模式完整支持（v101全系列动画禁用）
+- v101.0: 高对比度无障碍优化（v101全系列增强）
 - v95.0: Modern CSS 2026 增强（@property多属性/交错入场/stagger动画/v95-glass玻璃效果）
 - v95.0: v95-pulse-glow脉冲发光动画
 - v95.0: v95-ripple涟漪点击效果

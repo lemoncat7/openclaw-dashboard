@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v100.0">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v101.0">
     <meta name="theme-color" content="#08080c">
-    <title>MoShang Status v100.0</title>
+    <title>MoShang Status v101.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -24537,9 +24537,565 @@
         .v100-connection-quality.fair .v100-connection-bar:nth-child(-n+2) { background: var(--warning); }
         .v100-connection-quality.poor .v100-connection-bar:nth-child(1) { background: var(--danger); }
 
+        /* ========== v101.0: Spring Physics, Constellation & Liquid Glass ========== */
+
+        /* v101.0: Spring physics @property definitions */
+        @property --v101-spring-x {
+            syntax: '<length>';
+            inherits: false;
+            initial-value: 0px;
+        }
+        @property --v101-spring-y {
+            syntax: '<length>';
+            inherits: false;
+            initial-value: 0px;
+        }
+        @property --v101-spring-scale {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 1;
+        }
+        @property --v101-spring-rotate {
+            syntax: '<angle>';
+            inherits: false;
+            initial-value: 0deg;
+        }
+        @property --v101-liquid-fill {
+            syntax: '<percentage>';
+            inherits: false;
+            initial-value: 0%;
+        }
+        @property --v101-glow-intensity {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 0;
+        }
+        @property --v101-blob-morph {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 0;
+        }
+
+        /* v101.0: Spring-based hover animation - realistic physics feel */
+        .v101-spring-hover {
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-origin: center center;
+        }
+
+        .v101-spring-hover:hover {
+            animation: v101SpringBounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes v101SpringBounce {
+            0% { transform: scale(1) translateY(0); }
+            30% { transform: scale(1.08, 0.94) translateY(-6px); }
+            50% { transform: scale(0.96, 1.06) translateY(2px); }
+            70% { transform: scale(1.03, 0.98) translateY(-2px); }
+            100% { transform: scale(1) translateY(0); }
+        }
+
+        /* v101.0: Spring card tilt with perspective */
+        .v101-spring-tilt {
+            transform-style: preserve-3d;
+            perspective: 800px;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .v101-spring-tilt:hover {
+            transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(1.03);
+        }
+
+        /* v101.0: Liquid glass - enhanced glassmorphism with light refraction */
+        .v101-liquid-glass {
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.12) 0%,
+                rgba(255, 255, 255, 0.06) 30%,
+                rgba(255, 255, 255, 0.02) 60%,
+                rgba(255, 255, 255, 0.08) 100%
+            );
+            backdrop-filter: blur(40px) saturate(220%) contrast(1.15);
+            -webkit-backdrop-filter: blur(40px) saturate(220%) contrast(1.15);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow:
+                0 8px 40px rgba(0, 0, 0, 0.35),
+                inset 0 2px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.1),
+                inset 2px 0 0 rgba(255, 255, 255, 0.05),
+                inset -2px 0 0 rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .v101-liquid-glass::before {
+            content: '';
+            position: absolute;
+            top: -60%;
+            left: -60%;
+            width: 220%;
+            height: 220%;
+            background: conic-gradient(
+                from 180deg,
+                transparent 0deg,
+                rgba(255, 255, 255, 0.06) 60deg,
+                rgba(255, 255, 255, 0.12) 120deg,
+                transparent 180deg,
+                rgba(255, 255, 255, 0.04) 240deg,
+                transparent 300deg,
+                transparent 360deg
+            );
+            animation: v101LiquidRefract 10s linear infinite;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        @keyframes v101LiquidRefract {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* v101.0: Glow border - animated glowing card borders */
+        .v101-glow-border {
+            position: relative;
+        }
+
+        .v101-glow-border::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: inherit;
+            background: linear-gradient(
+                var(--glow-angle, 0deg),
+                var(--primary),
+                var(--accent),
+                var(--success),
+                var(--accent),
+                var(--primary)
+            );
+            background-size: 400% 400%;
+            animation: v101GlowBorderShift 3s linear infinite;
+            z-index: -1;
+            filter: blur(4px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .v101-glow-border:hover::after {
+            opacity: 0.6;
+        }
+
+        @keyframes v101GlowBorderShift {
+            0% { background-position: 0% 50%; --glow-angle: 0deg; }
+            25% { --glow-angle: 90deg; }
+            50% { background-position: 100% 50%; --glow-angle: 180deg; }
+            75% { --glow-angle: 270deg; }
+            100% { background-position: 0% 50%; --glow-angle: 360deg; }
+        }
+
+        /* v101.0: Particle constellation canvas */
+        #v101ConstellationCanvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        /* v101.0: Cosmic dust canvas */
+        #v101CosmicDustCanvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.4;
+        }
+
+        /* v101.0: Morphing blob background shapes */
+        .v101-morph-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.06;
+            pointer-events: none;
+            z-index: -3;
+            animation: v101BlobMorph 20s ease-in-out infinite;
+        }
+
+        .v101-morph-blob-1 {
+            width: 600px;
+            height: 600px;
+            background: var(--primary);
+            top: -200px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .v101-morph-blob-2 {
+            width: 500px;
+            height: 500px;
+            background: var(--accent);
+            bottom: -150px;
+            right: -100px;
+            animation-delay: -7s;
+        }
+
+        .v101-morph-blob-3 {
+            width: 400px;
+            height: 400px;
+            background: var(--purple);
+            top: 40%;
+            left: 50%;
+            animation-delay: -14s;
+        }
+
+        @keyframes v101BlobMorph {
+            0%, 100% {
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+                transform: translate(30px, -40px) scale(1.1);
+            }
+            50% {
+                border-radius: 50% 60% 30% 60% / 30% 40% 70% 60%;
+                transform: translate(-20px, 20px) scale(0.95);
+            }
+            75% {
+                border-radius: 40% 30% 60% 50% / 70% 60% 40% 50%;
+                transform: translate(20px, 30px) scale(1.05);
+            }
+        }
+
+        /* v101.0: Neural activity ring around fox */
+        .v101-neural-ring {
+            position: absolute;
+            inset: -50px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .v101-neural-ring canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* v101.0: Liquid fill for health ring */
+        .v101-liquid-fill-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .v101-liquid-fill-bg {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .v101-liquid-fill-wave {
+            position: absolute;
+            bottom: 0;
+            left: -50%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(
+                to top,
+                var(--primary) 0%,
+                rgba(255, 200, 100, 0.3) 50%,
+                transparent 100%
+            );
+            animation: v101LiquidWave 2s ease-in-out infinite;
+            transform-origin: center bottom;
+        }
+
+        @keyframes v101LiquidWave {
+            0%, 100% { transform: scaleY(1) translateY(0); }
+            50% { transform: scaleY(0.7) translateY(-10%); }
+        }
+
+        .v101-liquid-fill-wave-2 {
+            animation-delay: -1s;
+            opacity: 0.6;
+        }
+
+        /* v101.0: Floating entrance animation */
+        @keyframes v101FloatEntrance {
+            0% {
+                opacity: 0;
+                transform: translateY(40px) scale(0.9);
+                filter: blur(8px);
+            }
+            40% {
+                opacity: 1;
+                filter: blur(0);
+            }
+            60% {
+                transform: translateY(-8px) scale(1.02);
+            }
+            80% {
+                transform: translateY(4px) scale(0.99);
+            }
+            100% {
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .v101-float-entrance {
+            animation: v101FloatEntrance 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            opacity: 0;
+        }
+
+        .v101-float-entrance:nth-child(1) { animation-delay: 0.05s; }
+        .v101-float-entrance:nth-child(2) { animation-delay: 0.12s; }
+        .v101-float-entrance:nth-child(3) { animation-delay: 0.19s; }
+        .v101-float-entrance:nth-child(4) { animation-delay: 0.26s; }
+
+        /* v101.0: Staggered float for stat cards */
+        .v101-stat-stagger > * {
+            opacity: 0;
+            animation: v101FloatEntrance 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .v101-stat-stagger > *:nth-child(1) { animation-delay: 0.1s; }
+        .v101-stat-stagger > *:nth-child(2) { animation-delay: 0.18s; }
+        .v101-stat-stagger > *:nth-child(3) { animation-delay: 0.26s; }
+        .v101-stat-stagger > *:nth-child(4) { animation-delay: 0.34s; }
+        .v101-stat-stagger > *:nth-child(5) { animation-delay: 0.42s; }
+
+        /* v101.0: Pulse glow on status change */
+        @keyframes v101PulseGlow {
+            0%, 100% {
+                box-shadow: 0 0 20px color-mix(in srgb, var(--primary) 20%, transparent);
+                filter: brightness(1);
+            }
+            50% {
+                box-shadow: 0 0 40px color-mix(in srgb, var(--primary) 40%, transparent),
+                            0 0 60px color-mix(in srgb, var(--primary) 20%, transparent);
+                filter: brightness(1.15);
+            }
+        }
+
+        .v101-pulse-glow {
+            animation: v101PulseGlow 2.5s ease-in-out infinite;
+        }
+
+        /* v101.0: Ambient glow that changes with status */
+        body.v101-active .v101-status-glow {
+            animation: v101PulseGlow 2s ease-in-out infinite;
+        }
+
+        /* v101.0: Card data-arrival ripple */
+        .v101-arrival-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(
+                circle,
+                var(--success) 0%,
+                transparent 70%
+            );
+            transform: scale(0);
+            animation: v101ArrivalRipple 0.8s ease-out forwards;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        @keyframes v101ArrivalRipple {
+            0% { transform: scale(0); opacity: 0.6; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+
+        /* v101.0: Stat value update flash */
+        .v101-value-flash {
+            animation: v101ValueFlash 0.5s ease-out;
+        }
+
+        @keyframes v101ValueFlash {
+            0% { filter: brightness(1.5); transform: scale(1.1); }
+            100% { filter: brightness(1); transform: scale(1); }
+        }
+
+        /* v101.0: Version badge enhancement */
+        .v101-version-badge {
+            background: linear-gradient(
+                135deg,
+                var(--primary) 0%,
+                var(--accent) 50%,
+                var(--purple) 100%
+            );
+            background-size: 200% 200%;
+            animation: v101BadgeGradient 3s ease infinite;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 12px color-mix(in srgb, var(--primary) 40%, transparent);
+        }
+
+        @keyframes v101BadgeGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* v101.0: Smooth scroll snap */
+        .v101-scroll-snap {
+            scroll-snap-type: y mandatory;
+            overflow-y: auto;
+            scroll-padding: 20px;
+        }
+
+        /* v101.0: Loading skeleton shimmer enhanced */
+        .v101-skeleton {
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0.04) 0%,
+                rgba(255, 255, 255, 0.08) 50%,
+                rgba(255, 255, 255, 0.04) 100%
+            );
+            background-size: 200% 100%;
+            animation: v101SkeletonShimmer 1.5s ease-in-out infinite;
+            border-radius: var(--radius-sm);
+        }
+
+        @keyframes v101SkeletonShimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* v101.0: Mood indicator enhanced */
+        .v101-mood-ring {
+            position: relative;
+            width: 50px;
+            height: 50px;
+        }
+
+        .v101-mood-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .v101-mood-ring-progress {
+            transition: stroke-dashoffset 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* v101.0: Data stream enhanced */
+        .v101-data-stream {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                var(--accent) 20%,
+                var(--primary) 50%,
+                var(--accent) 80%,
+                transparent 100%
+            );
+            background-size: 300% 100%;
+            opacity: 0;
+            z-index: 9998;
+            pointer-events: none;
+            animation: v101DataStreamFlow 2s linear infinite;
+        }
+
+        .v101-data-stream.active {
+            opacity: 0.7;
+        }
+
+        @keyframes v101DataStreamFlow {
+            0% { background-position: 300% 0; }
+            100% { background-position: -300% 0; }
+        }
+
+        /* v101.0: Focus ring enhanced with glow */
+        .v101-focus-glow:focus-visible {
+            outline: none;
+            box-shadow:
+                0 0 0 3px var(--bg-dark),
+                0 0 0 5px var(--primary),
+                0 0 20px color-mix(in srgb, var(--primary) 50%, transparent);
+        }
+
+        /* v101.0: Touch ripple effect */
+        .v101-touch-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(
+                circle,
+                rgba(255, 255, 255, 0.3) 0%,
+                transparent 70%
+            );
+            transform: scale(0);
+            animation: v101TouchRipple 0.6s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes v101TouchRipple {
+            to { transform: scale(4); opacity: 0; }
+        }
+
+        /* v101.0: Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            .v101-liquid-glass::before,
+            .v101-morph-blob,
+            .v101-liquid-fill-wave,
+            .v101-float-entrance,
+            .v101-stat-stagger > *,
+            .v101-pulse-glow,
+            .v101-version-badge,
+            .v101-skeleton {
+                animation: none !important;
+            }
+
+            .v101-spring-hover:hover {
+                transform: scale(1.05);
+            }
+
+            .v101-glow-border::after {
+                display: none;
+            }
+        }
+
+        /* v101.0: High contrast mode */
+        @media (prefers-contrast: more) {
+            .v101-liquid-glass {
+                border-width: 2px;
+            }
+
+            .stat-card,
+            .glass-card,
+            .v101-liquid-glass {
+                box-shadow: 0 0 0 2px var(--text);
+            }
+        }
+
     </style>
 </head>
 <body class="loading">
+    <!-- v101.0: Particle Constellation Canvas -->
+    <canvas id="v101ConstellationCanvas"></canvas>
+
+    <!-- v101.0: Cosmic Dust Canvas -->
+    <canvas id="v101CosmicDustCanvas"></canvas>
+
+    <!-- v101.0: Morphing Blob Background -->
+    <div class="v101-morph-blob v101-morph-blob-1"></div>
+    <div class="v101-morph-blob v101-morph-blob-2"></div>
+    <div class="v101-morph-blob v101-morph-blob-3"></div>
+
+    <!-- v101.0: Data Stream Line -->
+    <div class="v101-data-stream" id="v101DataStream"></div>
+
     <!-- v87.0: Ambient mesh overlay -->
     <div class="v87-mesh-overlay" id="v87MeshOverlay"></div>
     
@@ -25385,8 +25941,8 @@
                     <span id="routeStatusDisplay" class="route-check-time" title="Last Check">--</span>
                 </div>
                 <div class="footer-info">
-                    <span class="footer-version v42-version-glow v43-version-badge v66-version-flash v72-version-glow v73-version-glow v76-version-glow v77-version-glow v78-version-glow v82-version-glow v100-version-badge" id="footerVersion">v100.0</span>
-                    <span class="v48-footer-badge" id="v50FooterBadge">✨ v100.0</span>
+                    <span class="footer-version v42-version-glow v43-version-badge v66-version-flash v72-version-glow v73-version-glow v76-version-glow v77-version-glow v78-version-glow v82-version-glow v100-version-badge v101-version-badge" id="footerVersion">v101.0</span>
+                    <span class="v48-footer-badge" id="v50FooterBadge">✨ v101.0</span>
                     <span id="uptime">--</span>
                     <span id="reliabilityBadge" class="reliability-badge high" aria-label="Data Reliability Score">100%</span>
                     <!-- v40.0: Connection Quality -->
@@ -35682,11 +36238,380 @@
             else meter.classList.add('poor');
         }
 
+        // v101.0: Particle Constellation System
+        function initV101Constellation() {
+            const canvas = document.getElementById('v101ConstellationCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            let particles = [];
+            let mouse = { x: -1000, y: -1000 };
+            const PARTICLE_COUNT = 60;
+            const CONNECTION_DISTANCE = 120;
+            const MOUSE_RADIUS = 150;
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            function createParticle() {
+                return {
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.4,
+                    radius: Math.random() * 2 + 1,
+                    color: `hsl(${30 + Math.random() * 30}, 80%, ${60 + Math.random() * 20}%)`,
+                    pulse: Math.random() * Math.PI * 2
+                };
+            }
+
+            function init() {
+                particles = [];
+                for (let i = 0; i < PARTICLE_COUNT; i++) {
+                    particles.push(createParticle());
+                }
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.pulse += 0.02;
+
+                    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+                    const pulseRadius = p.radius + Math.sin(p.pulse) * 0.5;
+
+                    // Mouse influence
+                    const dx = mouse.x - p.x;
+                    const dy = mouse.y - p.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < MOUSE_RADIUS) {
+                        const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
+                        p.x += dx * force * 0.02;
+                        p.y += dy * force * 0.02;
+                    }
+
+                    // Draw particle
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, pulseRadius, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = 0.7 + Math.sin(p.pulse) * 0.3;
+                    ctx.fill();
+                    ctx.globalAlpha = 1;
+
+                    // Draw connections
+                    particles.forEach(p2 => {
+                        if (p === p2) return;
+                        const dx = p2.x - p.x;
+                        const dy = p2.y - p.y;
+                        const d = Math.sqrt(dx * dx + dy * dy);
+                        if (d < CONNECTION_DISTANCE) {
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            const alpha = (1 - d / CONNECTION_DISTANCE) * 0.3;
+                            ctx.strokeStyle = `rgba(255, 200, 100, ${alpha})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.stroke();
+                        }
+                    });
+
+                    // Mouse connection
+                    if (dist < MOUSE_RADIUS) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(mouse.x, mouse.y);
+                        const alpha = (1 - dist / MOUSE_RADIUS) * 0.5;
+                        ctx.strokeStyle = `rgba(0, 212, 255, ${alpha})`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                });
+
+                requestAnimationFrame(draw);
+            }
+
+            document.addEventListener('mousemove', e => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            });
+
+            document.addEventListener('mouseleave', () => {
+                mouse.x = -1000;
+                mouse.y = -1000;
+            });
+
+            resize();
+            window.addEventListener('resize', () => { resize(); init(); });
+            init();
+            draw();
+
+            console.log('✨ v101.0: Constellation system initialized');
+        }
+
+        // v101.0: Cosmic Dust System
+        function initV101CosmicDust() {
+            const canvas = document.getElementById('v101CosmicDustCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            let dust = [];
+            let mouse = { x: -1000, y: -1000 };
+            const DUST_COUNT = 100;
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            function createDust() {
+                return {
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 1.5 + 0.5,
+                    speedX: (Math.random() - 0.5) * 0.3,
+                    speedY: (Math.random() - 0.5) * 0.3 - 0.1,
+                    opacity: Math.random() * 0.5 + 0.2,
+                    twinkle: Math.random() * Math.PI * 2
+                };
+            }
+
+            function init() {
+                dust = [];
+                for (let i = 0; i < DUST_COUNT; i++) {
+                    dust.push(createDust());
+                }
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                dust.forEach(d => {
+                    d.x += d.speedX;
+                    d.y += d.speedY;
+                    d.twinkle += 0.03;
+
+                    if (d.x < 0) d.x = canvas.width;
+                    if (d.x > canvas.width) d.x = 0;
+                    if (d.y < 0) d.y = canvas.height;
+                    if (d.y > canvas.height) d.y = 0;
+
+                    // Mouse repulsion
+                    const dx = d.x - mouse.x;
+                    const dy = d.y - mouse.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 80) {
+                        d.x += dx * 0.02;
+                        d.y += dy * 0.02;
+                    }
+
+                    const alpha = d.opacity * (0.5 + Math.sin(d.twinkle) * 0.5);
+                    ctx.beginPath();
+                    ctx.arc(d.x, d.y, d.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 230, 180, ${alpha})`;
+                    ctx.fill();
+                });
+
+                requestAnimationFrame(draw);
+            }
+
+            document.addEventListener('mousemove', e => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            });
+
+            document.addEventListener('mouseleave', () => {
+                mouse.x = -1000;
+                mouse.y = -1000;
+            });
+
+            resize();
+            window.addEventListener('resize', () => { resize(); init(); });
+            init();
+            draw();
+
+            console.log('✨ v101.0: Cosmic dust system initialized');
+        }
+
+        // v101.0: Data stream on fetch
+        function initV101DataStream() {
+            const stream = document.getElementById('v101DataStream');
+            if (!stream) return;
+
+            const originalFetch = window.fetch;
+            window.fetch = async function(...args) {
+                stream.classList.add('active');
+                try {
+                    const result = await originalFetch.apply(this, args);
+                    setTimeout(() => stream.classList.remove('active'), 800);
+                    return result;
+                } catch (e) {
+                    setTimeout(() => stream.classList.remove('active'), 1200);
+                    throw e;
+                }
+            };
+
+            console.log('✨ v101.0: Data stream initialized');
+        }
+
+        // v101.0: Apply liquid glass class to cards
+        function initV101LiquidGlass() {
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.classList.add('v101-liquid-glass');
+            });
+            document.querySelectorAll('.glass-card').forEach(card => {
+                card.classList.add('v101-liquid-glass');
+            });
+            console.log('✨ v101.0: Liquid glass applied');
+        }
+
+        // v101.0: Spring hover on stat cards
+        function initV101SpringHover() {
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.classList.add('v101-spring-hover');
+            });
+            console.log('✨ v101.0: Spring hover initialized');
+        }
+
+        // v101.0: Glow border on cards
+        function initV101GlowBorder() {
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.classList.add('v101-glow-border');
+            });
+            console.log('✨ v101.0: Glow border initialized');
+        }
+
+        // v101.0: Card data arrival ripple effect
+        function initV101ArrivalRipple() {
+            const originalUpdate = window.updateStatCard;
+            window.updateStatCard = function(stat, value, unit, subtext) {
+                const card = document.querySelector(`[data-stat="${stat}"]`);
+                if (card && value !== '--') {
+                    // Add ripple effect
+                    const ripple = document.createElement('div');
+                    ripple.className = 'v101-arrival-ripple';
+                    ripple.style.cssText = 'position:absolute;width:40px;height:40px;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;';
+                    card.appendChild(ripple);
+                    setTimeout(() => ripple.remove(), 800);
+
+                    // Flash value
+                    const valueEl = card.querySelector('.stat-value');
+                    if (valueEl) {
+                        valueEl.classList.add('v101-value-flash');
+                        setTimeout(() => valueEl.classList.remove('v101-value-flash'), 500);
+                    }
+                }
+                if (originalUpdate) {
+                    return originalUpdate.apply(this, arguments);
+                }
+            };
+
+            console.log('✨ v101.0: Arrival ripple initialized');
+        }
+
+        // v101.0: Float entrance for stat cards
+        function initV101FloatEntrance() {
+            const grid = document.querySelector('.dashboard-grid .left-column');
+            if (!grid) return;
+
+            const cards = grid.querySelectorAll('.stat-card');
+            cards.forEach((card, i) => {
+                card.style.animationDelay = `${0.1 + i * 0.08}s`;
+                card.classList.add('v101-float-entrance');
+            });
+
+            console.log('✨ v101.0: Float entrance initialized');
+        }
+
+        // v101.0: Mood ring around fox canvas
+        function initV101MoodRing() {
+            const foxContainer = document.getElementById('foxContainer');
+            if (!foxContainer) return;
+
+            const ring = document.createElement('div');
+            ring.className = 'v101-neural-ring';
+            ring.style.cssText = 'position:absolute;inset:-50px;pointer-events:none;';
+            foxContainer.appendChild(ring);
+
+            const canvas = document.createElement('canvas');
+            ring.appendChild(canvas);
+            canvas.width = 310;
+            canvas.height = 310;
+
+            const ctx = canvas.getContext('2d');
+            let angle = 0;
+            const colors = ['#ffc864', '#00d4ff', '#a855f7', '#ec4899', '#5cdb95'];
+
+            function draw() {
+                ctx.clearRect(0, 0, 310, 310);
+
+                for (let i = 0; i < 36; i++) {
+                    const a = (i / 36) * Math.PI * 2 + angle;
+                    const r = 130 + Math.sin(a * 3 + angle * 0.5) * 15;
+                    const x = 155 + Math.cos(a) * r;
+                    const y = 155 + Math.sin(a) * r;
+                    const colorIdx = Math.floor((i / 36) * colors.length);
+                    const alpha = 0.3 + Math.sin(a * 2 + angle) * 0.2;
+
+                    ctx.beginPath();
+                    ctx.arc(x, y, 3, 0, Math.PI * 2);
+                    ctx.fillStyle = colors[colorIdx % colors.length];
+                    ctx.globalAlpha = alpha;
+                    ctx.fill();
+
+                    // Draw connections to nearby dots
+                    for (let j = i + 1; j < Math.min(i + 4, 36); j++) {
+                        const a2 = (j / 36) * Math.PI * 2 + angle;
+                        const r2 = 130 + Math.sin(a2 * 3 + angle * 0.5) * 15;
+                        const x2 = 155 + Math.cos(a2) * r2;
+                        const y2 = 155 + Math.sin(a2) * r2;
+                        const dist = Math.sqrt((x2-x)**2 + (y2-y)**2);
+                        if (dist < 60) {
+                            ctx.beginPath();
+                            ctx.moveTo(x, y);
+                            ctx.lineTo(x2, y2);
+                            ctx.strokeStyle = colors[colorIdx % colors.length];
+                            ctx.globalAlpha = (1 - dist / 60) * 0.2;
+                            ctx.lineWidth = 0.5;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                ctx.globalAlpha = 1;
+                angle += 0.008;
+                requestAnimationFrame(draw);
+            }
+
+            draw();
+            console.log('✨ v101.0: Mood ring initialized');
+        }
+
+        // v101.0: Initialize all v101 features
+        function initV101Features() {
+            initV101Constellation();
+            initV101CosmicDust();
+            initV101DataStream();
+            initV101LiquidGlass();
+            initV101SpringHover();
+            initV101GlowBorder();
+            initV101ArrivalRipple();
+            initV101FloatEntrance();
+            initV101MoodRing();
+            console.log('✨ v101.0: All features initialized');
+        }
+
         // Initialize all features after DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); });
+            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); });
         } else {
-            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); }, 100);
+            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); }, 100);
         }
 
     </script>
