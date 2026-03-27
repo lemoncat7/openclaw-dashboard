@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v108.1">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v107.0">
     <meta name="theme-color" content="#08080c">
-    <title>MoShang Status v108.1</title>
+    <title>MoShang Status v107.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -185,41 +185,12 @@
                 box-shadow: 0 0 12px color-mix(in srgb, var(--primary) 50%, transparent);
             }
             
-            /* v108.1: Enhanced reduced motion support */
+            /* v90.0: Reduced motion support */
             @media (prefers-reduced-motion: reduce) {
                 *, *::before, *::after {
                     animation-duration: 0.01ms !important;
                     animation-iteration-count: 1 !important;
                     transition-duration: 0.01ms !important;
-                    scroll-behavior: auto !important;
-                }
-                
-                /* Keep essential state indicators - never disable these */
-                .v91-connection-state.connected .v91-conn-dot,
-                .v91-connection-state.offline .v91-conn-dot,
-                .source-dot.connected,
-                .fox-container.breathing,
-                .v106-source-dot {
-                    animation: none !important;
-                    opacity: 1 !important;
-                }
-                
-                /* Disable canvas animations but keep fox visible */
-                .fox-canvas,
-                .neural-canvas,
-                .particle-mesh-canvas,
-                .v66-particle-canvas {
-                    animation: none !important;
-                }
-                
-                /* Disable decorative animations but keep functional UI */
-                .v77-pulse-grid,
-                .v78-morph-orb,
-                .v91-data-stream,
-                .ambient-orb,
-                .v86-data-freshness {
-                    animation: none !important;
-                    opacity: 0.5 !important;
                 }
             }
             
@@ -759,94 +730,23 @@
                 }
             }
             
-            /* v108.1: Enhanced reduced motion - more comprehensive */
+            /* v92.0: Enhanced reduced motion */
             @media (prefers-reduced-motion: reduce) {
                 *, *::before, *::after {
                     animation-duration: 0.01ms !important;
                     animation-iteration-count: 1 !important;
                     transition-duration: 0.01ms !important;
-                    scroll-behavior: auto !important;
                 }
                 
-                /* Keep essential state indicators - never disable these */
+                /* Keep essential state indicators */
                 .v91-connection-state.connected .v91-conn-dot,
-                .v91-connection-state.offline .v91-conn-dot,
-                .source-dot.connected,
-                .fox-container.breathing,
-                .v106-source-dot,
-                .v106-source-indicator {
-                    animation: none !important;
-                    opacity: 1 !important;
-                    transform: none !important;
-                }
-                
-                /* Disable canvas animations */
-                .fox-canvas,
-                .neural-canvas,
-                .particle-mesh-canvas,
-                .v66-particle-canvas,
-                .neural-waveform-canvas,
-                .neural-spark-canvas,
-                .chart-canvas {
-                    animation: none !important;
-                }
-                
-                /* Disable all decorative particles and grids */
-                .v77-pulse-grid,
-                .v78-morph-orb,
-                .v91-data-stream,
-                .ambient-orb,
-                .v86-data-freshness,
-                .v92-data-stream,
-                .v78-mesh-bg,
-                .v66-scan-line {
-                    animation: none !important;
-                    opacity: 0.3 !important;
-                }
-                
-                /* Keep core content visible and interactive */
-                .stat-card,
-                .glass-card,
-                .stat-value,
-                .stat-label,
-                .fox-container {
-                    transition: none !important;
-                    transform: none !important;
-                }
-                
-                /* Accessibility: show focus indicators clearly */
-                *:focus {
-                    outline: 2px solid var(--primary) !important;
-                    outline-offset: 2px !important;
+                .v91-connection-state.offline .v91-conn-dot {
+                    animation: none;
+                    opacity: 1;
                 }
             }
             
-            /* v108.1: Mobile touch optimization */
-            @media (hover: none) and (pointer: coarse) {
-                .stat-card:active {
-                    transform: scale(0.98);
-                }
-                
-                .mini-stat:active {
-                    transform: scale(0.97);
-                }
-                
-                .action-btn:active {
-                    transform: scale(0.95);
-                }
-                
-                /* Larger touch targets */
-                .mood-btn {
-                    min-width: 48px;
-                    min-height: 48px;
-                }
-                
-                /* Reduce canvas particle count on mobile */
-                .fox-canvas-wrapper canvas {
-                    max-width: 120px;
-                    max-height: 120px;
-                }
-            }
+            /* v92.0: Mobile touch optimization */
             @media (hover: none) and (pointer: coarse) {
                 .stat-card:active {
                     transform: scale(0.98);
@@ -3663,7 +3563,7 @@
                 50% { opacity: 0.5; transform: scale(0.85); }
             }
 
-            /* v108.1: Enhanced data freshness indicator */
+            /* v87.0: Data freshness indicator - shows seconds since last successful fetch */
             .v86-data-freshness {
                 display: inline-flex;
                 align-items: center;
@@ -3699,19 +3599,6 @@
                 background: var(--danger);
                 box-shadow: 0 0 6px var(--danger);
                 animation: v86FreshnessPulse 0.3s ease-in-out infinite;
-            }
-            
-            /* v108.1: Fresh indicator with green glow */
-            .v86-freshness-dot.fresh {
-                background: #5cdb95;
-                box-shadow: 0 0 8px #5cdb95;
-            }
-            
-            /* v108.1: Aging indicator */
-            .v86-freshness-dot.aging {
-                background: #ffc864;
-                box-shadow: 0 0 6px #ffc864;
-                animation: v86FreshnessPulse 0.8s ease-in-out infinite;
             }
 
             @keyframes v86FreshnessPulse {
@@ -4339,22 +4226,6 @@
                 animation: none !important;
                 opacity: 0.3 !important;
             }
-        }
-        
-        /* v108.1: Low performance mode - reduce canvas complexity */
-        body.low-performance .fox-canvas-wrapper canvas {
-            max-width: 100px;
-            max-height: 100px;
-        }
-        body.low-performance .neural-canvas,
-        body.low-performance .particle-mesh-canvas,
-        body.low-performance .v66-particle-canvas {
-            display: none !important;
-        }
-        body.low-performance .v77-pulse-grid,
-        body.low-performance .v78-morph-orb,
-        body.low-performance .v91-data-stream {
-            opacity: 0.2 !important;
         }
         
         /* Motion path animation (CSS only) */
@@ -26384,7 +26255,7 @@
                     <span id="routeStatusDisplay" class="route-check-time" title="Last Check">--</span>
                 </div>
                 <div class="footer-info">
-                    <span class="footer-version v42-version-glow v43-version-badge v66-version-flash v72-version-glow v73-version-glow v76-version-glow v77-version-glow v78-version-glow v82-version-glow v100-version-badge v101-version-badge" id="footerVersion">v108.1</span>
+                    <span class="footer-version v42-version-glow v43-version-badge v66-version-flash v72-version-glow v73-version-glow v76-version-glow v77-version-glow v78-version-glow v82-version-glow v100-version-badge v101-version-badge" id="footerVersion">v102.0</span>
                     <span class="v48-footer-badge" id="v50FooterBadge">✨ v102.0</span>
                     <span id="uptime">--</span>
                     <span id="reliabilityBadge" class="reliability-badge high" aria-label="Data Reliability Score">100%</span>
@@ -29692,65 +29563,6 @@
             }
         }
 
-        // ========== v108.1: Focus Trap for Modals ==========
-        let v1081FocusTrap = null;
-        
-        function v1081TrapFocus(element) {
-            const focusableElements = element.querySelectorAll(
-                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-            );
-            const firstFocusable = focusableElements[0];
-            const lastFocusable = focusableElements[focusableElements.length - 1];
-            
-            function handleTab(e) {
-                if (e.key !== 'Tab') return;
-                
-                if (e.shiftKey) {
-                    if (document.activeElement === firstFocusable) {
-                        lastFocusable.focus();
-                        e.preventDefault();
-                    }
-                } else {
-                    if (document.activeElement === lastFocusable) {
-                        firstFocusable.focus();
-                        e.preventDefault();
-                    }
-                }
-            }
-            
-            element.addEventListener('keydown', handleTab);
-            v1081FocusTrap = { element, handleTab };
-            
-            // Focus first element
-            if (firstFocusable) firstFocusable.focus();
-        }
-        
-        function v1081ReleaseFocus() {
-            if (v1081FocusTrap) {
-                v1081FocusTrap.element.removeEventListener('keydown', v1081FocusTrap.handleTab);
-                v1081FocusTrap = null;
-            }
-        }
-
-        // ========== v108.1: Performance Monitor ==========
-        window.v1081PerformanceScore = 100;
-        
-        window.v1081UpdatePerfScore = function() {
-            const fps = window.v1081LastFPS || 60;
-            const score = Math.round((fps / 60) * 100);
-            window.v1081PerformanceScore = score;
-            
-            const perfEl = document.getElementById('v66PerfValue');
-            if (perfEl) perfEl.textContent = score;
-            
-            // Reduce canvas complexity if performance is low
-            if (score < 50) {
-                document.body.classList.add('low-performance');
-            } else {
-                document.body.classList.remove('low-performance');
-            }
-        };
-
         // ========== v46.0: Offline Banner ==========
         function showOfflineBanner(show) {
             const banner = document.getElementById('offlineBanner');
@@ -31165,19 +30977,12 @@
 
             function drawFox() {
                 ctx.clearRect(0, 0, width, height);
-                // v108.0: Dynamic animation speeds based on status
-                const speedMultipliers = {
-                    idle: 1, working: 2.5, sleeping: 0.3, excited: 3,
-                    thinking: 0.8, laughing: 2, error: 0.5, focused: 1.5, learning: 1.2
-                };
-                const speed = speedMultipliers[state.status] || 1;
-                breathPhase += 0.018 * speed;
-                floatPhase += 0.025 * speed;
-                eyeSparklePhase += 0.04 * speed;
+                breathPhase += 0.018;
+                floatPhase += 0.025;
+                eyeSparklePhase += 0.04;
                 // v58.0: Enhanced breathing (4% amplitude) + gentle floating bob
-                const breathAmp = state.status === 'sleeping' ? 0.02 : (state.status === 'excited' ? 0.07 : 0.04);
-                const breathScale = 1 + Math.sin(breathPhase) * breathAmp;
-                const floatY = Math.sin(floatPhase) * (state.status === 'sleeping' ? 1 : 3.5); // gentler float when sleeping
+                const breathScale = 1 + Math.sin(breathPhase) * 0.04;
+                const floatY = Math.sin(floatPhase) * 3.5; // gentle vertical bob
                 eyeX += (mouseX - width / 2 - eyeX) * 0.08;
                 eyeY += (mouseY - height / 2 - eyeY) * 0.08;
                 const cx = width / 2, cy = height / 2 + floatY;
@@ -31202,11 +31007,9 @@
                 ctx.fill();
 
                 // v58.0: Tail — fluffy swaying tail behind body
-                tailPhase += 0.022 * speed;
-                whiskerWavePhase += 0.04 * speed;
-                // v108.0: More energetic tail wag when excited/working
-                const tailWagAmp = state.status === 'excited' ? 0.6 : (state.status === 'working' ? 0.45 : (state.status === 'laughing' ? 0.5 : 0.3));
-                const tailWag = Math.sin(tailPhase) * tailWagAmp;
+                tailPhase += 0.022;
+                whiskerWavePhase += 0.04;
+                const tailWag = Math.sin(tailPhase) * 0.3;
                 const tailFluff = Math.sin(tailPhase * 0.7) * 4;
 
                 ctx.save();
@@ -32417,22 +32220,10 @@
                 idle: '😺', working: '⚡', sleeping: '😴', excited: '🎉',
                 thinking: '🤔', laughing: '😄', error: '😿', focused: '🎯', learning: '📚'
             };
-            // v108.0: Dynamic animation speed based on mood
-            const animationDurations = {
-                idle: '2.5s', working: '1.2s', sleeping: '4s', excited: '0.8s',
-                thinking: '3s', laughing: '0.6s', error: '3s', focused: '2s', learning: '2s'
-            };
             expressionEl.textContent = expressions[mood] || '😺';
             expressionEl.style.animation = 'none';
             expressionEl.offsetHeight;
-            const duration = animationDurations[mood] || '2.5s';
-            expressionEl.style.animation = `expressionBounce ${duration} ease-in-out infinite`;
-            
-            // v108.0: Add scale transform for working state to simulate sparks
-            if (mood === 'working') {
-                expressionEl.style.transform = 'scale(1.2)';
-                setTimeout(() => { if (expressionEl) expressionEl.style.transform = 'scale(1)'; }, 200);
-            }
+            expressionEl.style.animation = 'expressionBounce 2.5s ease-in-out infinite';
         }
 
         function updateMoodAura(mood) {
@@ -39818,7 +39609,7 @@
 
     <!-- v82.0: Command Palette Hint -->
     <div class="v82-version-badge v81-version-badge" id="v78VersionHint" style="position:fixed;bottom:20px;left:20px;opacity:0.5;font-size:10px;cursor:pointer;" onclick="toggleV78CmdPalette()" title="Open Command Palette (Ctrl+K)">
-        ⚡ v108.1 · Ctrl+K
+        ⚡ v107.0 · Ctrl+K
     </div>
     
     <!-- v80.0: Demo Mode Badge (shown when API unavailable) -->
