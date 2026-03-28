@@ -9,6 +9,17 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+- v109.0: Reliability & Performance监控系统（Core Web Vitals监控/FPS计数器/健康评分/结构化日志面板，Ctrl+L打开日志）
+- v109.0: @property性能指标变量（--v109-fps/--v109-lcp/--v109-health-score可动画CSS变量）
+- v109.0: 数据健康评分环形图（v109-health-ring显示0-100%健康评分）
+- v109.0: Core Web Vitals徽章（v109-cwv-badge显示LCP/FID/CLS状态：good/needs-improvement/poor）
+- v109.0: 部分失败检测（v109DetectPartialFailure检测API部分失败并显示警告）
+- v109.0: 结构化日志系统（v109Log记录带时间戳/级别/上下文的结构化日志）
+- v109.0: 恢复操作按钮（v109-recover-btn带弹簧动画的恢复按钮）
+- v109.0: 数据来源标签（v109-source-tag显示api/cache/demo/fallback状态）
+- v109.0: 可靠性趋势指示器（v109-reliability-trend显示up/down/stable趋势）
+- v109.0: 错误边界卡片（v109-error-boundary优雅显示错误信息和重试按钮）
+- v109.0: 增强型FPS计数器（v109-fps-counter带性能分级颜色good/fair/poor）
 - v108.0: Dynamic Fox Animation速度根据状态动态调整（working时加快/sleeping时减慢）
 - v108.0: Fox Expression动画时长根据心情变化（excited更快/sleeping更慢）
 - v108.0: Tail Wag幅度根据状态变化（excited时更剧烈/laughing时摆动更大）
