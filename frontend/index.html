@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v111.0">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v112.0">
     <meta name="theme-color" content="#08080c">
-    <title>MoShang Status v111.0</title>
+    <title>MoShang Status v112.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -30805,7 +30805,7 @@
             if (isOnline) {
                 elements.externalRouteBadge.classList.add('online');
                 elements.routeDot.className = 'route-dot online';
-                elements.routeName.textContent = '外网正常';
+                elements.routeName.textContent = '外网访问正常';
                 // v78.0: Enhanced tooltip with latency info
                 const latencyText = latency !== undefined ? ` • ${latency}ms` : '';
                 elements.externalRouteBadge.title = `外网访问正常 • ${new Date().toLocaleTimeString()} 检查${latencyText}`;
@@ -30818,16 +30818,16 @@
             } else {
                 elements.externalRouteBadge.classList.add('offline');
                 elements.routeDot.className = 'route-dot offline';
-                elements.routeName.textContent = '外网异常';
-                elements.externalRouteBadge.title = `外网访问异常 • ${new Date().toLocaleTimeString()} 检查`;
+                elements.routeName.textContent = 'Proxy错误';
+                elements.externalRouteBadge.title = `外网访问异常 • ${new Date().toLocaleTimeString()} 检查 • 请检查nginx是否配置了/onboard/到19000的转发`;
                 // Update route map status
                 const routeDash = document.getElementById('routeDash');
                 if (routeDash) {
                     routeDash.classList.add('error');
                     routeDash.querySelector('.route-dot').className = 'route-dot offline';
                 }
-                // Show toast warning
-                showToastV32('外部路由检测异常，正在重试...', 'warning', 4000);
+                // Show toast warning with helpful diagnostic info
+                showToastV32('外部路由(' + EXTERNAL_URL + ')连接失败，可能是nginx未配置转发至19000端口', 'warning', 6000);
             }
             // Update last check display
             updateRouteCheckDisplay();
