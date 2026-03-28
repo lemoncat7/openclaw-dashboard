@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v110.0">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v111.0">
     <meta name="theme-color" content="#08080c">
-    <title>MoShang Status v110.0</title>
+    <title>MoShang Status v111.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -26571,12 +26571,24 @@
                             <div class="v70-reaction-bubble" id="v70ReactionBubble" style="display:none;"></div>
                             <!-- v70.0: Catch mini-game container -->
                             <div class="v70-catch-container" id="v70CatchContainer"></div>
+                            <!-- v111.0: Heartbeat pulse ring -->
+                            <div class="v111-heartbeat-ring" id="v111HeartbeatRing"></div>
+                            <!-- v111.0: Activity glow layer -->
+                            <div class="v111-activity-glow" id="v111ActivityGlow"></div>
+                            <!-- v111.0: Sparkle container for data sync -->
+                            <div class="v111-sparkle-container" id="v111SparkleContainer"></div>
                         </div>
 
                         <h1 class="fox-name gradient-text-animated">MoShang</h1>
                         <p class="fox-role">Digital Assistant</p>
                         <!-- v110.0: Fox mood text — floating status label -->
                         <p class="fox-mood-text" id="foxMoodText">Idle Mode</p>
+                        <!-- v111.0: State transition timeline -->
+                        <div class="v111-state-timeline" id="v111StateTimeline" title="Recent state changes">
+                            <div class="v111-state-timeline-dot" id="v111TimelineDot"></div>
+                            <span class="v111-state-timeline-text" id="v111TimelineText">Idle</span>
+                            <span class="v111-state-timeline-time" id="v111TimelineTime"></span>
+                        </div>
 
                         <!-- v100.0: Real-time Activity Ticker -->
                         <div class="v100-activity-ticker" id="v100ActivityTicker"></div>
@@ -29058,6 +29070,237 @@
                 animation: none;
             }
         }
+
+        /* v111.0: Live Heartbeat Pulse Ring — syncs with BPM */
+        .v111-heartbeat-ring {
+            position: absolute;
+            inset: -28px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease, border-color 0.3s ease;
+        }
+
+        .v111-heartbeat-ring.active {
+            opacity: 1;
+            border-color: rgba(255, 100, 100, 0.6);
+            animation: v111HeartbeatPulse var(--bpm-duration, 1s) ease-in-out infinite;
+        }
+
+        @keyframes v111HeartbeatPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 0 0 rgba(255, 100, 100, 0.4); }
+            15% { transform: scale(1.06); opacity: 1; box-shadow: 0 0 20px 4px rgba(255, 100, 100, 0.3); }
+            30% { transform: scale(1); opacity: 0.7; box-shadow: 0 0 0 0 rgba(255, 100, 100, 0.4); }
+        }
+
+        /* v111.0: State Transition Timeline */
+        .v111-state-timeline {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius-full);
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+            overflow: hidden;
+            max-width: 220px;
+        }
+
+        .v111-state-timeline-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .v111-state-timeline-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: color 0.3s ease;
+        }
+
+        .v111-state-timeline-time {
+            color: var(--text-dim);
+            flex-shrink: 0;
+            margin-left: 4px;
+        }
+
+        .v111-state-timeline-entry {
+            animation: v111TimelineSlide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        @keyframes v111TimelineSlide {
+            0% { opacity: 0; transform: translateX(-12px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        /* v111.0: Live Data Sync Sparkle Effect */
+        .v111-sparkle-container {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            border-radius: inherit;
+        }
+
+        .v111-sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 6px var(--accent);
+            animation: v111SparkleFloat 0.8s ease-out forwards;
+        }
+
+        @keyframes v111SparkleFloat {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-30px) scale(0.3); }
+        }
+
+        /* v111.0: Dynamic Activity Glow — reacts to activity level */
+        .v111-activity-glow {
+            position: absolute;
+            inset: -40px;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            background: radial-gradient(circle, var(--glow-color, rgba(255,200,100,0.15)) 0%, transparent 70%);
+            animation: v111ActivityGlow 2s ease-in-out infinite;
+        }
+
+        .v111-activity-glow.low { --glow-color: rgba(92, 219, 149, 0.12); }
+        .v111-activity-glow.mid { --glow-color: rgba(254, 202, 87, 0.15); }
+        .v111-activity-glow.high { --glow-color: rgba(255, 200, 100, 0.18); }
+        .v111-activity-glow.max { --glow-color: rgba(255, 107, 107, 0.2); }
+
+        @keyframes v111ActivityGlow {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        /* v111.0: Data Sync Wave Ripple */
+        .v111-sync-ripple {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        @keyframes v111SyncRipple {
+            0% { transform: scale(0.3); opacity: 0.8; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+        /* v111.0: Stat Card Live Badge */
+        .v111-live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 7px;
+            background: rgba(0, 212, 255, 0.12);
+            border: 1px solid rgba(0, 212, 255, 0.25);
+            border-radius: var(--radius-full);
+            font-size: 9px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .v111-live-badge .v111-live-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 4px var(--accent);
+            animation: v111LivePulse 1s ease-in-out infinite;
+        }
+
+        @keyframes v111LivePulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        /* v111.0: Fox mood text enhanced animation */
+        .fox-mood-text.v111-updated {
+            animation: v111MoodBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes v111MoodBounce {
+            0% { transform: translateY(0); opacity: 1; }
+            30% { transform: translateY(-8px); opacity: 0.9; }
+            60% { transform: translateY(2px); opacity: 1; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        /* v111.0: Connection quality enhanced bars */
+        .v111-conn-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            padding: 5px 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .v111-conn-bar {
+            width: 3px;
+            border-radius: 2px;
+            background: var(--text-dim);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .v111-conn-bar.excellent { background: var(--success); box-shadow: 0 0 4px var(--success); }
+        .v111-conn-bar.good { background: var(--accent); box-shadow: 0 0 4px var(--accent); }
+        .v111-conn-bar.fair { background: var(--warning); box-shadow: 0 0 4px var(--warning); }
+        .v111-conn-bar.poor { background: var(--danger); box-shadow: 0 0 4px var(--danger); }
+
+        /* v111.0: Mini stat delta indicator */
+        .v111-stat-delta {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            font-size: 9px;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 1px 4px;
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .v111-stat-delta.up {
+            color: var(--success);
+            background: rgba(92, 219, 149, 0.12);
+        }
+
+        .v111-stat-delta.down {
+            color: var(--danger);
+            background: rgba(255, 107, 107, 0.12);
+        }
+
+        .v111-stat-delta.visible { opacity: 1; }
+
+        /* v111.0: Entrance animation for timeline */
+        .v111-timeline-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 10px;
+            color: var(--text-dim);
+        }
     </style>
     <script>
         // ========== State Management v36 ==========
@@ -29297,6 +29540,150 @@
         // ========== v110.0: Dashboard Optimizations ==========
 
         // v110.0: Init wrapper for initAllFeatures compatibility
+        function initV111Features() {
+            initV111HeartbeatRing();
+            initV111StateTimeline();
+            initV111ActivityGlow();
+            initV111DataSyncSparkle();
+        }
+
+        // v111.0: Heartbeat Pulse Ring — syncs with BPM
+        function initV111HeartbeatRing() {
+            const ring = document.getElementById('v111HeartbeatRing');
+            const foxContainer = document.getElementById('foxContainer');
+            if (!ring || !foxContainer) return;
+
+            // Set BPM duration CSS variable for animation timing
+            function updateHeartbeatRing(bpm) {
+                if (!bpm || bpm === '--') return;
+                const duration = Math.max(400, Math.min(4000, (60 / parseInt(bpm)) * 1000));
+                document.documentElement.style.setProperty('--bpm-duration', duration + 'ms');
+                ring.classList.add('active');
+            }
+
+            window.v111UpdateHeartbeatRing = updateHeartbeatRing;
+
+            // Also add ring to fox container
+            foxContainer.style.position = 'relative';
+        }
+
+        // v111.0: State Transition Timeline
+        const v111StateHistory = [];
+        const v111StateColors = {
+            idle: '#ffc864',
+            working: '#00d4ff',
+            sleeping: '#a855f7',
+            excited: '#ec4899',
+            thinking: '#ffc864',
+            laughing: '#ffc864',
+            error: '#ff6b6b',
+            focused: '#5cdb95',
+            learning: '#ffc864'
+        };
+
+        function initV111StateTimeline() {
+            const timeline = document.getElementById('v111StateTimeline');
+            const dot = document.getElementById('v111TimelineDot');
+            const text = document.getElementById('v111TimelineText');
+            const time = document.getElementById('v111TimelineTime');
+            if (!timeline) return;
+
+            window.v111AddStateEntry = function(state, label) {
+                const color = v111StateColors[state] || '#ffc864';
+                if (dot) {
+                    dot.style.background = color;
+                    dot.style.boxShadow = `0 0 6px ${color}`;
+                }
+                if (text) {
+                    text.textContent = label || state;
+                    text.style.color = color;
+                }
+                if (time) {
+                    const now = new Date();
+                    time.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                }
+
+                // Animate the entry
+                timeline.classList.remove('v111-state-timeline-entry');
+                void timeline.offsetWidth;
+                timeline.classList.add('v111-state-timeline-entry');
+            };
+
+            // Initialize with current state
+            const currentState = window.state && window.state.status ? window.state.status : 'idle';
+            v111AddStateEntry(currentState, currentState);
+        }
+
+        // v111.0: Activity Glow — reacts to activity level
+        function initV111ActivityGlow() {
+            const glow = document.getElementById('v111ActivityGlow');
+            if (!glow) return;
+
+            window.v111UpdateActivityGlow = function(activity) {
+                if (!glow) return;
+                glow.classList.remove('low', 'mid', 'high', 'max');
+                if (activity === '--' || activity === undefined) {
+                    glow.style.opacity = '0';
+                    return;
+                }
+                const val = parseInt(activity);
+                if (val < 30) glow.classList.add('low');
+                else if (val < 60) glow.classList.add('mid');
+                else if (val < 85) glow.classList.add('high');
+                else glow.classList.add('max');
+                glow.style.opacity = '1';
+            };
+        }
+
+        // v111.0: Data Sync Sparkle Effect
+        function initV111DataSyncSparkle() {
+            const container = document.getElementById('v111SparkleContainer');
+            if (!container) return;
+
+            window.v111TriggerSparkle = function(count) {
+                count = count || 5;
+                for (let i = 0; i < count; i++) {
+                    setTimeout(() => {
+                        const sparkle = document.createElement('div');
+                        sparkle.className = 'v111-sparkle';
+                        sparkle.style.left = (20 + Math.random() * 60) + '%';
+                        sparkle.style.top = (20 + Math.random() * 60) + '%';
+                        sparkle.style.background = ['var(--primary)', 'var(--accent)', 'var(--success)', 'var(--purple)'][Math.floor(Math.random() * 4)];
+                        sparkle.style.boxShadow = `0 0 6px ${sparkle.style.background}`;
+                        container.appendChild(sparkle);
+                        setTimeout(() => sparkle.remove(), 800);
+                    }, i * 60);
+                }
+            };
+
+            // Trigger sparkle on successful data fetch
+            const originalFetch = window.fetchDashboardData;
+            if (typeof originalFetch === 'function') {
+                window.fetchDashboardData = function() {
+                    const result = originalFetch.apply(this, arguments);
+                    window.v111TriggerSparkle(4);
+                    return result;
+                };
+            }
+        }
+
+        // v111.0: Sync ripple from fox container
+        window.v111TriggerSyncRipple = function() {
+            const foxContainer = document.getElementById('foxContainer');
+            if (!foxContainer) return;
+            const ripple = document.createElement('div');
+            ripple.className = 'v111-sync-ripple';
+            ripple.style.width = '80px';
+            ripple.style.height = '80px';
+            ripple.style.left = '50%';
+            ripple.style.top = '50%';
+            ripple.style.marginLeft = '-40px';
+            ripple.style.marginTop = '-40px';
+            ripple.style.animation = 'v111SyncRipple 0.8s ease-out forwards';
+            foxContainer.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 800);
+        };
+
         function initV110Features() {
             // Call main v110 init
             if (typeof v110Init === 'function') {
@@ -29405,6 +29792,14 @@
             v110UpdateFoxMoodText(mood);
             v110UpdateFoxShadow(mood);
             v110UpdateMoodButtons(mood);
+            // v111.0: Update state timeline and activity glow
+            if (typeof window.v111AddStateEntry === 'function') {
+                const labels = { idle: 'Idle Mode', working: 'Working Hard', sleeping: 'Sleeping Soundly', excited: 'Super Excited!', thinking: 'Deep Thinking', laughing: 'Having Fun', error: 'Something Wrong', focused: 'Fully Focused', learning: 'Learning New' };
+                window.v111AddStateEntry(mood, labels[mood] || mood);
+            }
+            if (typeof window.v111TriggerSyncRipple === 'function') {
+                window.v111TriggerSyncRipple();
+            }
         };
 
         // v110.0: Patch canvas click to add starburst
@@ -29452,6 +29847,15 @@
                     const miniAct = document.getElementById('miniActivity');
                     if (miniHb && miniHb.textContent !== '--') v110PulseOnUpdate('miniHeartbeat', miniHb.textContent);
                     if (miniAct && miniAct.textContent !== '--') v110PulseOnUpdate('miniActivity', miniAct.textContent);
+                    // v111.0: Trigger heartbeat ring and activity glow update
+                    if (typeof window.v111UpdateHeartbeatRing === 'function') {
+                        const hb = document.getElementById('miniHeartbeat');
+                        if (hb && hb.textContent !== '--') window.v111UpdateHeartbeatRing(hb.textContent);
+                    }
+                    if (typeof window.v111UpdateActivityGlow === 'function') {
+                        const act = document.getElementById('miniActivity');
+                        if (act && act.textContent !== '--') window.v111UpdateActivityGlow(act.textContent.replace('%', ''));
+                    }
                     return result;
                 }
             };
@@ -29537,10 +29941,28 @@
                     updateElement('miniActivity', data.activity !== undefined ? `${data.activity}%` : state.activity);
                     updateElement('statusText', data.status || state.status);
 
+                    // v111.0: Update heartbeat ring, activity glow, and trigger sparkles
+                    if (typeof window.v111UpdateHeartbeatRing === 'function' && data.heartbeat) {
+                        window.v111UpdateHeartbeatRing(data.heartbeat);
+                    }
+                    if (typeof window.v111UpdateActivityGlow === 'function' && data.activity !== undefined) {
+                        window.v111UpdateActivityGlow(data.activity);
+                    }
+                    if (typeof window.v111TriggerSparkle === 'function') {
+                        window.v111TriggerSparkle(3);
+                    }
+                    if (typeof window.v111TriggerSyncRipple === 'function') {
+                        window.v111TriggerSyncRipple();
+                    }
+
                     // Update fox mood based on status
                     if (data.status) {
                         v110UpdateFoxShadow(data.status);
                         v110UpdateFoxMoodText(data.status);
+                        if (typeof window.v111AddStateEntry === 'function') {
+                            const labels = { idle: 'Idle Mode', working: 'Working Hard', sleeping: 'Sleeping Soundly', excited: 'Super Excited!', thinking: 'Deep Thinking', laughing: 'Having Fun', error: 'Something Wrong', focused: 'Fully Focused', learning: 'Learning New' };
+                            window.v111AddStateEntry(data.status, labels[data.status] || data.status);
+                        }
                     }
                     break;
 
@@ -40896,9 +41318,9 @@
 
         // Initialize all features after DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); initV106Features(); initV110Features(); });
+            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); initV106Features(); initV110Features(); initV111Features(); });
         } else {
-            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); initV106Features(); initV110Features(); }, 100);
+            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); initV106Features(); initV110Features(); initV111Features(); }, 100);
         }
 
     </script>
