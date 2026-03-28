@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v108.1">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v108.2">
     <meta name="theme-color" content="#08080c">
-    <title>MoShang Status v108.1</title>
+    <title>MoShang Status v108.2</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -3318,7 +3318,7 @@
             .fox-container.laughing::before { background: var(--warning); }
             .fox-container.focused::before { background: var(--success); }
             
-            /* v76.0: Status sync ring enhanced */
+            /* v108.2: State-responsive mood sync ring */
             .mood-sync-ring {
                 position: absolute;
                 inset: -14px;
@@ -3334,14 +3334,112 @@
                 animation: v75PulseRing 2.5s ease-in-out infinite;
             }
             
+            /* v108.2: State-specific colors and glows */
             .mood-sync-ring.idle { border-color: var(--warning); box-shadow: 0 0 35px var(--warning); }
-            .mood-sync-ring.working { border-color: var(--accent); box-shadow: 0 0 35px var(--accent); }
-            .mood-sync-ring.sleeping { border-color: var(--purple); box-shadow: 0 0 35px var(--purple); }
-            .mood-sync-ring.excited { border-color: var(--pink); box-shadow: 0 0 35px var(--pink); }
-            .mood-sync-ring.thinking { border-color: var(--purple); box-shadow: 0 0 35px var(--purple); }
-            .mood-sync-ring.laughing { border-color: var(--warning); box-shadow: 0 0 35px var(--warning); }
-            .mood-sync-ring.error { border-color: var(--danger); box-shadow: 0 0 35px var(--danger); }
-            .mood-sync-ring.focused { border-color: var(--success); box-shadow: 0 0 35px var(--success); }
+            .mood-sync-ring.working { border-color: var(--accent); box-shadow: 0 0 35px var(--accent); animation-duration: 1.2s; }
+            .mood-sync-ring.sleeping { border-color: var(--purple); box-shadow: 0 0 35px var(--purple); animation-duration: 5s; }
+            .mood-sync-ring.excited { border-color: var(--pink); box-shadow: 0 0 35px var(--pink); animation-duration: 0.8s; }
+            .mood-sync-ring.thinking { border-color: var(--purple); box-shadow: 0 0 35px var(--purple); animation-duration: 3s; }
+            .mood-sync-ring.laughing { border-color: var(--warning); box-shadow: 0 0 35px var(--warning); animation-duration: 1s; }
+            .mood-sync-ring.error { border-color: var(--danger); box-shadow: 0 0 35px var(--danger); animation-duration: 0.6s; }
+            .mood-sync-ring.focused { border-color: var(--success); box-shadow: 0 0 35px var(--success); animation-duration: 1.5s; }
+            .mood-sync-ring.learning { border-color: var(--accent); box-shadow: 0 0 35px var(--accent); animation-duration: 2s; }
+            
+            /* v108.2: Orbiting particle dots around the ring */
+            .mood-sync-ring::before,
+            .mood-sync-ring::after {
+                content: '';
+                position: absolute;
+                border-radius: 50%;
+                pointer-events: none;
+            }
+            
+            /* Inner orbiting dot */
+            .mood-sync-ring::before {
+                width: 6px;
+                height: 6px;
+                top: -3px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: currentColor;
+                box-shadow: 0 0 8px currentColor;
+                animation: v108OrbitDot 2s linear infinite;
+                opacity: 0.9;
+            }
+            
+            /* Outer orbiting dot (opposite side, slower) */
+            .mood-sync-ring::after {
+                width: 4px;
+                height: 4px;
+                bottom: -2px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: currentColor;
+                box-shadow: 0 0 6px currentColor;
+                animation: v108OrbitDotReverse 3s linear infinite;
+                opacity: 0.7;
+            }
+            
+            @keyframes v108OrbitDot {
+                0% { transform: translateX(-50%) rotate(0deg) translateY(-18px) rotate(0deg); }
+                100% { transform: translateX(-50%) rotate(360deg) translateY(-18px) rotate(-360deg); }
+            }
+            
+            @keyframes v108OrbitDotReverse {
+                0% { transform: translateX(-50%) rotate(180deg) translateY(18px) rotate(-180deg); }
+                100% { transform: translateX(-50%) rotate(540deg) translateY(18px) rotate(-540deg); }
+            }
+            
+            /* v108.2: State-specific orbit speeds */
+            .mood-sync-ring.working::before,
+            .mood-sync-ring.working::after { animation-duration: 0.8s; }
+            .mood-sync-ring.excited::before,
+            .mood-sync-ring.excited::after { animation-duration: 0.5s; }
+            .mood-sync-ring.sleeping::before,
+            .mood-sync-ring.sleeping::after { animation-duration: 6s; }
+            .mood-sync-ring.idle::before,
+            .mood-sync-ring.idle::after { animation-duration: 3s; }
+            .mood-sync-ring.thinking::before,
+            .mood-sync-ring.thinking::after { animation-duration: 4s; }
+            .mood-sync-ring.error::before,
+            .mood-sync-ring.error::after { animation-duration: 0.4s; }
+            
+            /* v108.2: Fox canvas reaction flash effect */
+            @keyframes v108FoxReaction {
+                0% { transform: scale(1); filter: brightness(1); }
+                15% { transform: scale(1.08); filter: brightness(1.3) drop-shadow(0 0 8px var(--primary)); }
+                30% { transform: scale(0.98); filter: brightness(0.95); }
+                50% { transform: scale(1.04); filter: brightness(1.1); }
+                100% { transform: scale(1); filter: brightness(1); }
+            }
+            
+            @keyframes v108FoxWorkingZap {
+                0%, 100% { transform: scale(1); }
+                10% { transform: scale(1.05) rotate(-1deg); }
+                20% { transform: scale(1.08) rotate(1deg); }
+                30% { transform: scale(1.03); }
+                50% { transform: scale(1.06); }
+                70% { transform: scale(1.02); }
+            }
+            
+            @keyframes v108FoxExcitedBounce {
+                0%, 100% { transform: scale(1) translateY(0); }
+                25% { transform: scale(1.1) translateY(-4px); }
+                50% { transform: scale(1.05) translateY(0); }
+                75% { transform: scale(1.08) translateY(-2px); }
+            }
+            
+            @keyframes v108FoxSleepingFloat {
+                0%, 100% { transform: scale(0.97) translateY(0); }
+                50% { transform: scale(1) translateY(2px); }
+            }
+            
+            .fox-canvas-wrapper.v108-reaction-working { animation: v108FoxWorkingZap 1.5s ease-in-out infinite; }
+            .fox-canvas-wrapper.v108-reaction-excited { animation: v108FoxExcitedBounce 0.8s ease-in-out infinite; }
+            .fox-canvas-wrapper.v108-reaction-sleeping { animation: v108FoxSleepingFloat 4s ease-in-out infinite; }
+            .fox-canvas-wrapper.v108-reaction-laughing { animation: v108FoxExcitedBounce 0.6s ease-in-out infinite; }
+            .fox-canvas-wrapper.v108-reaction-thinking { animation: v108FoxReaction 2.5s ease-in-out infinite; }
+            .fox-canvas-wrapper.v108-reaction-error { animation: v108FoxReaction 0.5s ease-in-out infinite; filter: brightness(0.9) saturate(0.8); }
             
             /* v76.0: Energy core enhanced */
             .energy-core {
@@ -32412,12 +32510,13 @@
 
         function updateFoxExpression(mood) {
             const expressionEl = $('foxExpression');
+            const canvasWrapper = document.querySelector('.fox-canvas-wrapper');
             if (!expressionEl) return;
             const expressions = {
                 idle: '😺', working: '⚡', sleeping: '😴', excited: '🎉',
                 thinking: '🤔', laughing: '😄', error: '😿', focused: '🎯', learning: '📚'
             };
-            // v108.0: Dynamic animation speed based on mood
+            // v108.2: Dynamic animation speed based on mood
             const animationDurations = {
                 idle: '2.5s', working: '1.2s', sleeping: '4s', excited: '0.8s',
                 thinking: '3s', laughing: '0.6s', error: '3s', focused: '2s', learning: '2s'
@@ -32428,10 +32527,36 @@
             const duration = animationDurations[mood] || '2.5s';
             expressionEl.style.animation = `expressionBounce ${duration} ease-in-out infinite`;
             
-            // v108.0: Add scale transform for working state to simulate sparks
-            if (mood === 'working') {
-                expressionEl.style.transform = 'scale(1.2)';
-                setTimeout(() => { if (expressionEl) expressionEl.style.transform = 'scale(1)'; }, 200);
+            // v108.2: Apply canvas reaction animations based on state
+            if (canvasWrapper) {
+                // Remove all reaction classes first
+                canvasWrapper.classList.remove(
+                    'v108-reaction-working', 'v108-reaction-excited',
+                    'v108-reaction-sleeping', 'v108-reaction-laughing',
+                    'v108-reaction-thinking', 'v108-reaction-error', 'v108-reaction-focused',
+                    'v108-reaction-learning'
+                );
+                
+                // Apply state-specific reaction animation
+                const reactionMap = {
+                    working: 'v108-reaction-working',
+                    excited: 'v108-reaction-excited',
+                    sleeping: 'v108-reaction-sleeping',
+                    laughing: 'v108-reaction-laughing',
+                    thinking: 'v108-reaction-thinking',
+                    error: 'v108-reaction-error',
+                    focused: 'v108-reaction-thinking',
+                    learning: 'v108-reaction-thinking'
+                };
+                
+                const reactionClass = reactionMap[mood];
+                if (reactionClass) {
+                    canvasWrapper.classList.add(reactionClass);
+                }
+                
+                // Flash effect on state change
+                canvasWrapper.style.animation = 'none';
+                canvasWrapper.offsetHeight; // Reflow
             }
         }
 
