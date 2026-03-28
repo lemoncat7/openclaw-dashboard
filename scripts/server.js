@@ -20,10 +20,22 @@ let chatCount = 0;
 const startTime = Date.now();
 const statusHistory = [];
 
+// v111.0: SSE 客户端管理 (更轻量，无需额外依赖)
+const sseClients = new Set();
+
 // 状态历史记录
 function addStatusHistory(status) {
     statusHistory.push({ status, time: Date.now() });
     if (statusHistory.length > 50) statusHistory.shift();
+}
+
+// v111.0: 广播消息到所有 SSE 客户端
+function broadcastSSE(data) {
+    if (sseClients.size === 0) return;
+    const message = `data: ${JSON.stringify(data)}\n\n`;
+    sseClients.forEach(client => {
+        client.write(message);
+    });
 }
 
 function getContentType(url) {
@@ -442,8 +454,8 @@ async function fetchEvomapStatus() {
     return;
   }
   
-  // Webhook - 接收任务/事件通知
-  // POST /api/webhook with JSON body: 
+  // Webhook - 接收任务/事件通知 (支持 WebSocket 实时推送)
+  // POST /api/webhook with JSON body:
   // { type: 'task_start', data: { task: 'xxx', queue: ['task1'], activity: 70 } }
   // { type: 'task_complete', data: { queue: [], activity: 10 } }
   if (url === '/api/webhook' && req.method === 'POST') {
@@ -453,22 +465,25 @@ async function fetchEvomapStatus() {
       try {
         const payload = JSON.parse(body);
         const { type, data } = payload;
-        
+
         if (type === 'task_start') {
           currentTaskInfo = data.task || 'Working';
           taskQueue = data.queue || [];
           activityLevel = data.activity || 50;
           taskCount++;
+          broadcastTaskUpdate(); // v111.0: 实时推送
         } else if (type === 'task_complete') {
           taskQueue = data.queue || [];
           activityLevel = data.activity || 10;
           currentTaskInfo = taskQueue.length > 0 ? taskQueue.join(', ') : '';
+          broadcastTaskUpdate(); // v111.0: 实时推送
         } else if (type === 'state_change') {
           addStatusHistory(data.state);
+          broadcast({ type: 'state_change', state: data.state, timestamp: new Date().toISOString() });
         } else if (type === 'activity') {
           activityLevel = data.level || activityLevel;
         }
-        
+
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ received: true, type }));
       } catch (e) {
@@ -485,14 +500,80 @@ async function fetchEvomapStatus() {
     return;
   }
   
+  // v111.0: SSE 端点 - 实时状态流 (必须在 createServer 内部)
+  if (url === '/api/stream') {
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+      'Access-Control-Allow-Origin': '*'
+    });
+
+    sseClients.add(res);
+    console.log(`[SSE] 客户端连接，当前: ${sseClients.size} 个`);
+
+    // 发送初始状态
+    res.write(`data: ${JSON.stringify({
+      type: 'connected',
+      heartbeat: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
+      activity: activityLevel,
+      status: activityLevel > 80 ? 'excited' : activityLevel > 60 ? 'working' : activityLevel < 20 ? 'sleeping' : 'idle',
+      msgCount: chatCount,
+      taskDone: taskCount,
+      currentTask: currentTaskInfo,
+      timestamp: new Date().toISOString()
+    })}\n\n`);
+
+    // 心跳保持连接
+    const heartbeatInterval = setInterval(() => {
+      res.write(`: heartbeat\n\n`);
+    }, 30000);
+
+    req.on('close', () => {
+      clearInterval(heartbeatInterval);
+      sseClients.delete(res);
+      console.log(`[SSE] 客户端断开，当前: ${sseClients.size} 个`);
+    });
+    return;
+  }
+  
   // 默认显示看板
   serveDashboard(req, res);
 });
+
+// 定期广播心跳状态 (每5秒) - v111.0
+setInterval(() => {
+  if (sseClients.size > 0) {
+    broadcastSSE({
+      type: 'heartbeat',
+      heartbeat: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
+      activity: activityLevel,
+      status: activityLevel > 80 ? 'excited' : activityLevel > 60 ? 'working' : activityLevel < 20 ? 'sleeping' : 'idle',
+      msgCount: chatCount,
+      taskDone: taskCount,
+      currentTask: currentTaskInfo,
+      timestamp: new Date().toISOString()
+    });
+  }
+}, 5000);
+
+// 任务变更时立即广播 - v111.0
+function broadcastTaskUpdate() {
+  broadcastSSE({
+    type: 'task_update',
+    taskCount: taskCount,
+    currentTask: currentTaskInfo,
+    taskQueue: taskQueue,
+    activityLevel: activityLevel,
+    timestamp: new Date().toISOString()
+  });
+}
 
 server.listen(PORT, () => {
   console.log(`🚀 Dashboard 服务已启动: http://localhost:${PORT}`);
   console.log(`📊 看板: http://localhost:${PORT}/`);
   console.log(`🏢 Star Office: http://localhost:${PORT}/star`);
+  console.log(`📡 SSE 端点: http://localhost:${PORT}/api/stream`);
 });
 
 process.on('SIGTERM', () => {

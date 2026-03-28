@@ -26482,6 +26482,11 @@
                     <div class="polling-indicator normal" id="v57PollingIndicator">
                         <span class="polling-dot"></span>3s
                     </div>
+                    <!-- v111.0: SSE connection indicator -->
+                    <div class="v111-sse-indicator" id="sseIndicator" title="Real-time Connection">
+                        <span class="sse-dot"></span>
+                        <span class="sse-text">SSE</span>
+                    </div>
                     <!-- v88.0: Reliability Score Bar -->
                     <div class="v88-reliability-bar" id="v88ReliabilityBar" title="Data Reliability">
                         <span class="v88-conn-ring connected" id="v88ConnRing"></span>
@@ -28978,6 +28983,81 @@
             0% { transform: translateX(-100%); }
             50%, 100% { transform: translateX(100%); }
         }
+
+        /* v111.0: SSE (Server-Sent Events) indicator styles */
+        .v111-sse-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-full);
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .v111-sse-indicator.connected {
+            background: rgba(92, 219, 149, 0.12);
+            border-color: rgba(92, 219, 149, 0.3);
+            color: var(--success);
+        }
+
+        .v111-sse-indicator.disconnected {
+            background: rgba(254, 202, 87, 0.12);
+            border-color: rgba(254, 202, 87, 0.3);
+            color: var(--warning);
+        }
+
+        .v111-sse-indicator .sse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            box-shadow: 0 0 6px currentColor;
+        }
+
+        .v111-sse-indicator.connected .sse-dot {
+            animation: v111SsePulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes v111SsePulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.85); }
+        }
+
+        /* v111.0: Pulse animation for SSE-updated values */
+        @keyframes v111Pulse {
+            0% { transform: scale(1); opacity: 1; }
+            30% { transform: scale(1.08); opacity: 0.9; color: var(--accent); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .v111-pulse {
+            animation: v111Pulse 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* v111.0: Enhanced mobile touch support for real-time updates */
+        @media (hover: none) and (pointer: coarse) {
+            .v111-sse-indicator {
+                padding: 4px 12px;
+                font-size: 11px;
+            }
+        }
+
+        /* v111.0: Reduced motion - disable SSE pulse but keep indicator visible */
+        @media (prefers-reduced-motion: reduce) {
+            .v111-sse-indicator.connected .sse-dot {
+                animation: none;
+                opacity: 1;
+            }
+
+            .v111-pulse {
+                animation: none;
+            }
+        }
     </style>
     <script>
         // ========== State Management v36 ==========
@@ -29375,6 +29455,120 @@
                     return result;
                 }
             };
+            // v111.0: Initialize SSE for real-time updates
+            initSSE();
+        }
+
+        // v111.0: Server-Sent Events for real-time dashboard updates
+        let sseConnection = null;
+        let sseReconnectAttempts = 0;
+        const SSE_MAX_RECONNECT = 5;
+        const SSE_RECONNECT_DELAY = 3000;
+
+        function initSSE() {
+            if (sseConnection) {
+                sseConnection.close();
+            }
+
+            try {
+                sseConnection = new EventSource('/api/stream');
+
+                sseConnection.onopen = () => {
+                    console.log('[SSE] Connected to real-time stream');
+                    sseReconnectAttempts = 0;
+                    // Update connection indicator if exists
+                    const sseIndicator = document.getElementById('sseIndicator');
+                    if (sseIndicator) {
+                        sseIndicator.className = 'v111-sse-indicator connected';
+                        sseIndicator.innerHTML = '<span class="sse-dot"></span>Live';
+                    }
+                };
+
+                sseConnection.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        handleSSEMessage(data);
+                    } catch (e) {
+                        // Ignore non-JSON messages (like heartbeat comments)
+                    }
+                };
+
+                sseConnection.onerror = (err) => {
+                    console.log('[SSE] Connection error, attempting reconnect...');
+                    sseConnection.close();
+                    sseConnection = null;
+
+                    if (sseReconnectAttempts < SSE_MAX_RECONNECT) {
+                        sseReconnectAttempts++;
+                        setTimeout(initSSE, SSE_RECONNECT_DELAY * sseReconnectAttempts);
+                    } else {
+                        console.log('[SSE] Max reconnect attempts reached, falling back to polling');
+                        const sseIndicator = document.getElementById('sseIndicator');
+                        if (sseIndicator) {
+                            sseIndicator.className = 'v111-sse-indicator disconnected';
+                            sseIndicator.innerHTML = '<span class="sse-dot"></span>Polling';
+                        }
+                    }
+                };
+            } catch (e) {
+                console.log('[SSE] Failed to initialize:', e.message);
+            }
+        }
+
+        function handleSSEMessage(data) {
+            if (!data || !data.type) return;
+
+            switch (data.type) {
+                case 'connected':
+                case 'heartbeat':
+                    // Update state with SSE data
+                    if (data.heartbeat) state.heartbeat = data.heartbeat;
+                    if (data.activity !== undefined) state.activity = data.activity;
+                    if (data.status) state.status = data.status;
+                    if (data.msgCount !== undefined) state.msgCount = data.msgCount;
+                    if (data.taskDone !== undefined) state.taskDone = data.taskDone;
+                    if (data.currentTask !== undefined) state.currentTask = data.currentTask;
+                    state.lastSuccessfulFetch = Date.now();
+                    state.consecutiveErrors = 0;
+                    state.isOnline = true;
+
+                    // Update UI elements
+                    updateElement('miniHeartbeat', data.heartbeat || state.heartbeat);
+                    updateElement('miniActivity', data.activity !== undefined ? `${data.activity}%` : state.activity);
+                    updateElement('statusText', data.status || state.status);
+
+                    // Update fox mood based on status
+                    if (data.status) {
+                        v110UpdateFoxShadow(data.status);
+                        v110UpdateFoxMoodText(data.status);
+                    }
+                    break;
+
+                case 'task_update':
+                    if (data.taskCount !== undefined) state.taskDone = data.taskCount;
+                    if (data.currentTask !== undefined) state.currentTask = data.currentTask;
+                    if (data.activityLevel !== undefined) state.activity = data.activityLevel;
+                    break;
+
+                case 'state_change':
+                    if (data.state) {
+                        state.status = data.state;
+                        v110UpdateFoxShadow(data.state);
+                        v110UpdateFoxMoodText(data.state);
+                    }
+                    break;
+            }
+        }
+
+        function updateElement(id, value) {
+            const el = document.getElementById(id);
+            if (el && el.textContent !== String(value)) {
+                el.textContent = value;
+                // Add pulse animation
+                el.classList.remove('v111-pulse');
+                void el.offsetWidth; // Trigger reflow
+                el.classList.add('v111-pulse');
+            }
         }
 
         // ========== OpenClaw Connection Status v48.5 ==========
