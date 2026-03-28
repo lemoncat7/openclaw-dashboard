@@ -9,6 +9,13 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+- v113.0: SSE质量监控器（v113-sse-quality跟踪消息频率，显示连接质量等级）
+- v113.0: 数据过期警告（v113-stale-warning数据超过30秒未更新时显示醒目警告）
+- v113.0: 数据新鲜度计时器（v113-freshness-timer实时显示数据年龄）
+- v113.0: 错误上下文面板（v113-error-context显示可操作的错误诊断建议）
+- v113.0: 多源健康追踪（heartbeat/system/memories/skills/dashboard各端点独立状态）
+- v113.0: 性能优化（content-visibility: auto减少屏幕外内容渲染开销）
+- v113.0: 减少动画和移动端适配
 - v112.0: 外部路由错误诊断增强（显示更清晰的错误提示：Proxy错误 + nginx配置提示）
 - v112.0: 版本更新至v112.0
 - v111.0: 心跳脉冲环（v111-heartbeat-ring跟随BPM动态调整动画速度，实时反映心跳节律）
