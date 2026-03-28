@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v112.0">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v113.0">
     <meta name="theme-color" content="#08080c">
-    <title>MoShang Status v112.0</title>
+    <title>MoShang Status v113.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -26487,6 +26487,23 @@
                         <span class="sse-dot"></span>
                         <span class="sse-text">SSE</span>
                     </div>
+                    <!-- v113.0: SSE Quality Indicator -->
+                    <div class="v113-sse-quality" id="v113SseQuality" title="SSE Message Quality">
+                        <div class="v113-sse-quality-bar">
+                            <div class="v113-sse-quality-fill" id="v113SseQualityFill" style="width: 100%"></div>
+                        </div>
+                        <span id="v113SseMsgRate">--</span>
+                    </div>
+                    <!-- v113.0: Data Freshness Timer -->
+                    <div class="v113-freshness-timer fresh" id="v113FreshnessTimer" title="Data Freshness">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+                        <span id="v113FreshnessValue">0s</span>
+                    </div>
+                    <!-- v113.0: Stale Data Warning -->
+                    <div class="v113-stale-warning" id="v113StaleWarning">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                        <span>数据过期</span>
+                    </div>
                     <!-- v88.0: Reliability Score Bar -->
                     <div class="v88-reliability-bar" id="v88ReliabilityBar" title="Data Reliability">
                         <span class="v88-conn-ring connected" id="v88ConnRing"></span>
@@ -29301,6 +29318,302 @@
             font-size: 10px;
             color: var(--text-dim);
         }
+
+        /* ========== v113.0: Data Reliability & Error Recovery Enhancement ========== */
+
+        /* v113.0: Stale data warning indicator */
+        .v113-stale-warning {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            background: rgba(255, 107, 107, 0.12);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: var(--radius-full);
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--danger);
+            opacity: 0;
+            transform: translateY(-4px);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+        }
+
+        .v113-stale-warning.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+            animation: v113StalePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes v113StalePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4); }
+            50% { box-shadow: 0 0 8px 2px rgba(255, 107, 107, 0.2); }
+        }
+
+        .v113-stale-warning svg {
+            width: 12px;
+            height: 12px;
+            fill: currentColor;
+        }
+
+        /* v113.0: SSE Quality Indicator */
+        .v113-sse-quality {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 6px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: var(--radius-sm);
+            font-size: 9px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-dim);
+        }
+
+        .v113-sse-quality.excellent { color: var(--success); }
+        .v113-sse-quality.good { color: var(--accent); }
+        .v113-sse-quality.fair { color: var(--warning); }
+        .v113-sse-quality.poor { color: var(--danger); }
+
+        .v113-sse-quality-bar {
+            width: 20px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .v113-sse-quality-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.5s ease, background 0.3s ease;
+        }
+
+        .v113-sse-quality.excellent .v113-sse-quality-fill { background: var(--success); }
+        .v113-sse-quality.good .v113-sse-quality-fill { background: var(--accent); }
+        .v113-sse-quality.fair .v113-sse-quality-fill { background: var(--warning); }
+        .v113-sse-quality.poor .v113-sse-quality-fill { background: var(--danger); }
+
+        /* v113.0: Data Source Health Panel */
+        .v113-source-health {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 4px 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .v113-source-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 6px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-sm);
+            font-size: 9px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-dim);
+            transition: all 0.3s ease;
+        }
+
+        .v113-source-item.healthy {
+            color: var(--success);
+            background: rgba(92, 219, 149, 0.08);
+        }
+
+        .v113-source-item.degraded {
+            color: var(--warning);
+            background: rgba(254, 202, 87, 0.08);
+        }
+
+        .v113-source-item.critical {
+            color: var(--danger);
+            background: rgba(255, 107, 107, 0.08);
+            animation: v113CriticalPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes v113CriticalPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .v113-source-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .v113-source-item.healthy .v113-source-dot { box-shadow: 0 0 4px var(--success); }
+        .v113-source-item.degraded .v113-source-dot { box-shadow: 0 0 4px var(--warning); }
+        .v113-source-item.critical .v113-source-dot { box-shadow: 0 0 4px var(--danger); }
+
+        /* v113.0: Error Context Panel */
+        .v113-error-context {
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            max-width: 320px;
+            padding: 12px 16px;
+            background: rgba(20, 20, 25, 0.95);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 107, 107, 0.1);
+            opacity: 0;
+            transform: translateY(10px) scale(0.98);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .v113-error-context.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        .v113-error-context-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--danger);
+        }
+
+        .v113-error-context-header svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .v113-error-context-message {
+            font-size: 11px;
+            color: var(--text);
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .v113-error-context-suggestions {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .v113-error-context-suggestions li {
+            position: relative;
+            padding-left: 16px;
+            margin-bottom: 6px;
+            font-size: 10px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .v113-error-context-suggestions li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        .v113-error-context-suggestions code {
+            padding: 1px 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+        }
+
+        .v113-error-context-dismiss {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            border-radius: 50%;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .v113-error-context-dismiss:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+        }
+
+        /* v113.0: Data Freshness Timer */
+        .v113-freshness-timer {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 9px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-dim);
+            transition: color 0.3s ease;
+        }
+
+        .v113-freshness-timer.fresh { color: var(--success); }
+        .v113-freshness-timer.aging { color: var(--warning); }
+        .v113-freshness-timer.stale { color: var(--danger); }
+
+        .v113-freshness-timer svg {
+            width: 10px;
+            height: 10px;
+            fill: currentColor;
+        }
+
+        /* v113.0: Performance - content-visibility for below-fold content */
+        .v56-quick-stats,
+        .stats-grid,
+        .activity-section,
+        .timeline-section,
+        .skills-section {
+            content-visibility: auto;
+            contain-intrinsic-size: 0 400px;
+        }
+
+        /* v113.0: Reduced motion for v113 elements */
+        @media (prefers-reduced-motion: reduce) {
+            .v113-stale-warning,
+            .v113-source-item.critical {
+                animation: none;
+            }
+
+            .v113-sse-quality-fill {
+                transition: none;
+            }
+        }
+
+        /* v113.0: Mobile optimizations */
+        @media (max-width: 768px) {
+            .v113-error-context {
+                left: 16px;
+                right: 16px;
+                max-width: none;
+                bottom: 80px;
+            }
+
+            .v113-source-health {
+                gap: 3px;
+                padding: 3px 6px;
+            }
+
+            .v113-source-item {
+                padding: 1px 4px;
+                font-size: 8px;
+            }
+        }
     </style>
     <script>
         // ========== State Management v36 ==========
@@ -29536,6 +29849,359 @@
         } else {
             v109Init();
         }
+
+        // ========== v113.0: Data Reliability & Error Recovery Enhancement ==========
+
+        // v113.0: State for SSE quality monitoring
+        const v113SSEState = {
+            messageTimestamps: [],
+            lastMessageTime: null,
+            quality: 'excellent',
+            msgRate: 0,
+            maxTimestamps: 20,
+            qualityCheckInterval: null
+        };
+
+        // v113.0: Initialize data source health tracking
+        const v113SourceHealth = {
+            heartbeat: { status: 'healthy', latency: 0, lastSuccess: null, failures: 0 },
+            system: { status: 'healthy', latency: 0, lastSuccess: null, failures: 0 },
+            memories: { status: 'healthy', latency: 0, lastSuccess: null, failures: 0 },
+            skills: { status: 'healthy', latency: 0, lastSuccess: null, failures: 0 },
+            dashboard: { status: 'healthy', latency: 0, lastSuccess: null, failures: 0 }
+        };
+
+        // v113.0: Stale data threshold (ms)
+        const V113_STALE_THRESHOLD = 30000; // 30 seconds
+        const V113_WARN_THRESHOLD = 15000; // 15 seconds
+
+        // v113.0: Initialize v113 features
+        function initV113Features() {
+            initV113SSEQualityMonitor();
+            initV113FreshnessTimer();
+            initV113ErrorContextPanel();
+            initV113SourceHealthDisplay();
+            console.log('✨ v113.0: Data Reliability & Error Recovery initialized');
+        }
+
+        // v113.0: SSE Quality Monitor - tracks message frequency
+        function initV113SSEQualityMonitor() {
+            const qualityEl = document.getElementById('v113SseQuality');
+            const fillEl = document.getElementById('v113SseQualityFill');
+            const rateEl = document.getElementById('v113SseMsgRate');
+
+            if (!qualityEl || !fillEl || !rateEl) return;
+
+            // Hook into SSE message handler
+            const origHandleSSE = window.handleSSEMessage;
+            window.handleSSEMessage = function(data) {
+                const now = Date.now();
+                v113SSEState.messageTimestamps.push(now);
+                v113SSEState.lastMessageTime = now;
+
+                // Keep only recent timestamps
+                if (v113SSEState.messageTimestamps.length > v113SSEState.maxTimestamps) {
+                    v113SSEState.messageTimestamps.shift();
+                }
+
+                // Calculate quality
+                updateV113SSEQuality();
+
+                if (origHandleSSE) origHandleSSE.apply(this, arguments);
+            };
+
+            // Periodic quality check
+            v113SSEState.qualityCheckInterval = setInterval(updateV113SSEQuality, 2000);
+
+            function updateV113SSEQuality() {
+                const now = Date.now();
+                const recentWindow = 10000; // 10 second window
+                const recentMsgs = v113SSEState.messageTimestamps.filter(t => now - t < recentWindow);
+
+                // Calculate messages per minute
+                const msgRate = Math.round((recentMsgs.length / recentWindow) * 60000);
+
+                // Determine quality based on message rate
+                let quality = 'poor';
+                let fillPercent = 20;
+
+                if (msgRate >= 30) { // ~2+ msg/sec = excellent
+                    quality = 'excellent';
+                    fillPercent = 100;
+                } else if (msgRate >= 15) { // ~1 msg/sec = good
+                    quality = 'good';
+                    fillPercent = 70;
+                } else if (msgRate >= 5) { // ~0.3 msg/sec = fair
+                    quality = 'fair';
+                    fillPercent = 40;
+                }
+
+                // Also factor in recency of last message
+                if (v113SSEState.lastMessageTime) {
+                    const timeSinceLastMsg = now - v113SSEState.lastMessageTime;
+                    if (timeSinceLastMsg > 20000) {
+                        quality = 'poor';
+                        fillPercent = Math.max(10, 100 - (timeSinceLastMsg / 200));
+                    }
+                }
+
+                v113SSEState.quality = quality;
+                v113SSEState.msgRate = msgRate;
+
+                qualityEl.className = 'v113-sse-quality ' + quality;
+                fillEl.style.width = fillPercent + '%';
+                rateEl.textContent = msgRate > 0 ? msgRate + '/m' : '--';
+            }
+        }
+
+        // v113.0: Freshness Timer - shows data age
+        function initV113FreshnessTimer() {
+            const timerEl = document.getElementById('v113FreshnessTimer');
+            const valueEl = document.getElementById('v113FreshnessValue');
+            const staleEl = document.getElementById('v113StaleWarning');
+
+            if (!timerEl || !valueEl) return;
+
+            // Hook into state updates
+            const origFetchData = window.fetchData;
+            window.fetchData = async function() {
+                if (origFetchData) {
+                    await origFetchData.apply(this, arguments);
+                }
+                state.lastSuccessfulFetch = Date.now();
+            };
+
+            // Also hook into SSE updates
+            const origHandleSSE = window.handleSSEMessage;
+            window.handleSSEMessage = function(data) {
+                if (data.type === 'heartbeat' || data.type === 'connected') {
+                    state.lastSuccessfulFetch = Date.now();
+                }
+                if (origHandleSSE) origHandleSSE.apply(this, arguments);
+            };
+
+            // Periodic freshness check
+            setInterval(() => {
+                if (!state.lastSuccessfulFetch) return;
+
+                const age = Date.now() - state.lastSuccessfulFetch;
+                const seconds = Math.floor(age / 1000);
+                let displayText, freshnessClass;
+
+                if (seconds < 60) {
+                    displayText = seconds + 's';
+                    freshnessClass = seconds < 10 ? 'fresh' : 'aging';
+                } else {
+                    displayText = Math.floor(seconds / 60) + 'm ' + (seconds % 60) + 's';
+                    freshnessClass = 'stale';
+                }
+
+                valueEl.textContent = displayText;
+                timerEl.className = 'v113-freshness-timer ' + freshnessClass;
+
+                // Show stale warning if data is old
+                if (staleEl) {
+                    if (age > V113_STALE_THRESHOLD) {
+                        staleEl.classList.add('visible');
+                    } else {
+                        staleEl.classList.remove('visible');
+                    }
+                }
+            }, 1000);
+        }
+
+        // v113.0: Error Context Panel - actionable error info
+        let v113ErrorContextVisible = false;
+
+        function initV113ErrorContextPanel() {
+            // Create the error context panel if it doesn't exist
+            if (!document.getElementById('v113ErrorContext')) {
+                const panel = document.createElement('div');
+                panel.id = 'v113ErrorContext';
+                panel.className = 'v113-error-context';
+                panel.innerHTML = `
+                    <button class="v113-error-context-dismiss" onclick="hideV113ErrorContext()">×</button>
+                    <div class="v113-error-context-header">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                        <span>连接诊断</span>
+                    </div>
+                    <div class="v113-error-context-message" id="v113ErrorMessage"></div>
+                    <ul class="v113-error-context-suggestions" id="v113ErrorSuggestions"></ul>
+                `;
+                document.body.appendChild(panel);
+            }
+
+            // Hook into error handling
+            hookV113ErrorHandling();
+        }
+
+        function hookV113ErrorHandling() {
+            // Hook into fetchData errors
+            const origFetch = window.fetchData;
+            window.fetchData = async function() {
+                try {
+                    if (origFetch) await origFetch.apply(this, arguments);
+                } catch (error) {
+                    showV113ErrorContext(error.message || 'Data fetch failed');
+                    throw error;
+                }
+            };
+        }
+
+        function showV113ErrorContext(message, suggestions) {
+            const panel = document.getElementById('v113ErrorContext');
+            const msgEl = document.getElementById('v113ErrorMessage');
+            const sugEl = document.getElementById('v113ErrorSuggestions');
+
+            if (!panel || !msgEl) return;
+
+            msgEl.textContent = message;
+
+            // Default suggestions based on common errors
+            if (!suggestions) {
+                suggestions = getV113ErrorSuggestions(message);
+            }
+
+            sugEl.innerHTML = suggestions.map(s => `<li>${s}</li>`).join('');
+            panel.classList.add('visible');
+            v113ErrorContextVisible = true;
+
+            // Auto-hide after 15 seconds
+            setTimeout(() => {
+                if (v113ErrorContextVisible) hideV113ErrorContext();
+            }, 15000);
+        }
+
+        function hideV113ErrorContext() {
+            const panel = document.getElementById('v113ErrorContext');
+            if (panel) {
+                panel.classList.remove('visible');
+                v113ErrorContextVisible = false;
+            }
+        }
+
+        function getV113ErrorSuggestions(message) {
+            const msg = (message || '').toLowerCase();
+            const suggestions = [];
+
+            if (msg.includes('network') || msg.includes('fetch') || msg.includes('failed')) {
+                suggestions.push('检查网络连接是否正常');
+                suggestions.push('确认网关服务是否运行中');
+                suggestions.push('查看浏览器控制台获取详细错误');
+            }
+
+            if (msg.includes('proxy') || msg.includes('external') || msg.includes('route')) {
+                suggestions.push('检查 nginx 是否配置了 <code>/onboard/</code> 到 <code>19000</code> 端口的转发');
+                suggestions.push('验证 <code>/api/stream</code> 端点的 nginx 配置');
+                suggestions.push('确认代理服务器日志中的错误信息');
+            }
+
+            if (msg.includes('timeout') || msg.includes('timed out')) {
+                suggestions.push('增加请求超时时间');
+                suggestions.push('检查后端服务响应速度');
+                suggestions.push('考虑网络延迟情况');
+            }
+
+            if (msg.includes('heartbeat') || msg.includes('api')) {
+                suggestions.push('检查 <code>/api/heartbeat</code> 端点是否可用');
+                suggestions.push('确认 OpenClaw Gateway 服务状态');
+                suggestions.push('查看 Gateway 日志中的错误');
+            }
+
+            if (suggestions.length === 0) {
+                suggestions.push('刷新页面重试');
+                suggestions.push('检查系统状态');
+                suggestions.push('查看控制台日志');
+            }
+
+            return suggestions;
+        }
+
+        // v113.0: Data Source Health Display
+        function initV113SourceHealthDisplay() {
+            // This will be called by the periodic health check
+            updateV113SourceHealthDisplay();
+        }
+
+        function updateV113SourceHealthDisplay() {
+            // Update circuit breaker state for each source based on fetch results
+            const sources = ['heartbeat', 'system', 'memories', 'skills', 'dashboard'];
+            const now = Date.now();
+
+            sources.forEach(source => {
+                const health = v113SourceHealth[source];
+                const timeSinceLastSuccess = health.lastSuccess ? now - health.lastSuccess : Infinity;
+
+                // Determine status
+                if (health.failures === 0 || timeSinceLastSuccess < 15000) {
+                    health.status = 'healthy';
+                } else if (health.failures <= 3 && timeSinceLastSuccess < 60000) {
+                    health.status = 'degraded';
+                } else {
+                    health.status = 'critical';
+                }
+            });
+        }
+
+        function updateV113SourceHealth(source, latency, success) {
+            const health = v113SourceHealth[source];
+            if (!health) return;
+
+            health.latency = latency;
+            if (success) {
+                health.lastSuccess = Date.now();
+                health.failures = 0;
+                health.status = 'healthy';
+            } else {
+                health.failures++;
+                if (health.failures > 3) {
+                    health.status = health.failures > 6 ? 'critical' : 'degraded';
+                }
+            }
+        }
+
+        // Hook into fetchWithRetry to track per-source health
+        (function() {
+            const origFetchWithRetry = window.fetchWithRetry;
+            if (!origFetchWithRetry) return;
+
+            window.fetchWithRetry = async function(url, options) {
+                const startTime = Date.now();
+                const source = getSourceFromURL(url);
+
+                try {
+                    const response = await origFetchWithRetry.apply(this, arguments);
+                    const latency = Date.now() - startTime;
+                    if (source) updateV113SourceHealth(source, latency, response.ok);
+                    return response;
+                } catch (error) {
+                    if (source) updateV113SourceHealth(source, Date.now() - startTime, false);
+                    // Show error context for critical failures
+                    if (source === 'heartbeat' && v113SourceHealth[source].failures >= 3) {
+                        showV113ErrorContext('无法连接到 OpenClaw Gateway', [
+                            '检查 Gateway 服务是否运行',
+                            '检查端口配置是否正确',
+                            '查看服务器日志确认服务状态'
+                        ]);
+                    }
+                    throw error;
+                }
+            };
+
+            function getSourceFromURL(url) {
+                if (!url) return null;
+                if (url.includes('heartbeat')) return 'heartbeat';
+                if (url.includes('system')) return 'system';
+                if (url.includes('memories')) return 'memories';
+                if (url.includes('skills')) return 'skills';
+                if (url.includes('dashboard')) return 'dashboard';
+                return null;
+            }
+        })();
+
+        // Make functions globally available
+        window.showV113ErrorContext = showV113ErrorContext;
+        window.hideV113ErrorContext = hideV113ErrorContext;
 
         // ========== v110.0: Dashboard Optimizations ==========
 
@@ -41318,9 +41984,9 @@
 
         // Initialize all features after DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); initV106Features(); initV110Features(); initV111Features(); });
+            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); initV106Features(); initV110Features(); initV111Features(); initV113Features(); });
         } else {
-            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); initV106Features(); initV110Features(); initV111Features(); }, 100);
+            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); initV106Features(); initV110Features(); initV111Features(); initV113Features(); }, 100);
         }
 
     </script>
