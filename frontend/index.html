@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v118.0 (Next-Gen)">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v119.0 (Next-Gen)">
     <meta name="theme-color" content="#08080c">
-    <title>MoShang Status v118.0</title>
+    <title>MoShang Status v119.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -27753,6 +27753,296 @@
             }
         }
 
+        /* ========== v119.0: CSS Level 5 Color Functions & Enhancements ========== */
+        
+        /* v119.0: light-dark() color function for modern theming */
+        :root {
+            --surface-light: light-dark(#ffffff, #1a1a2e);
+            --surface-mid: light-dark(#f5f5f7, #16162a);
+            --surface-dark: light-dark(#e8e8ed, #0e0e1a);
+            --text-primary: light-dark(#1a1a2e, #f0f0f5);
+            --text-secondary: light-dark(#6e6e7a, #a0a0b0);
+            --border-subtle: light-dark(rgba(0,0,0,0.08), rgba(255,255,255,0.08));
+            --border-strong: light-dark(rgba(0,0,0,0.15), rgba(255,255,255,0.15));
+        }
+        
+        /* v119.0: @property for color transitions */
+        @property --v119-color-shift {
+            syntax: '<color>';
+            inherits: false;
+            initial-value: transparent;
+        }
+        
+        @property --v119-glow-intensity {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 0;
+        }
+        
+        /* v119.0: Enhanced source status badge */
+        .v118-source-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid;
+        }
+        
+        .v118-source-badge.live {
+            background: rgba(92, 219, 149, 0.12);
+            border-color: rgba(92, 219, 149, 0.25);
+            color: var(--success);
+        }
+        
+        .v118-source-badge.cache {
+            background: rgba(254, 202, 87, 0.12);
+            border-color: rgba(254, 202, 87, 0.25);
+            color: var(--warning);
+        }
+        
+        .v118-source-badge.demo {
+            background: rgba(168, 85, 247, 0.12);
+            border-color: rgba(168, 85, 247, 0.25);
+            color: var(--purple);
+        }
+        
+        .v118-source-badge.fallback {
+            background: rgba(255, 107, 107, 0.12);
+            border-color: rgba(255, 107, 107, 0.25);
+            color: var(--danger);
+        }
+        
+        /* v119.0: Pulse animation for source badge */
+        @keyframes v119SourcePulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(0.98); }
+        }
+        
+        .v118-source-badge.updating {
+            animation: v119SourcePulse 1s ease-in-out infinite;
+        }
+        
+        /* v119.0: Connection quality meter */
+        .v118-conn-meter {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: var(--radius-full);
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .v118-conn-meter.excellent { background: rgba(92, 219, 149, 0.15); color: var(--success); }
+        .v118-conn-meter.good { background: rgba(0, 212, 255, 0.15); color: var(--accent); }
+        .v118-conn-meter.fair { background: rgba(254, 202, 87, 0.15); color: var(--warning); }
+        .v118-conn-meter.poor { background: rgba(255, 107, 107, 0.15); color: var(--danger); }
+        
+        /* v119.0: Retry badge */
+        .v118-retry-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0, 212, 255, 0.15);
+            color: var(--accent);
+        }
+        
+        .v118-retry-badge.active {
+            background: rgba(254, 202, 87, 0.15);
+            color: var(--warning);
+        }
+        
+        /* v119.0: Freshness indicator */
+        .v118-freshness-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+        }
+        
+        .v118-freshness-indicator .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--success);
+        }
+        
+        .v118-freshness-indicator.stale .dot {
+            background: var(--warning);
+            animation: v119StalePulse 2s ease-in-out infinite;
+        }
+        
+        .v118-freshness-indicator.error .dot {
+            background: var(--danger);
+        }
+        
+        @keyframes v119StalePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        
+        /* v119.0: Error boundary */
+        .v118-error-boundary {
+            padding: 12px 16px;
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.2);
+            border-radius: var(--radius-lg);
+            color: var(--danger);
+            font-size: 12px;
+        }
+        
+        /* v119.0: Metric value animation */
+        .v118-metric-value {
+            transition: color 0.3s ease;
+        }
+        
+        .v118-metric-updated {
+            animation: v119MetricPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        @keyframes v119MetricPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); color: var(--primary); }
+            100% { transform: scale(1); }
+        }
+        
+        /* v119.0: Quick actions toolbar */
+        .v119-quick-actions {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 100;
+        }
+        
+        .v119-quick-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            color: var(--text);
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .v119-quick-btn:hover {
+            transform: scale(1.1);
+            background: var(--primary);
+            color: white;
+        }
+        
+        .v119-quick-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* v119.0: Toast notification */
+        .v119-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            color: var(--text);
+            font-size: 13px;
+            z-index: 10000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-width: 300px;
+        }
+        
+        .v119-toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .v119-toast.success { border-color: var(--success); }
+        .v119-toast.warning { border-color: var(--warning); }
+        .v119-toast.error { border-color: var(--danger); }
+        
+        /* v119.0: Status color sync with CSS */
+        :root {
+            --status-color: var(--primary);
+        }
+        
+        .fox-container[data-status="working"] { --status-color: var(--accent); }
+        .fox-container[data-status="sleeping"] { --status-color: var(--purple); }
+        .fox-container[data-status="excited"] { --status-color: var(--pink); }
+        .fox-container[data-status="thinking"] { --status-color: var(--purple); }
+        .fox-container[data-status="laughing"] { --status-color: var(--warning); }
+        .fox-container[data-status="error"] { --status-color: var(--danger); }
+        
+        /* v119.0: Enhanced reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            .v119-quick-btn,
+            .v119-toast,
+            .v118-source-badge,
+            .v118-conn-meter {
+                transition: none;
+                animation: none !important;
+            }
+            
+            .v119-toast {
+                opacity: 1;
+                transform: none;
+            }
+        }
+        
+        /* v119.0: Dark mode enhancements using light-dark() */
+        @media (prefers-color-scheme: dark) {
+            :root:not(.theme-light) {
+                --v119-glass-bg: rgba(20, 20, 35, 0.85);
+                --v119-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            }
+        }
+        
+        /* v119.0: Relative colors for status */
+        .fox-container[data-status] {
+            --status-glow: color-mix(in srgb, var(--status-color) 40%, transparent);
+        }
+        
+        /* v119.0: Interpolation size for smooth height transitions */
+        @supports (interpolate-size: allow-keywords) {
+            .stat-card {
+                transition: height 0.4s ease;
+            }
+        }
+        
+        /* v119.0: Anchor positioning support */
+        @supports (anchor-name: none) {
+            .v119-tooltip {
+                position-anchor: --tooltip-anchor;
+            }
+        }
+        
+        /* v119.0: Grid layout animations */
+        .stats-grid {
+            transition: grid-template-columns 0.4s ease;
+        }
+
     </style>
 </head>
 <body class="loading">
@@ -44313,11 +44603,82 @@
             console.log('[v118.0] All reliability features initialized');
         }
 
+        // ========== v119.0: Quick Actions & Toast Features ==========
+        
+        // v119.0: Toast notification system
+        window.v119ShowToast = function(message, type = 'info') {
+            const toast = document.getElementById('v119Toast');
+            if (!toast) return;
+            
+            toast.textContent = message;
+            toast.className = 'v119-toast ' + type;
+            
+            // Trigger reflow for animation
+            void toast.offsetWidth;
+            toast.classList.add('show');
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        };
+        
+        // v119.0: Theme toggle function
+        window.v119ToggleTheme = function() {
+            const body = document.body;
+            const isLight = body.classList.contains('theme-light');
+            
+            if (isLight) {
+                body.classList.remove('theme-light');
+                v119ShowToast('Dark mode activated', 'success');
+            } else {
+                body.classList.add('theme-light');
+                v119ShowToast('Light mode activated', 'success');
+            }
+        };
+        
+        // v119.0: Demo mode activation
+        window.activateDemoMode = function() {
+            state.isDemoMode = true;
+            updateDataSourceHealth('demo', true);
+            
+            // Show demo data
+            if (typeof updateHeartbeatV50 === 'function') {
+                updateHeartbeatV50(Math.floor(60 + Math.random() * 40));
+            }
+            if (typeof updateActivityV50 === 'function') {
+                updateActivityV50(Math.floor(30 + Math.random() * 50));
+            }
+            
+            v119ShowToast('Demo mode - showing simulated data', 'warning');
+        };
+        
+        // v119.0: Quick actions initialization
+        function initV119QuickActions() {
+            const actions = document.getElementById('v119QuickActions');
+            if (actions) {
+                // Add keyboard shortcut
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'F5') {
+                        e.preventDefault();
+                        fetchDashboardData();
+                        v119ShowToast('Data refreshed', 'success');
+                    }
+                });
+            }
+        }
+        
+        // v119.0: Initialize v119 features
+        function initV119Features() {
+            initV119QuickActions();
+            console.log('[v119.0] Quick actions and toast features initialized');
+        }
+
         // Initialize all features after DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); initV106Features(); initV110Features(); initV111Features(); initV113Features(); initV115Features(); initV117Features(); initV118Features(); });
+            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); initV106Features(); initV110Features(); initV111Features(); initV113Features(); initV115Features(); initV117Features(); initV118Features(); initV119Features(); });
         } else {
-            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); initV106Features(); initV110Features(); initV111Features(); initV113Features(); initV115Features(); initV117Features(); initV118Features(); }, 100);
+            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); initV106Features(); initV110Features(); initV111Features(); initV113Features(); initV115Features(); initV117Features(); initV118Features(); initV119Features(); }, 100);
         }
 
     </script>
@@ -44507,7 +44868,7 @@
 
     <!-- v82.0: Command Palette Hint -->
     <div class="v82-version-badge v81-version-badge" id="v78VersionHint" style="position:fixed;bottom:20px;left:20px;opacity:0.5;font-size:10px;cursor:pointer;" onclick="toggleV78CmdPalette()" title="Open Command Palette (Ctrl+K)">
-        ⚡ v116.0 · Ctrl+K
+        ⚡ v119.0 · Ctrl+K
     </div>
     
     <!-- v80.0: Demo Mode Badge (shown when API unavailable) -->
@@ -44532,5 +44893,16 @@
 
     <!-- v106.0: Network Status Toast -->
     <div class="v106-network-toast" id="v106NetworkToast"></div>
+
+    <!-- v119.0: Quick Actions Toolbar -->
+    <div class="v119-quick-actions" id="v119QuickActions">
+        <button class="v119-quick-btn" onclick="v119ShowToast('Refreshing data...', 'info'); fetchDashboardData();" title="Refresh Data">↻</button>
+        <button class="v119-quick-btn" onclick="v119ToggleTheme();" title="Toggle Theme">🌓</button>
+        <button class="v119-quick-btn" onclick="toggleV78CmdPalette();" title="Command Palette">⌘</button>
+        <button class="v119-quick-btn" onclick="v119ShowToast('Demo mode activated', 'success'); activateDemoMode();" title="Demo Mode">🎭</button>
+    </div>
+    
+    <!-- v119.0: Toast Notification -->
+    <div class="v119-toast" id="v119Toast"></div>
 </body>
 </html>
