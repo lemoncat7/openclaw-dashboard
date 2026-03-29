@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v120.0 (Next-Gen)">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v120.1 (Next-Gen)">
     <meta name="theme-color" content="#08080c">
-    <title>MoShang Status v120.0</title>
+    <title>MoShang Status v120.1</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -104,6 +104,33 @@
                 syntax: '<number>';
                 inherits: true;
                 initial-value: 1;
+            }
+            /* v120.1: @property for heartbeat ring animation smoothness */
+            @property --bpm-scale {
+                syntax: '<number>';
+                inherits: false;
+                initial-value: 1;
+            }
+            @property --bpm-shadow {
+                syntax: '<number>';
+                inherits: false;
+                initial-value: 0;
+            }
+            @property --bpm-opacity {
+                syntax: '<number>';
+                inherits: false;
+                initial-value: 0.8;
+            }
+            /* v120.1: @property for fox reaction intensity */
+            @property --fox-excitement {
+                syntax: '<number>';
+                inherits: false;
+                initial-value: 0;
+            }
+            @property --heartbeat-glow {
+                syntax: '<number>';
+                inherits: false;
+                initial-value: 0;
             }
             
             /* v76.0: text-wrap balance for headings */
@@ -5552,10 +5579,10 @@
             --bg-card-hover: rgba(20,20,30,0.95);
             --bg-glass: rgba(255,255,255,0.04);
             --bg-glass-hover: rgba(255,255,255,0.08);
-            --text: #dcdce4;
-            --text-dim: #5a5a6a;
+            --text: #e8e8f0;
+            --text-dim: #8888a0;
             --text-bright: #ffffff;
-            --text-muted: #8a8a9a;
+            --text-muted: #9090a8;
             --radius-sm: 10px;
             --radius-md: 16px;
             --radius-lg: 24px;
@@ -28446,6 +28473,7 @@
 
                         <div class="stats-row v38-entrance v38-entrance-1">
                             <div class="mini-stat">
+                                <span class="v120-heart-icon" id="v120HeartIcon">💗</span>
                                 <div class="mini-stat-value" id="miniHeartbeat">--</div>
                                 <div class="mini-stat-label">BPM</div>
                             </div>
@@ -28978,8 +29006,8 @@
                     <span id="routeStatusDisplay" class="route-check-time" title="Last Check">--</span>
                 </div>
                 <div class="footer-info">
-                    <span class="footer-version v42-version-glow v43-version-badge v66-version-flash v72-version-glow v73-version-glow v76-version-glow v77-version-glow v78-version-glow v82-version-glow v100-version-badge v101-version-badge" id="footerVersion">v109.0</span>
-                    <span class="v48-footer-badge" id="v50FooterBadge">✨ v102.0</span>
+                    <span class="footer-version v42-version-glow v43-version-badge v66-version-flash v72-version-glow v73-version-glow v76-version-glow v77-version-glow v78-version-glow v82-version-glow v100-version-badge v101-version-badge" id="footerVersion">v120.1</span>
+                    <span class="v48-footer-badge" id="v50FooterBadge">✨ v120.1</span>
                     <span id="uptime">--</span>
                     <span id="reliabilityBadge" class="reliability-badge high" aria-label="Data Reliability Score">100%</span>
                     <!-- v40.0: Connection Quality -->
@@ -30937,13 +30965,48 @@
             opacity: 1;
             border-color: rgba(255, 100, 100, 0.6);
             animation: v111HeartbeatPulse var(--bpm-duration, 1s) ease-in-out infinite;
+            /* v120.1: Use CSS @property for smoother glow animation */
+            --bpm-scale: 1;
+            --bpm-opacity: 0.8;
+            --heartbeat-glow: 0;
         }
 
+        /* v120.1: Smooth heartbeat pulse using @property */
         @keyframes v111HeartbeatPulse {
-            0%, 100% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 0 0 rgba(255, 100, 100, 0.4); }
-            15% { transform: scale(1.06); opacity: 1; box-shadow: 0 0 20px 4px rgba(255, 100, 100, 0.3); }
-            30% { transform: scale(1); opacity: 0.7; box-shadow: 0 0 0 0 rgba(255, 100, 100, 0.4); }
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.8;
+                filter: drop-shadow(0 0 0 rgba(255, 100, 100, 0.4));
+            }
+            15% {
+                transform: scale(1.06);
+                opacity: 1;
+                filter: drop-shadow(0 0 20px rgba(255, 100, 100, 0.5));
+            }
+            30% {
+                transform: scale(1);
+                opacity: 0.7;
+                filter: drop-shadow(0 0 0 rgba(255, 100, 100, 0.4));
+            }
         }
+
+        /* v120.1: Heart icon BPM sync animation */
+        .v120-heart-icon {
+            display: inline-block;
+            font-size: 16px;
+            margin-right: 2px;
+            vertical-align: middle;
+            animation: v120HeartBeat 1s ease-in-out infinite;
+            transform-origin: center;
+        }
+        @keyframes v120HeartBeat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.3); }
+            30% { transform: scale(1); }
+        }
+        .v120-heart-icon.fast { animation-duration: 0.5s; }
+        .v120-heart-icon.slow { animation-duration: 1.5s; }
+        .v120-heart-icon.very-slow { animation-duration: 2s; }
 
         /* v111.0: State Transition Timeline */
         .v111-state-timeline {
@@ -34601,6 +34664,8 @@
                 const cached = loadCache();
                 if (cached) {
                     console.info('Using cached data');
+                    // v120.1: Mark source as cache when using fallback
+                    updateDataSourceHealth('cache', true);
                     if (cached.heartbeat) updateHeartbeat(cached.heartbeat);
                     if (cached.activity) updateActivity(cached.activity);
                     if (cached.status) updateStatus(cached.status);
@@ -36159,46 +36224,79 @@
         function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
         // v114.0: Data validation layer for reliability
+        // v120.1: Enhanced with quality scoring and comprehensive field checks
         const VALID_STATUSES = ['idle', 'working', 'sleeping', 'excited', 'thinking', 'laughing', 'error', 'focused', 'learning'];
         function validateHeartbeatData(data) {
             const validated = {};
+            const qualityScore = { total: 0, fields: 0 };
             if (data === null || typeof data !== 'object') return null;
+
             // heartbeat: 0-300 BPM
             if (typeof data.heartbeat === 'number' && data.heartbeat >= 0 && data.heartbeat <= 300) {
                 validated.heartbeat = Math.round(data.heartbeat);
+                qualityScore.total += 15; qualityScore.fields++;
             }
             // activity: 0-100%
             if (typeof data.activity === 'number' && data.activity >= 0 && data.activity <= 100) {
                 validated.activity = Math.round(data.activity);
+                qualityScore.total += 10; qualityScore.fields++;
             }
             // status: known status string
             if (typeof data.status === 'string' && VALID_STATUSES.includes(data.status)) {
                 validated.status = data.status;
+                qualityScore.total += 15; qualityScore.fields++;
             }
             // uptime: positive number (seconds)
             if (typeof data.uptime === 'number' && data.uptime > 0) {
                 validated.uptime = data.uptime;
+                qualityScore.total += 10; qualityScore.fields++;
             }
             // reputation: 0-100
             if (typeof data.reputation === 'number' && data.reputation >= 0 && data.reputation <= 100) {
                 validated.reputation = Math.round(data.reputation);
+                qualityScore.total += 10; qualityScore.fields++;
             }
             // taskProgress: 0-100
             if (typeof data.taskProgress === 'number' && data.taskProgress >= 0 && data.taskProgress <= 100) {
                 validated.taskProgress = Math.round(data.taskProgress);
+                qualityScore.total += 5; qualityScore.fields++;
             }
             // currentTask: non-empty string
             if (typeof data.currentTask === 'string' && data.currentTask.trim().length > 0) {
                 validated.currentTask = data.currentTask.trim();
+                qualityScore.total += 5; qualityScore.fields++;
             }
             // msgCount, taskDone: non-negative integers
             if (typeof data.msgCount === 'number' && data.msgCount >= 0 && Number.isInteger(data.msgCount)) {
                 validated.msgCount = data.msgCount;
+                qualityScore.total += 5; qualityScore.fields++;
             }
             if (typeof data.taskDone === 'number' && data.taskDone >= 0 && Number.isInteger(data.taskDone)) {
                 validated.taskDone = data.taskDone;
+                qualityScore.total += 5; qualityScore.fields++;
             }
-            return Object.keys(validated).length > 0 ? validated : null;
+            // v120.1: memory: 0-100%
+            if (typeof data.memory === 'number' && data.memory >= 0 && data.memory <= 100) {
+                validated.memory = Math.round(data.memory);
+                qualityScore.total += 10; qualityScore.fields++;
+            }
+            // v120.1: cpu: 0-100%
+            if (typeof data.cpu === 'number' && data.cpu >= 0 && data.cpu <= 100) {
+                validated.cpu = Math.round(data.cpu);
+                qualityScore.total += 10; qualityScore.fields++;
+            }
+            // v120.1: sessionId: non-empty string
+            if (typeof data.sessionId === 'string' && data.sessionId.trim().length > 0) {
+                validated.sessionId = data.sessionId.trim();
+                qualityScore.total += 5; qualityScore.fields++;
+            }
+            // v120.1: source tag preservation
+            if (typeof data.source === 'string' && data.source.length > 0) {
+                validated.source = data.source;
+            }
+            // Calculate quality percentage
+            validated._quality = qualityScore.fields > 0 ? Math.round(qualityScore.total) : 0;
+            return Object.keys(validated).length > 1 ? validated : null;
         }
 
         async function fetchData() {
@@ -36391,6 +36489,20 @@
                 updateV38ProgressTooltip('heartbeat', value, ' BPM');
             }
             if (elements.miniHeartbeat) elements.miniHeartbeat.textContent = value;
+            // v120.1: Sync heart icon animation speed with BPM
+            const heartIcon = document.getElementById('v120HeartIcon');
+            if (heartIcon) {
+                const numVal = parseInt(value);
+                heartIcon.classList.remove('fast', 'slow', 'very-slow');
+                if (numVal >= 90) heartIcon.classList.add('fast');
+                else if (numVal >= 70) { /* normal */ }
+                else if (numVal >= 50) heartIcon.classList.add('slow');
+                else heartIcon.classList.add('very-slow');
+            }
+            // v111.0: Sync heartbeat ring
+            if (typeof window.v111UpdateHeartbeatRing === 'function') {
+                window.v111UpdateHeartbeatRing(value);
+            }
             const percent = Math.min((value / 180) * 100, 100);
             if (elements.heartbeatBar) {
                 elements.heartbeatBar.style.width = percent + '%';
@@ -44676,7 +44788,7 @@
         // v119.0: Initialize v119 features
         function initV119Features() {
             initV119QuickActions();
-            console.log('[v120.0] Quick actions and toast features initialized');
+            console.log('[v120.1] Quick actions and toast features initialized');
         }
 
         // Initialize all features after DOM is ready
@@ -44873,7 +44985,7 @@
 
     <!-- v82.0: Command Palette Hint -->
     <div class="v82-version-badge v81-version-badge" id="v78VersionHint" style="position:fixed;bottom:20px;left:20px;opacity:0.5;font-size:10px;cursor:pointer;" onclick="toggleV78CmdPalette()" title="Open Command Palette (Ctrl+K)">
-        ⚡ v120.0 · Ctrl+K
+        ⚡ v120.1 · Ctrl+K
     </div>
     
     <!-- v80.0: Demo Mode Badge (shown when API unavailable) -->
