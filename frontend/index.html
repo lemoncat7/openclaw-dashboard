@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v122.0 (Next-Gen)">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v123.0 (Next-Gen)">
     <meta name="theme-color" content="#08080c">
-    <title>MoShang Status v122.0</title>
+    <title>MoShang Status v123.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -28070,6 +28070,521 @@
             transition: grid-template-columns 0.4s ease;
         }
 
+        /* ========== v123.0: Notification Center ========== */
+        .v123-notif-center {
+            position: fixed;
+            top: 0;
+            right: -380px;
+            width: 360px;
+            height: 100vh;
+            background: rgba(10, 10, 25, 0.97);
+            backdrop-filter: blur(40px);
+            border-left: 1px solid rgba(255,255,255,0.1);
+            z-index: 9990;
+            transition: right 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: -8px 0 40px rgba(0,0,0,0.4);
+        }
+        .v123-notif-center.open { right: 0; }
+        .v123-notif-header {
+            padding: 20px 20px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .v123-notif-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-bright);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .v123-notif-count {
+            background: var(--primary);
+            color: #000;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 20px;
+            min-width: 20px;
+            text-align: center;
+        }
+        .v123-notif-close {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .v123-notif-close:hover { background: rgba(255,107,107,0.2); color: var(--danger); }
+        .v123-notif-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+        .v123-notif-list::-webkit-scrollbar { width: 4px; }
+        .v123-notif-list::-webkit-scrollbar-track { background: transparent; }
+        .v123-notif-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+        .v123-notif-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: var(--radius-md);
+            margin-bottom: 4px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            animation: v123NotifSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            transition: all 0.2s ease;
+        }
+        .v123-notif-item:hover { background: rgba(255,255,255,0.06); }
+        .v123-notif-item.success { border-left: 3px solid var(--success); }
+        .v123-notif-item.warning { border-left: 3px solid var(--warning); }
+        .v123-notif-item.error { border-left: 3px solid var(--danger); }
+        .v123-notif-item.info { border-left: 3px solid var(--accent); }
+        @keyframes v123NotifSlideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .v123-notif-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .v123-notif-body { flex: 1; min-width: 0; }
+        .v123-notif-text { font-size: 12px; color: var(--text); line-height: 1.5; word-break: break-word; }
+        .v123-notif-time { font-size: 10px; color: var(--text-dim); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+        .v123-notif-clear {
+            padding: 10px 20px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .v123-notif-clear-btn {
+            width: 100%;
+            padding: 8px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .v123-notif-clear-btn:hover { background: rgba(255,107,107,0.15); border-color: rgba(255,107,107,0.3); color: var(--danger); }
+        .v123-notif-bell {
+            position: fixed;
+            top: 18px;
+            right: 20px;
+            z-index: 9991;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: rgba(20,20,40,0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.12);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        }
+        .v123-notif-bell:hover { transform: scale(1.1); background: rgba(30,30,60,0.95); }
+        .v123-notif-bell.has-new::after {
+            content: '';
+            position: absolute;
+            top: 6px; right: 6px;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--danger);
+            box-shadow: 0 0 8px var(--danger);
+            animation: v123BellPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes v123BellPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.8; }
+        }
+        .v123-notif-badge {
+            position: absolute;
+            top: -4px; right: -4px;
+            min-width: 18px; height: 18px;
+            border-radius: 9px;
+            background: var(--danger);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0 4px;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .v123-notif-bell.has-new .v123-notif-badge { opacity: 1; transform: scale(1); }
+
+        /* ========== v123.0: Connection Quality Meter ========== */
+        .v123-conn-quality {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .v123-conn-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 14px;
+        }
+        .v123-conn-bar {
+            width: 3px;
+            border-radius: 2px;
+            background: rgba(255,255,255,0.15);
+            transition: all 0.4s ease;
+        }
+        .v123-conn-bar:nth-child(1) { height: 4px; }
+        .v123-conn-bar:nth-child(2) { height: 7px; }
+        .v123-conn-bar:nth-child(3) { height: 10px; }
+        .v123-conn-bar:nth-child(4) { height: 14px; }
+        .v123-conn-quality.excellent .v123-conn-bar { background: var(--success); box-shadow: 0 0 4px var(--success); }
+        .v123-conn-quality.excellent .v123-conn-bar:nth-child(1) { height: 4px; }
+        .v123-conn-quality.excellent .v123-conn-bar:nth-child(2) { height: 7px; }
+        .v123-conn-quality.excellent .v123-conn-bar:nth-child(3) { height: 10px; }
+        .v123-conn-quality.excellent .v123-conn-bar:nth-child(4) { height: 14px; }
+        .v123-conn-quality.good .v123-conn-bar:nth-child(1),
+        .v123-conn-quality.good .v123-conn-bar:nth-child(2),
+        .v123-conn-quality.good .v123-conn-bar:nth-child(3) { background: var(--success); box-shadow: 0 0 4px var(--success); }
+        .v123-conn-quality.good .v123-conn-bar:nth-child(4) { background: rgba(255,255,255,0.15); }
+        .v123-conn-quality.fair .v123-conn-bar:nth-child(1),
+        .v123-conn-quality.fair .v123-conn-bar:nth-child(2) { background: var(--warning); box-shadow: 0 0 4px var(--warning); }
+        .v123-conn-quality.fair .v123-conn-bar:nth-child(3),
+        .v123-conn-quality.fair .v123-conn-bar:nth-child(4) { background: rgba(255,255,255,0.15); }
+        .v123-conn-quality.poor .v123-conn-bar:nth-child(1) { background: var(--danger); box-shadow: 0 0 4px var(--danger); animation: v123ConnBlink 0.8s ease-in-out infinite; }
+        .v123-conn-quality.poor .v123-conn-bar:nth-child(2),
+        .v123-conn-quality.poor .v123-conn-bar:nth-child(3),
+        .v123-conn-quality.poor .v123-conn-bar:nth-child(4) { background: rgba(255,255,255,0.15); }
+        @keyframes v123ConnBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .v123-conn-label { color: var(--text-dim); }
+        .v123-conn-quality.excellent .v123-conn-label { color: var(--success); }
+        .v123-conn-quality.good .v123-conn-label { color: var(--success); }
+        .v123-conn-quality.fair .v123-conn-label { color: var(--warning); }
+        .v123-conn-quality.poor .v123-conn-label { color: var(--danger); }
+
+        /* ========== v123.0: Particle Burst Canvas ========== */
+        #v123ParticleCanvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9997;
+        }
+        .v123-particle {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        /* ========== v123.0: Metrics Radar Chart ========== */
+        .v123-radar-chart {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 12px auto 0;
+        }
+        .v123-radar-svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+        .v123-radar-grid {
+            fill: none;
+            stroke: rgba(255,255,255,0.08);
+            stroke-width: 1;
+        }
+        .v123-radar-axis {
+            stroke: rgba(255,255,255,0.06);
+            stroke-width: 1;
+        }
+        .v123-radar-area {
+            fill: rgba(0,212,255,0.15);
+            stroke: var(--accent);
+            stroke-width: 2;
+            stroke-linejoin: round;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .v123-radar-point {
+            fill: var(--accent);
+            transition: all 0.4s ease;
+        }
+        .v123-radar-point:hover { r: 6; fill: var(--primary); }
+        .v123-radar-label {
+            font-size: 9px;
+            fill: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+            text-anchor: middle;
+        }
+        .v123-radar-value {
+            font-size: 8px;
+            fill: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            text-anchor: middle;
+        }
+        .v123-radar-center-text {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(90deg);
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent);
+            text-align: center;
+            pointer-events: none;
+        }
+        .v123-radar-center-text span {
+            display: block;
+            font-size: 9px;
+            color: var(--text-dim);
+            font-weight: 400;
+        }
+
+        /* ========== v123.0: Fox Click Ripple ========== */
+        .v123-fox-ripple {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            pointer-events: none;
+            animation: v123RippleExpand 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        @keyframes v123RippleExpand {
+            0% { width: 0; height: 0; opacity: 1; transform: translate(-50%, -50%); }
+            100% { width: 200px; height: 200px; opacity: 0; transform: translate(-50%, -50%); }
+        }
+
+        /* ========== v123.0: Enhanced Status Ring Wave ========== */
+        .v123-status-wave {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 200px; height: 200px;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        .v123-wave-ring {
+            position: absolute;
+            top: 50%; left: 50%;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            opacity: 0;
+            transform: translate(-50%, -50%);
+        }
+        .v123-wave-ring.animate {
+            animation: v123WaveOut 1.8s ease-out forwards;
+        }
+        @keyframes v123WaveOut {
+            0% { width: 80px; height: 80px; opacity: 0.7; }
+            100% { width: 240px; height: 240px; opacity: 0; }
+        }
+
+        /* ========== v123.0: Toast History Log ========== */
+        .v123-toast-log {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            z-index: 9980;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            pointer-events: none;
+            max-width: 320px;
+        }
+        .v123-toast-log-item {
+            padding: 8px 14px;
+            background: rgba(10,10,30,0.92);
+            backdrop-filter: blur(16px);
+            border-radius: var(--radius-md);
+            font-size: 12px;
+            color: var(--text);
+            border-left: 3px solid var(--primary);
+            animation: v123ToastIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .v123-toast-log-item.success { border-color: var(--success); }
+        .v123-toast-log-item.warning { border-color: var(--warning); }
+        .v123-toast-log-item.error { border-color: var(--danger); }
+        .v123-toast-log-item.info { border-color: var(--accent); }
+        @keyframes v123ToastIn {
+            from { opacity: 0; transform: translateX(30px) scale(0.95); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+
+        /* ========== v123.0: Shortcuts Panel v2 ========== */
+        .v123-shortcuts-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        .v123-shortcuts-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .v123-shortcuts-modal {
+            background: rgba(15,15,35,0.98);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: var(--radius-xl);
+            padding: 28px 32px;
+            min-width: 360px;
+            max-width: 480px;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+            transform: scale(0.92) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .v123-shortcuts-overlay.open .v123-shortcuts-modal { transform: scale(1) translateY(0); }
+        .v123-shortcuts-modal-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-bright);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .v123-shortcuts-modal-title svg { color: var(--primary); }
+        .v123-shortcut-group { margin-bottom: 16px; }
+        .v123-shortcut-group-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+        .v123-shortcut-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .v123-shortcut-row:last-child { border-bottom: none; }
+        .v123-shortcut-desc { font-size: 13px; color: var(--text); }
+        .v123-shortcut-keys { display: flex; gap: 4px; }
+        .v123-shortcut-keys kbd {
+            padding: 3px 8px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 5px;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-bright);
+        }
+
+        /* ========== v123.0: Quick Mood Reaction ========== */
+        .v123-fox-reaction {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 28px;
+            opacity: 0;
+            pointer-events: none;
+            transition: none;
+            z-index: 100;
+        }
+        .v123-fox-reaction.show {
+            animation: v123ReactionPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes v123ReactionPop {
+            0% { opacity: 0; transform: translateX(-50%) translateY(10px) scale(0.5); }
+            30% { opacity: 1; transform: translateX(-50%) translateY(-20px) scale(1.2); }
+            60% { transform: translateX(-50%) translateY(-30px) scale(1); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-50px) scale(0.8); }
+        }
+
+        /* ========== v123.0: Stats Card Hover Tooltip ========== */
+        .v123-stat-tooltip {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(5,5,20,0.97);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: var(--radius-md);
+            padding: 8px 12px;
+            font-size: 11px;
+            color: var(--text);
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 200;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+        }
+        .v123-stat-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: rgba(255,255,255,0.15);
+        }
+        .stat-card:hover .v123-stat-tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-4px);
+        }
+
+        /* ========== v123.0: Session Uptime Counter ========== */
+        .v123-uptime {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-dim);
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.04);
+            border-radius: var(--radius-full);
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        /* v123.0: @property for animated gradients */
+        @property --v123-gradient-angle {
+            syntax: '<angle>';
+            inherits: false;
+            initial-value: 0deg;
+        }
+        @property --v123-progress {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 0;
+        }
+
+        /* v123.0: Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            .v123-notif-center,
+            .v123-notif-bell,
+            .v123-wave-ring,
+            .v123-conn-bar,
+            .v123-shortcuts-overlay,
+            .v123-fox-reaction,
+            .v123-toast-log-item {
+                animation: none !important;
+                transition: none !important;
+            }
+            .v123-notif-center { right: -380px; }
+            .v123-shortcuts-overlay { opacity: 0; pointer-events: none; }
+        }
+
     </style>
 </head>
 <body class="loading">
@@ -28211,6 +28726,8 @@
         <div class="v48-kbd-row"><kbd>?</kbd> Show shortcuts</div>
         <div class="v48-kbd-row"><kbd>R</kbd> Refresh data</div>
         <div class="v48-kbd-row"><kbd>M</kbd> Toggle mode</div>
+        <div class="v48-kbd-row"><kbd>N</kbd> Notifications</div>
+        <div class="v48-kbd-row"><kbd>T</kbd> Toggle theme</div>
         <div class="v48-kbd-row"><kbd>Esc</kbd> Dismiss</div>
     </div>
 
@@ -28330,6 +28847,18 @@
                     <div class="live-indicator" id="v38LiveIndicator" title="Live Data">
                         LIVE
                     </div>
+                    <!-- v123.0: Connection Quality Meter -->
+                    <div class="v123-conn-quality excellent" id="v123ConnQuality" title="Connection Quality">
+                        <div class="v123-conn-bars">
+                            <div class="v123-conn-bar"></div>
+                            <div class="v123-conn-bar"></div>
+                            <div class="v123-conn-bar"></div>
+                            <div class="v123-conn-bar"></div>
+                        </div>
+                        <span class="v123-conn-label">Excellent</span>
+                    </div>
+                    <!-- v123.0: Session Uptime -->
+                    <div class="v123-uptime" id="v123UptimeEl" title="Session Uptime">⏱ 00:00:00</div>
                     <div class="v86-data-freshness" id="v86DataFreshness" title="Data Freshness" style="display:none;">
                         <span class="v86-freshness-dot" id="v86FreshnessDot"></span>
                         <span class="v86-freshness-text" id="v86FreshnessText">--</span>
@@ -28703,6 +29232,22 @@
                             <span class="neural-spark-label">SYNC</span>
                             <canvas class="neural-spark-canvas" id="neuralSparkCanvas"></canvas>
                         </div>
+
+                        <!-- v123.0: Metrics Radar Chart -->
+                        <div class="v50-glass-shine glass-card" style="padding: 12px; margin-top: 8px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px;">Metrics Radar</span>
+                                <span style="font-size: 9px; color: var(--accent); font-family: 'JetBrains Mono', monospace;">LIVE</span>
+                            </div>
+                            <div class="v123-radar-chart">
+                                <svg class="v123-radar-svg" id="v123RadarSvg" viewBox="0 0 180 180"></svg>
+                                <div class="v123-radar-center-text">
+                                    <span id="v123RadarScore">--</span>
+                                    <span>Score</span>
+                                </div>
+                            </div>
+                        </div>
+
 <div class="story-card" id="storyCard">
                             <div class="story-title">📊 Activity Story</div>
                             <div class="story-text" id="storyText">Analyzing today's rhythm...</div>
@@ -45643,11 +46188,371 @@
             console.log('[v120.1] Quick actions and toast features initialized');
         }
 
+        // ========== v123.0: Notification Center ==========
+        const v123Notifs = [];
+        let v123UnreadCount = 0;
+
+        function v123ToggleNotifCenter() {
+            const panel = document.getElementById('v123NotifCenter');
+            const bell = document.getElementById('v123NotifBell');
+            if (!panel) return;
+            const isOpen = panel.classList.toggle('open');
+            if (isOpen) {
+                if (bell) bell.classList.remove('has-new');
+                v123UnreadCount = 0;
+                v123UpdateBadge();
+            }
+        }
+
+        function v123AddNotif(text, type = 'info', icon = '💬') {
+            const list = document.getElementById('v123NotifList');
+            const countEl = document.getElementById('v123NotifCount');
+            const bell = document.getElementById('v123NotifBell');
+            if (!list) return;
+            v123Notifs.unshift({ text, type, icon, time: new Date() });
+            if (v123Notifs.length > 50) v123Notifs.pop();
+            // Remove empty state message
+            const emptyMsg = list.querySelector('div[style*="text-align"]');
+            if (emptyMsg) emptyMsg.remove();
+            const item = document.createElement('div');
+            item.className = 'v123-notif-item ' + type;
+            const timeStr = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            item.innerHTML = `<span class="v123-notif-icon">${icon}</span><div class="v123-notif-body"><div class="v123-notif-text">${text}</div><div class="v123-notif-time">${timeStr}</div></div>`;
+            list.insertBefore(item, list.firstChild);
+            if (countEl) countEl.textContent = v123Notifs.length;
+            // Bell badge
+            const panel = document.getElementById('v123NotifCenter');
+            if (panel && !panel.classList.contains('open') && bell) {
+                bell.classList.add('has-new');
+                v123UnreadCount++;
+            }
+            v123UpdateBadge();
+        }
+
+        function v123UpdateBadge() {
+            const badge = document.getElementById('v123NotifBadge');
+            if (badge) {
+                const count = v123UnreadCount || v123Notifs.length;
+                badge.textContent = count > 99 ? '99+' : count;
+                badge.style.opacity = count > 0 ? '1' : '0';
+                badge.style.transform = count > 0 ? 'scale(1)' : 'scale(0)';
+            }
+        }
+
+        function v123ClearNotifs() {
+            const list = document.getElementById('v123NotifList');
+            if (!list) return;
+            v123Notifs.length = 0;
+            list.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text-dim);font-size:13px;">No notifications yet<br><span style="font-size:11px;opacity:0.6;">Events will appear here</span></div>';
+            const countEl = document.getElementById('v123NotifCount');
+            if (countEl) countEl.textContent = '0';
+            const bell = document.getElementById('v123NotifBell');
+            if (bell) bell.classList.remove('has-new');
+            v123UnreadCount = 0;
+            v123UpdateBadge();
+        }
+
+        // Intercept showToastV32 to also log to notification center
+        const _origShowToastV32 = typeof showToastV32 === 'function' ? showToastV32 : null;
+        function showToastV32(msg, type = 'default', duration = 3000) {
+            if (_origShowToastV32) _origShowToastV32(msg, type, duration);
+            const iconMap = { success: '✅', warning: '⚠️', error: '❌', info: '💬', default: '⚡' };
+            v123AddNotif(msg, type === 'default' ? 'info' : type, iconMap[type] || iconMap.default);
+        }
+
+        // ========== v123.0: Particle Burst System ==========
+        const v123Particles = [];
+        const v123Canvas = document.getElementById('v123ParticleCanvas');
+        const v123Ctx = v123Canvas ? v123Canvas.getContext('2d') : null;
+
+        function v123ResizeCanvas() {
+            if (!v123Canvas) return;
+            v123Canvas.width = window.innerWidth;
+            v123Canvas.height = window.innerHeight;
+        }
+        v123ResizeCanvas();
+        window.addEventListener('resize', v123ResizeCanvas);
+
+        function v123Burst(x, y, color, count = 20) {
+            if (!v123Ctx) return;
+            for (let i = 0; i < count; i++) {
+                const angle = (Math.PI * 2 * i) / count + Math.random() * 0.3;
+                const speed = 2 + Math.random() * 6;
+                const size = 3 + Math.random() * 5;
+                v123Particles.push({
+                    x, y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    size,
+                    color,
+                    alpha: 1,
+                    decay: 0.015 + Math.random() * 0.02,
+                    gravity: 0.08
+                });
+            }
+        }
+
+        function v123Sparkle(x, y, count = 8) {
+            const colors = ['#FFD700', '#FFA500', '#FF6B6B', '#00D4FF', '#A855F7', '#EC4899'];
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 1 + Math.random() * 3;
+                const size = 2 + Math.random() * 3;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                v123Particles.push({
+                    x, y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - 2,
+                    size,
+                    color,
+                    alpha: 1,
+                    decay: 0.02 + Math.random() * 0.02,
+                    gravity: 0.05
+                });
+            }
+        }
+
+        function v123AnimateParticles() {
+            if (!v123Ctx) return;
+            v123Ctx.clearRect(0, 0, v123Canvas.width, v123Canvas.height);
+            for (let i = v123Particles.length - 1; i >= 0; i--) {
+                const p = v123Particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += p.gravity;
+                p.alpha -= p.decay;
+                if (p.alpha <= 0) { v123Particles.splice(i, 1); continue; }
+                v123Ctx.save();
+                v123Ctx.globalAlpha = p.alpha;
+                v123Ctx.fillStyle = p.color;
+                v123Ctx.shadowColor = p.color;
+                v123Ctx.shadowBlur = 8;
+                v123Ctx.beginPath();
+                v123Ctx.arc(p.x, p.y, p.size * p.alpha, 0, Math.PI * 2);
+                v123Ctx.fill();
+                v123Ctx.restore();
+            }
+            requestAnimationFrame(v123AnimateParticles);
+        }
+        v123AnimateParticles();
+
+        // Fox container click → particle burst + ripple
+        document.addEventListener('click', (e) => {
+            const foxContainer = document.getElementById('foxContainer');
+            if (!foxContainer) return;
+            const rect = foxContainer.getBoundingClientRect();
+            const inFox = e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom;
+            if (inFox) {
+                const cx = rect.left + rect.width / 2;
+                const cy = rect.top + rect.height / 2;
+                const moodColors = {
+                    idle: '#FFB347', working: '#00D4FF', sleeping: '#A855F7',
+                    excited: '#EC4899', thinking: '#8B5CF6', laughing: '#FFB800',
+                    error: '#FF6B6B', focused: '#5CDB95', learning: '#FFB347'
+                };
+                const color = moodColors[state.status] || '#FFD700';
+                v123Burst(cx, cy, color, 25);
+                v123Sparkle(cx, cy, 12);
+                v123TriggerFoxRipple(cx - rect.left, cy - rect.top);
+                v123CycleFoxReaction();
+            }
+        });
+
+        function v123TriggerFoxRipple(x, y) {
+            const foxWrap = document.querySelector('.fox-canvas-wrapper');
+            if (!foxWrap) return;
+            const ripple = document.createElement('div');
+            ripple.className = 'v123-fox-ripple';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            foxWrap.style.position = 'relative';
+            foxWrap.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 700);
+        }
+
+        // ========== v123.0: Fox Reaction Cycle ==========
+        const v123Reactions = ['😺', '⚡', '🎉', '💡', '😴', '😂', '🎯', '📚', '❤️', '✨'];
+        let v123ReactionIndex = 0;
+
+        function v123CycleFoxReaction() {
+            const el = document.getElementById('v123FoxReaction');
+            if (!el) return;
+            el.textContent = v123Reactions[v123ReactionIndex % v123Reactions.length];
+            el.classList.remove('show');
+            el.offsetHeight;
+            el.classList.add('show');
+            v123ReactionIndex++;
+        }
+
+        // ========== v123.0: Status Wave on Mood Change ==========
+        function v123TriggerStatusWave() {
+            const ring1 = document.getElementById('v123WaveRing1');
+            const ring2 = document.getElementById('v123WaveRing2');
+            [ring1, ring2].forEach((ring, i) => {
+                if (!ring) return;
+                ring.classList.remove('animate');
+                ring.offsetHeight;
+                setTimeout(() => ring.classList.add('animate'), i * 400);
+            });
+        }
+
+        // Override triggerV38StateFlash to also trigger wave
+        const _origTriggerV38 = typeof triggerV38StateFlash === 'function' ? triggerV38StateFlash : null;
+        function triggerV38StateFlash(mood) {
+            if (_origTriggerV38) _origTriggerV38(mood);
+            v123TriggerStatusWave();
+            const moodColors = {
+                idle: '#FFB347', working: '#00D4FF', sleeping: '#A855F7',
+                excited: '#EC4899', thinking: '#8B5CF6', laughing: '#FFB800',
+                error: '#FF6B6B', focused: '#5CDB95', learning: '#FFB347'
+            };
+            const ring1 = document.getElementById('v123WaveRing1');
+            const ring2 = document.getElementById('v123WaveRing2');
+            const color = moodColors[mood] || '#FFD700';
+            [ring1, ring2].forEach(r => { if (r) r.style.borderColor = color; });
+        }
+
+        // ========== v123.0: Connection Quality Meter ==========
+        let v123LastPings = [];
+        let v123ConnQuality = 'excellent';
+
+        function v123UpdateConnQuality() {
+            const start = performance.now();
+            fetch('/api/status', { method: 'HEAD', cache: 'no-cache' })
+                .then(() => {
+                    const latency = performance.now() - start;
+                    v123LastPings.push(latency);
+                    if (v123LastPings.length > 5) v123LastPings.shift();
+                    const avg = v123LastPings.reduce((a, b) => a + b, 0) / v123LastPings.length;
+                    let quality = 'excellent';
+                    if (avg > 500) quality = 'poor';
+                    else if (avg > 200) quality = 'fair';
+                    else if (avg > 80) quality = 'good';
+                    if (quality !== v123ConnQuality) {
+                        v123ConnQuality = quality;
+                        v123ApplyConnQuality(quality);
+                    }
+                })
+                .catch(() => {
+                    v123ApplyConnQuality('poor');
+                });
+        }
+
+        function v123ApplyConnQuality(quality) {
+            const meter = document.querySelector('.v123-conn-quality');
+            if (!meter) return;
+            meter.className = 'v123-conn-quality ' + quality;
+            const label = meter.querySelector('.v123-conn-label');
+            if (label) label.textContent = quality.charAt(0).toUpperCase() + quality.slice(1);
+        }
+
+        // ========== v123.0: Keyboard Shortcuts ==========
+        document.addEventListener('keydown', (e) => {
+            // Don't fire if typing in input
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (e.key === '?') { e.preventDefault(); v123ToggleShortcuts(); }
+            if (e.key === 'n' || e.key === 'N') { e.preventDefault(); v123ToggleNotifCenter(); }
+            if (e.key === 't' || e.key === 'T') { e.preventDefault(); typeof v119ToggleTheme === 'function' && v119ToggleTheme(); }
+        });
+
+        function v123ToggleShortcuts() {
+            const overlay = document.getElementById('v123ShortcutsOverlay');
+            if (!overlay) return;
+            overlay.classList.toggle('open');
+        }
+
+        function v123CloseShortcuts() {
+            const overlay = document.getElementById('v123ShortcutsOverlay');
+            if (overlay) overlay.classList.remove('open');
+        }
+
+        // Close shortcuts on ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                v123CloseShortcuts();
+                const panel = document.getElementById('v123NotifCenter');
+                if (panel && panel.classList.contains('open')) v123ToggleNotifCenter();
+            }
+        });
+
+        // ========== v123.0: Session Uptime ==========
+        let v123SessionStart = Date.now();
+        function v123UpdateUptime() {
+            const elapsed = Math.floor((Date.now() - v123SessionStart) / 1000);
+            const h = Math.floor(elapsed / 3600);
+            const m = Math.floor((elapsed % 3600) / 60);
+            const s = elapsed % 60;
+            const upEl = document.getElementById('v123UptimeEl');
+            if (upEl) upEl.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        }
+        setInterval(v123UpdateUptime, 1000);
+
+        // ========== v123.0: Metrics Radar Chart ==========
+        function v123DrawRadar() {
+            const svg = document.getElementById('v123RadarSvg');
+            if (!svg) return;
+            const metrics = [
+                { label: 'CPU', value: parseFloat(document.getElementById('cpu')?.textContent || '0') },
+                { label: 'MEM', value: parseFloat(document.getElementById('memory')?.textContent?.replace('%','') || '0') },
+                { label: 'DISK', value: parseFloat(document.getElementById('disk')?.textContent?.replace('%','') || '0') },
+                { label: 'NET', value: Math.random() * 100 },
+                { label: '活性', value: parseFloat(document.getElementById('activity')?.textContent?.replace('%','') || '0') },
+            ];
+            const cx = 90, cy = 90, r = 65;
+            const count = metrics.length;
+            const points = metrics.map((m, i) => {
+                const angle = (Math.PI * 2 * i) / count - Math.PI / 2;
+                const norm = m.value / 100;
+                return { x: cx + Math.cos(angle) * r * norm, y: cy + Math.sin(angle) * r * norm };
+            });
+            const polyPoints = points.map(p => `${p.x},${p.y}`).join(' ');
+            let html = `<polygon class="v123-radar-area" points="${polyPoints}"/>`;
+            metrics.forEach((m, i) => {
+                const angle = (Math.PI * 2 * i) / count - Math.PI / 2;
+                const lx = cx + Math.cos(angle) * (r + 16);
+                const ly = cy + Math.sin(angle) * (r + 16);
+                const vx = cx + Math.cos(angle) * (r * (m.value / 100) + 8);
+                const vy = cy + Math.sin(angle) * (r * (m.value / 100) + 8);
+                html += `<text class="v123-radar-label" x="${lx}" y="${ly + 3}">${m.label}</text>`;
+                html += `<text class="v123-radar-value" x="${vx}" y="${vy + 3}">${Math.round(m.value)}</text>`;
+                html += `<circle class="v123-radar-point" cx="${points[i].x}" cy="${points[i].y}" r="4"/>`;
+            });
+            // Grid rings
+            for (let ring = 1; ring <= 4; ring++) {
+                const rr = (r / 4) * ring;
+                const ringPoints = [];
+                for (let i = 0; i < count; i++) {
+                    const angle = (Math.PI * 2 * i) / count - Math.PI / 2;
+                    ringPoints.push(`${cx + Math.cos(angle) * rr},${cy + Math.sin(angle) * rr}`);
+                }
+                html += `<polygon class="v123-radar-grid" points="${ringPoints.join(' ')}"/>`;
+            }
+            // Axes
+            for (let i = 0; i < count; i++) {
+                const angle = (Math.PI * 2 * i) / count - Math.PI / 2;
+                html += `<line class="v123-radar-axis" x1="${cx}" y1="${cy}" x2="${cx + Math.cos(angle) * r}" y2="${cy + Math.sin(angle) * r}"/>`;
+            }
+            svg.innerHTML = html;
+        }
+        setInterval(v123DrawRadar, 3000);
+        setTimeout(v123DrawRadar, 500);
+
+        // ========== v123.0: Init ==========
+        function initV123Features() {
+            console.log('[v123.0] Notification center, particle burst, radar chart, shortcuts initialized');
+            v123UpdateUptime();
+            // Initial notification
+            setTimeout(() => v123AddNotif('Dashboard v123.0 ready ⚡', 'success', '✅'), 1500);
+            // Connection quality
+            setInterval(v123UpdateConnQuality, 10000);
+            setTimeout(v123UpdateConnQuality, 2000);
+        }
+
         // Initialize all features after DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); initV106Features(); initV110Features(); initV111Features(); initV113Features(); initV115Features(); initV117Features(); initV118Features(); initV119Features(); initV122Features(); });
+            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); initV106Features(); initV110Features(); initV111Features(); initV113Features(); initV115Features(); initV117Features(); initV118Features(); initV119Features(); initV122Features(); initV123Features(); });
         } else {
-            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); initV106Features(); initV110Features(); initV111Features(); initV113Features(); initV115Features(); initV117Features(); initV118Features(); initV119Features(); initV122Features(); }, 100);
+            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); initV106Features(); initV110Features(); initV111Features(); initV113Features(); initV115Features(); initV117Features(); initV118Features(); initV119Features(); initV122Features(); initV123Features(); }, 100);
         }
 
     </script>
@@ -45837,7 +46742,7 @@
 
     <!-- v82.0: Command Palette Hint -->
     <div class="v82-version-badge v81-version-badge" id="v78VersionHint" style="position:fixed;bottom:20px;left:20px;opacity:0.5;font-size:10px;cursor:pointer;" onclick="toggleV78CmdPalette()" title="Open Command Palette (Ctrl+K)">
-        ⚡ v120.1 · Ctrl+K
+        ⚡ v123.0 · Ctrl+K · ?
     </div>
 
     <!-- v80.0: Demo Mode Badge (shown when API unavailable) -->
@@ -45873,5 +46778,75 @@
 
     <!-- v119.0: Toast Notification -->
     <div class="v119-toast" id="v119Toast"></div>
+
+    <!-- v123.0: Particle Burst Canvas -->
+    <canvas id="v123ParticleCanvas"></canvas>
+
+    <!-- v123.0: Notification Center Bell Button -->
+    <button class="v123-notif-bell" id="v123NotifBell" onclick="v123ToggleNotifCenter()" title="Notifications">
+        🔔
+        <span class="v123-notif-badge" id="v123NotifBadge">0</span>
+    </button>
+
+    <!-- v123.0: Notification Center Panel -->
+    <div class="v123-notif-center" id="v123NotifCenter">
+        <div class="v123-notif-header">
+            <div class="v123-notif-title">
+                📋 Activity Log
+                <span class="v123-notif-count" id="v123NotifCount">0</span>
+            </div>
+            <button class="v123-notif-close" onclick="v123ToggleNotifCenter()">✕</button>
+        </div>
+        <div class="v123-notif-list" id="v123NotifList">
+            <div style="text-align:center;padding:40px 20px;color:var(--text-dim);font-size:13px;">
+                No notifications yet<br><span style="font-size:11px;opacity:0.6;">Events will appear here</span>
+            </div>
+        </div>
+        <div class="v123-notif-clear">
+            <button class="v123-notif-clear-btn" onclick="v123ClearNotifs()">🗑 Clear All</button>
+        </div>
+    </div>
+
+    <!-- v123.0: Shortcuts Modal -->
+    <div class="v123-shortcuts-overlay" id="v123ShortcutsOverlay" onclick="if(event.target===this)v123CloseShortcuts()">
+        <div class="v123-shortcuts-modal">
+            <div class="v123-shortcuts-modal-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="6" width="20" height="12" rx="2"/>
+                    <path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/>
+                </svg>
+                Keyboard Shortcuts
+            </div>
+            <div class="v123-shortcut-group">
+                <div class="v123-shortcut-group-title">Navigation</div>
+                <div class="v123-shortcut-row"><span class="v123-shortcut-desc">Toggle shortcuts panel</span><div class="v123-shortcut-keys"><kbd>?</kbd></div></div>
+                <div class="v123-shortcut-row"><span class="v123-shortcut-desc">Command palette</span><div class="v123-shortcut-keys"><kbd>Ctrl</kbd><kbd>K</kbd></div></div>
+                <div class="v123-shortcut-row"><span class="v123-shortcut-desc">Refresh data</span><div class="v123-shortcut-keys"><kbd>R</kbd></div></div>
+            </div>
+            <div class="v123-shortcut-group">
+                <div class="v123-shortcut-group-title">Quick Mood</div>
+                <div class="v123-shortcut-row"><span class="v123-shortcut-desc">Idle mode</span><div class="v123-shortcut-keys"><kbd>1</kbd></div></div>
+                <div class="v123-shortcut-row"><span class="v123-shortcut-desc">Working mode</span><div class="v123-shortcut-keys"><kbd>2</kbd></div></div>
+                <div class="v123-shortcut-row"><span class="v123-shortcut-desc">Excited mode</span><div class="v123-shortcut-keys"><kbd>3</kbd></div></div>
+                <div class="v123-shortcut-row"><span class="v123-shortcut-desc">Thinking mode</span><div class="v123-shortcut-keys"><kbd>4</kbd></div></div>
+                <div class="v123-shortcut-row"><span class="v123-shortcut-desc">Sleeping mode</span><div class="v123-shortcut-keys"><kbd>5</kbd></div></div>
+            </div>
+            <div class="v123-shortcut-group">
+                <div class="v123-shortcut-group-title">Actions</div>
+                <div class="v123-shortcut-row"><span class="v123-shortcut-desc">Close modal/panel</span><div class="v123-shortcut-keys"><kbd>Esc</kbd></div></div>
+                <div class="v123-shortcut-row"><span class="v123-shortcut-desc">Toggle notifications</span><div class="v123-shortcut-keys"><kbd>N</kbd></div></div>
+                <div class="v123-shortcut-row"><span class="v123-shortcut-desc">Toggle theme</span><div class="v123-shortcut-keys"><kbd>T</kbd></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- v123.0: Fox Reaction Emoji -->
+    <div class="v123-fox-reaction" id="v123FoxReaction"></div>
+
+    <!-- v123.0: Status Wave Container (inside fox container) -->
+    <div class="v123-status-wave" id="v123StatusWave">
+        <div class="v123-wave-ring" id="v123WaveRing1"></div>
+        <div class="v123-wave-ring" id="v123WaveRing2"></div>
+    </div>
 </body>
 </html>
