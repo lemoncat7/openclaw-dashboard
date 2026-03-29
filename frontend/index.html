@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v117.0 (Next-Gen)">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v118.0 (Next-Gen)">
     <meta name="theme-color" content="#08080c">
-    <title>MoShang Status v117.0</title>
+    <title>MoShang Status v118.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -27438,6 +27438,321 @@
             }
         }
 
+        /* ========== v118.0: Next-Gen CSS Enhancements ========== */
+        
+        /* v118.0: @property for advanced animations */
+        @property --v118-hue {
+            syntax: '<angle>';
+            inherits: false;
+            initial-value: 0deg;
+        }
+        @property --v118-morph {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 0;
+        }
+        @property --v118-glow-size {
+            syntax: '<length>';
+            inherits: false;
+            initial-value: 0px;
+        }
+        @property --v118-score {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 0;
+        }
+        
+        /* v118.0: Enhanced reliability pulse animation */
+        @keyframes v118ReliabilityPulse {
+            0%, 100% { 
+                opacity: 0.6;
+                transform: scale(1);
+                filter: blur(0px);
+            }
+            50% { 
+                opacity: 1;
+                transform: scale(1.05);
+                filter: blur(1px);
+            }
+        }
+        
+        /* v118.0: Data freshness indicator */
+        .v118-freshness-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: rgba(92, 219, 149, 0.12);
+            border: 1px solid rgba(92, 219, 149, 0.25);
+            border-radius: var(--radius-full);
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--success);
+            transition: all 0.3s ease;
+        }
+        
+        .v118-freshness-indicator.stale {
+            background: rgba(254, 202, 87, 0.12);
+            border-color: rgba(254, 202, 87, 0.25);
+            color: var(--warning);
+        }
+        
+        .v118-freshness-indicator.error {
+            background: rgba(255, 107, 107, 0.12);
+            border-color: rgba(255, 107, 107, 0.25);
+            color: var(--danger);
+            animation: v118ReliabilityPulse 1s ease-in-out infinite;
+        }
+        
+        .v118-freshness-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            box-shadow: 0 0 6px currentColor;
+        }
+        
+        /* v118.0: Metrics counter animation */
+        @keyframes v118MetricPop {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.1); filter: brightness(1.2); }
+            50% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+        
+        .v118-metric-updated {
+            animation: v118MetricPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        /* v118.0: Retry indicator */
+        .v118-retry-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            background: rgba(0, 212, 255, 0.12);
+            border: 1px solid rgba(0, 212, 255, 0.25);
+            border-radius: var(--radius-full);
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent);
+        }
+        
+        .v118-retry-badge.active {
+            background: rgba(254, 202, 87, 0.15);
+            border-color: rgba(254, 202, 87, 0.3);
+            color: var(--warning);
+            animation: v118ReliabilityPulse 0.8s ease-in-out infinite;
+        }
+        
+        /* v118.0: Error boundary enhanced */
+        .v118-error-boundary {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.08), rgba(255, 107, 107, 0.04));
+            border: 1px solid rgba(255, 107, 107, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: v118ErrorSlide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            backdrop-filter: blur(10px);
+        }
+        
+        @keyframes v118ErrorSlide {
+            from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        /* v118.0: Loading skeleton shimmer */
+        .v118-skeleton {
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0.04) 0%,
+                rgba(255, 255, 255, 0.08) 50%,
+                rgba(255, 255, 255, 0.04) 100%
+            );
+            background-size: 200% 100%;
+            animation: v118SkeletonShimmer 1.5s ease-in-out infinite;
+            border-radius: var(--radius-md);
+        }
+        
+        @keyframes v118SkeletonShimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* v118.0: Connection quality meter */
+        .v118-conn-meter {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        
+        .v118-conn-meter-bar {
+            width: 4px;
+            height: 12px;
+            border-radius: 2px;
+            background: var(--text-dim);
+            transition: all 0.3s ease;
+        }
+        
+        .v118-conn-meter-bar:nth-child(1) { height: 4px; }
+        .v118-conn-meter-bar:nth-child(2) { height: 8px; }
+        .v118-conn-meter-bar:nth-child(3) { height: 12px; }
+        .v118-conn-meter-bar:nth-child(4) { height: 16px; }
+        
+        .v118-conn-meter.excellent .v118-conn-meter-bar { 
+            background: var(--success); 
+            box-shadow: 0 0 4px var(--success); 
+        }
+        .v118-conn-meter.good .v118-conn-meter-bar:nth-child(1),
+        .v118-conn-meter.good .v118-conn-meter-bar:nth-child(2),
+        .v118-conn-meter.good .v118-conn-meter-bar:nth-child(3) { 
+            background: var(--accent); 
+            box-shadow: 0 0 4px var(--accent); 
+        }
+        .v118-conn-meter.fair .v118-conn-meter-bar:nth-child(1),
+        .v118-conn-meter.fair .v118-conn-meter-bar:nth-child(2) { 
+            background: var(--warning); 
+            box-shadow: 0 0 4px var(--warning); 
+        }
+        .v118-conn-meter.poor .v118-conn-meter-bar:nth-child(1) { 
+            background: var(--danger); 
+            box-shadow: 0 0 4px var(--danger); 
+        }
+        
+        /* v118.0: Source attribution badge */
+        .v118-source-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+        }
+        
+        .v118-source-badge.live { 
+            background: rgba(92, 219, 149, 0.12);
+            border-color: rgba(92, 219, 149, 0.25);
+            color: var(--success);
+        }
+        .v118-source-badge.cache { 
+            background: rgba(254, 202, 87, 0.12);
+            border-color: rgba(254, 202, 87, 0.25);
+            color: var(--warning);
+        }
+        .v118-source-badge.fallback { 
+            background: rgba(255, 107, 107, 0.12);
+            border-color: rgba(255, 107, 107, 0.25);
+            color: var(--danger);
+        }
+        
+        /* v118.0: Status card enhanced glow */
+        .stat-card.v118-enhanced {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card.v118-enhanced::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(
+                45deg,
+                var(--primary),
+                var(--accent),
+                var(--success),
+                transparent
+            );
+            background-size: 300% 300%;
+            opacity: 0;
+            z-index: -1;
+            border-radius: inherit;
+            animation: v118BorderGlow 4s ease infinite;
+            transition: opacity 0.3s ease;
+        }
+        
+        .stat-card.v118-enhanced:hover::after {
+            opacity: 0.5;
+        }
+        
+        @keyframes v118BorderGlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        /* v118.0: Accessibility - focus visible enhanced */
+        .v118-focus-ring:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 3px;
+            box-shadow: 0 0 16px color-mix(in srgb, var(--primary) 40%, transparent);
+        }
+        
+        /* v118.0: Print styles */
+        @media print {
+            .v118-freshness-indicator,
+            .v118-retry-badge,
+            .v118-conn-meter,
+            .v118-source-badge,
+            .fox-glow-aura,
+            .neural-canvas,
+            .ambient-orb {
+                display: none !important;
+            }
+            
+            .stat-card, .glass-card {
+                background: white !important;
+                border: 1px solid #ccc !important;
+                box-shadow: none !important;
+            }
+        }
+        
+        /* v118.0: Reduced motion - comprehensive */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .v118-skeleton {
+                animation: none;
+                background: rgba(255, 255, 255, 0.04);
+            }
+            
+            .v118-error-boundary,
+            .v118-freshness-indicator.error {
+                animation: none;
+            }
+        }
+        
+        /* v118.0: High contrast mode */
+        @media (prefers-contrast: high) {
+            :root {
+                --text: #ffffff;
+                --text-bright: #ffffff;
+                --text-dim: #cccccc;
+                --text-muted: #999999;
+            }
+            
+            .stat-card,
+            .glass-card,
+            .mini-stat {
+                border-width: 2px;
+                border-color: currentColor;
+            }
+        }
+
     </style>
 </head>
 <body class="loading">
@@ -43843,11 +44158,166 @@
             console.log('[v117.0] All next-gen features initialized');
         }
 
+        // ========== v118.0: Next-Gen Reliability & Metrics ==========
+        
+        // v118.0: Data freshness tracking
+        function initV118FreshnessTracker() {
+            window.v118DataFreshness = {
+                dashboard: null,
+                heartbeat: null,
+                evomap: null,
+                system: null
+            };
+            
+            window.v118UpdateFreshness = function(source, timestamp) {
+                window.v118DataFreshness[source] = {
+                    timestamp: timestamp,
+                    age: Date.now() - timestamp,
+                    status: 'fresh'
+                };
+                
+                const indicator = document.querySelector('.v118-freshness-indicator');
+                if (indicator) {
+                    const age = Date.now() - timestamp;
+                    if (age > 60000) {
+                        indicator.classList.add('error');
+                        indicator.classList.remove('stale');
+                    } else if (age > 30000) {
+                        indicator.classList.add('stale');
+                        indicator.classList.remove('error');
+                    }
+                }
+            };
+        }
+        
+        // v118.0: Enhanced metrics display
+        function initV118MetricsDisplay() {
+            window.v118Metrics = {
+                requestsTotal: 0,
+                requestsSuccess: 0,
+                requestsFailed: 0
+            };
+            
+            window.v118UpdateMetrics = function(metrics) {
+                if (!metrics) return;
+                window.v118Metrics = metrics;
+                
+                const metricEls = document.querySelectorAll('.v118-metric-value');
+                metricEls.forEach(el => {
+                    const type = el.dataset.metric;
+                    if (metrics[type] !== undefined) {
+                        const newValue = metrics[type];
+                        if (el.textContent !== String(newValue)) {
+                            el.textContent = newValue;
+                            el.classList.add('v118-metric-updated');
+                            setTimeout(() => el.classList.remove('v118-metric-updated'), 400);
+                        }
+                    }
+                });
+            };
+        }
+        
+        // v118.0: Retry status indicator
+        function initV118RetryIndicator() {
+            window.v118RetryStatus = {
+                retries: 0,
+                lastError: null,
+                isRetrying: false
+            };
+            
+            window.v118UpdateRetryStatus = function(status) {
+                window.v118RetryStatus = status;
+                
+                const badge = document.querySelector('.v118-retry-badge');
+                if (badge) {
+                    if (status.retries > 0) {
+                        badge.classList.add('active');
+                        badge.innerHTML = '🔄 ' + status.retries;
+                    } else {
+                        badge.classList.remove('active');
+                        badge.innerHTML = '✓';
+                    }
+                }
+            };
+        }
+        
+        // v118.0: Connection quality assessment
+        function initV118ConnectionQuality() {
+            window.v118ConnectionQuality = 'good';
+            
+            window.v118AssessConnection = function(metrics) {
+                if (!metrics) {
+                    window.v118ConnectionQuality = 'poor';
+                    return;
+                }
+                
+                const failRate = metrics.requestsTotal > 0 
+                    ? metrics.requestsFailed / metrics.requestsTotal 
+                    : 0;
+                
+                if (failRate < 0.05) {
+                    window.v118ConnectionQuality = 'excellent';
+                } else if (failRate < 0.15) {
+                    window.v118ConnectionQuality = 'good';
+                } else if (failRate < 0.30) {
+                    window.v118ConnectionQuality = 'fair';
+                } else {
+                    window.v118ConnectionQuality = 'poor';
+                }
+                
+                const meter = document.querySelector('.v118-conn-meter');
+                if (meter) {
+                    meter.className = 'v118-conn-meter ' + window.v118ConnectionQuality;
+                }
+            };
+        }
+        
+        // v118.0: Error boundary handler
+        function initV118ErrorBoundary() {
+            window.v118Errors = [];
+            
+            window.v118RecordError = function(error, context) {
+                window.v118Errors.push({
+                    error: error,
+                    context: context,
+                    timestamp: Date.now()
+                });
+                
+                if (window.v118Errors.length > 10) {
+                    window.v118Errors.shift();
+                }
+                
+                const boundary = document.querySelector('.v118-error-boundary');
+                if (boundary) {
+                    boundary.style.display = 'flex';
+                    const msgEl = boundary.querySelector('.v118-error-msg');
+                    if (msgEl) {
+                        msgEl.textContent = error;
+                    }
+                }
+            };
+            
+            window.addEventListener('error', function(e) {
+                v118RecordError(e.error?.message || 'Unknown error', 'global');
+            });
+        }
+        
+        // v118.0: Initialize all v118 features
+        function initV118Features() {
+            initV118FreshnessTracker();
+            initV118MetricsDisplay();
+            initV118RetryIndicator();
+            initV118ConnectionQuality();
+            initV118ErrorBoundary();
+            
+            console.log('[v118.0] All reliability features initialized');
+        }
+
         // Initialize all features after DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); initV106Features(); initV110Features(); initV111Features(); initV113Features(); initV115Features(); initV117Features(); });
+            document.addEventListener('DOMContentLoaded', () => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); initV106Features(); initV110Features(); initV111Features(); initV113Features(); initV115Features(); initV117Features(); initV118Features(); });
         } else {
-            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); initV106Features(); initV110Features(); initV111Features(); initV113Features(); initV115Features(); initV117Features(); }, 100);
+            setTimeout(() => { initV82Features(); initV83Features(); initV84Features(); initV85Features(); initV86Features(); initV87Features(); initV88Features(); initV89Features(); initV91Features(); initV94Features(); initV95Features(); initV96Features(); initV97Features(); initV98Features(); initV99Features(); initV100Features(); initV101Features(); initV104Features(); initV106Features(); initV110Features(); initV111Features(); initV113Features(); initV115Features(); initV117Features(); initV118Features(); }, 100);
         }
 
     </script>

@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const https = require('https');
 
 const PORT = 19000;
 const DASHBOARD_PATH = '/home/root/.openclaw/workspace/skills/dashboard-service/frontend/index.html';
@@ -20,8 +21,28 @@ let chatCount = 0;
 const startTime = Date.now();
 const statusHistory = [];
 
+// v118.0: 增强指标收集
+const metrics = {
+  requestsTotal: 0,
+  requestsSuccess: 0,
+  requestsFailed: 0,
+  evomapRetries: 0,
+  lastError: null,
+  lastErrorTime: null
+};
+
 // v111.0: SSE 客户端管理 (更轻量，无需额外依赖)
 const sseClients = new Set();
+
+// v118.0: EvoMap 节点状态缓存 - 增强容错和缓存策略
+let evomapStatus = null;
+let evomapStatusTime = 0;
+let evomapFailureCount = 0;
+let evomapAbortController = null;
+const EVOMAP_CACHE_TIME = 60000; // 1分钟缓存
+const EVOMAP_MAX_CACHE_TIME = 300000; // 失败时最多缓存5分钟
+const EVOMAP_RETRY_DELAY = 5000; // 重试间隔5秒
+const EVOMAP_NODE_ID = 'node_6de4354b';
 
 // 状态历史记录
 function addStatusHistory(status) {
@@ -98,11 +119,20 @@ const server = http.createServer(async (req, res) => {
   
   const url = req.url;
   
-  // v42.0: Enhanced health check with detailed status
+  // v118.0: Enhanced health check with detailed status
   if (url === '/health' || url === '/api/health') {
     const totalMem = os.totalmem();
     const freeMem = os.freemem();
     const memPercent = Math.round(((totalMem - freeMem) / totalMem) * 100);
+    
+    // CPU 使用率
+    const cpus = os.cpus();
+    let totalIdle = 0, totalTick = 0;
+    cpus.forEach(cpu => {
+      for (let type in cpu.times) totalTick += cpu.times[type];
+      totalIdle += cpu.times.idle;
+    });
+    const cpuPercent = Math.round((1 - totalIdle / totalTick) * 100);
     
     res.writeHead(200, { 
       'Content-Type': 'application/json',
@@ -111,10 +141,21 @@ const server = http.createServer(async (req, res) => {
     res.end(JSON.stringify({ 
       status: 'ok', 
       service: 'dashboard',
-      version: 'v57.1',
+      version: 'v118.0',
       uptime: Math.floor((Date.now() - startTime) / 1000),
       memory: memPercent,
+      cpu: cpuPercent,
       apiCalls: apiCalls,
+      evomap: {
+        connected: evomapStatus !== null,
+        fresh: evomapStatusTime > 0 && (Date.now() - evomapStatusTime) < EVOMAP_CACHE_TIME,
+        failures: evomapFailureCount
+      },
+      metrics: {
+        total: metrics.requestsTotal,
+        success: metrics.requestsSuccess,
+        failed: metrics.requestsFailed
+      },
       time: new Date().toISOString()
     }));
     return;
@@ -163,73 +204,103 @@ const server = http.createServer(async (req, res) => {
     return;
   }
   
-  // EvoMap 节点状态缓存 - v57.1: 增强容错和缓存策略
-let evomapStatus = null;
-let evomapStatusTime = 0;
-let evomapFailureCount = 0;
-const EVOMAP_CACHE_TIME = 60000; // 1分钟缓存
-const EVOMAP_MAX_CACHE_TIME = 300000; // 失败时最多缓存5分钟
-
-// 计算动态缓存时间（失败时指数退避）
+  // 计算动态缓存时间（失败时指数退避）
 function getEvomapCacheTime() {
   if (evomapFailureCount === 0) return EVOMAP_CACHE_TIME;
   return Math.min(EVOMAP_CACHE_TIME * Math.pow(2, evomapFailureCount), EVOMAP_MAX_CACHE_TIME);
 }
 
-async function fetchEvomapStatus() {
+// v118.0: Promise化请求，支持超时和中止
+function evomapRequest(url, timeout = 8000) {
+  return new Promise((resolve, reject) => {
+    // 取消之前的请求
+    if (evomapAbortController) {
+      evomapAbortController.abort();
+    }
+    evomapAbortController = new AbortController();
+    
+    const req = https.get(url, { 
+      timeout, 
+      signal: evomapAbortController.signal 
+    }, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        if (res.statusCode === 200) {
+          try {
+            resolve(JSON.parse(data));
+          } catch (e) {
+            reject(new Error(`JSON解析失败: ${e.message}`));
+          }
+        } else {
+          reject(new Error(`HTTP ${res.statusCode}`));
+        }
+      });
+    });
+    
+    req.on('error', (err) => {
+      if (err.name === 'AbortError') {
+        reject(new Error('请求被取消'));
+      } else {
+        reject(err);
+      }
+    });
+    
+    req.on('timeout', () => {
+      req.destroy();
+      reject(new Error('请求超时'));
+    });
+  });
+}
+
+// v118.0: 智能重试机制
+async function fetchEvomapStatusWithRetry(maxRetries = 3) {
   const cacheTime = getEvomapCacheTime();
   
   // 如果缓存新鲜，直接返回
   if (evomapStatus && (Date.now() - evomapStatusTime) < cacheTime) {
-    return evomapStatus;
+    return { data: evomapStatus, fromCache: true, age: Date.now() - evomapStatusTime };
   }
   
-  try {
-    const https = require('https');
-    const nodeId = 'node_6de4354b';
-    
-    return new Promise((resolve) => {
-      const req = https.get(`https://evomap.ai/a2a/nodes/${nodeId}`, { timeout: 8000 }, (res) => {
-        let data = '';
-        res.on('data', chunk => data += chunk);
-        res.on('end', () => {
-          try {
-            const parsed = JSON.parse(data);
-            evomapStatus = parsed;
-            evomapStatusTime = Date.now();
-            evomapFailureCount = 0; // 成功后重置失败计数
-            resolve(parsed);
-          } catch (e) {
-            evomapFailureCount++;
-            console.warn(`[EvoMap] JSON解析失败, 失败计数: ${evomapFailureCount}`);
-            resolve(evomapStatus); // 返回可能过期的缓存
-          }
-        });
-      });
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const data = await evomapRequest(`https://evomap.ai/a2a/nodes/${EVOMAP_NODE_ID}`);
+      evomapStatus = data;
+      evomapStatusTime = Date.now();
+      evomapFailureCount = 0;
+      metrics.evomapRetries = attempt;
+      metrics.lastError = null;
+      console.log(`[EvoMap] 获取成功 (尝试 ${attempt + 1})`);
+      return { data, fromCache: false, age: 0 };
+    } catch (err) {
+      console.warn(`[EvoMap] 尝试 ${attempt + 1}/${maxRetries} 失败: ${err.message}`);
+      metrics.evomapRetries = attempt + 1;
+      metrics.lastError = err.message;
+      metrics.lastErrorTime = new Date().toISOString();
       
-      req.on('error', (err) => {
-        evomapFailureCount++;
-        console.warn(`[EvoMap] 请求失败: ${err.message}, 失败计数: ${evomapFailureCount}`);
-        resolve(evomapStatus); // 返回可能过期的缓存
-      });
-      
-      req.on('timeout', () => {
-        req.destroy();
-        evomapFailureCount++;
-        console.warn(`[EvoMap] 请求超时, 失败计数: ${evomapFailureCount}`);
-        resolve(evomapStatus);
-      });
-    });
-  } catch (e) {
-    evomapFailureCount++;
-    console.warn(`[EvoMap] 异常: ${e.message}, 失败计数: ${evomapFailureCount}`);
-    return evomapStatus;
+      if (attempt < maxRetries - 1) {
+        await new Promise(r => setTimeout(r, EVOMAP_RETRY_DELAY * (attempt + 1)));
+      }
+    }
   }
+  
+  // 所有重试都失败
+  evomapFailureCount++;
+  console.warn(`[EvoMap] 所有重试失败, 失败计数: ${evomapFailureCount}, 使用缓存`);
+  return { data: evomapStatus, fromCache: true, age: Date.now() - evomapStatusTime, failed: true };
 }
 
-// Dashboard API (simplified for frontend) - v57.1: 增强EvoMap状态信息
+// 保持向后兼容
+async function fetchEvomapStatus() {
+  const result = await fetchEvomapStatusWithRetry();
+  return result.data;
+}
+
+// Dashboard API (simplified for frontend) - v118.0: 增强EvoMap状态信息
   if (url === '/api/dashboard') {
     apiCalls++;
+    metrics.requestsTotal++;
+    
     const uptime = Math.floor((Date.now() - startTime) / 1000);
     const hours = Math.floor(uptime / 3600);
     const uptimeStr = hours > 0 ? `${hours}h` : '<1h';
@@ -237,12 +308,20 @@ async function fetchEvomapStatus() {
     const now = new Date();
     const heartbeat = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
     
-    // 同步获取 EvoMap 状态
-    const evomap = await fetchEvomapStatus();
+    // v118.0: 使用增强的EvoMap获取（带重试）
+    const evomapResult = await fetchEvomapStatusWithRetry();
+    const evomap = evomapResult.data;
     
     // 判断EvoMap数据是否新鲜
     const evomapAge = evomapStatusTime > 0 ? Date.now() - evomapStatusTime : null;
     const evomapFresh = evomapAge !== null && evomapAge < EVOMAP_CACHE_TIME;
+    
+    // v118.0: 记录成功/失败
+    if (evomapResult.failed) {
+      metrics.requestsFailed++;
+    } else {
+      metrics.requestsSuccess++;
+    }
     
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
@@ -258,14 +337,25 @@ async function fetchEvomapStatus() {
         published: evomap.total_published,
         promoted: evomap.total_promoted,
         online: evomap.online,
-        survival: evomap.survival_status
+        survival: evomap.survival_status,
+        tasksCompleted: evomap.total_tasks_completed,
+        reputationRank: evomap.reputation_rank
       } : null,
       evomapStatus: {
         available: evomap !== null,
         fresh: evomapFresh,
+        fromCache: evomapResult.fromCache,
         age: evomapAge,
         failureCount: evomapFailureCount,
-        lastSuccess: evomapStatusTime > 0 ? new Date(evomapStatusTime).toISOString() : null
+        retries: metrics.evomapRetries,
+        lastSuccess: evomapStatusTime > 0 ? new Date(evomapStatusTime).toISOString() : null,
+        lastError: metrics.lastError
+      },
+      metrics: {
+        uptime: uptime,
+        requestsTotal: metrics.requestsTotal,
+        requestsSuccess: metrics.requestsSuccess,
+        requestsFailed: metrics.requestsFailed
       }
     }));
     return;
