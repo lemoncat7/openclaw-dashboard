@@ -9,6 +9,8 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+- v120.0: 启动脚本优化（start.sh带健康检查和外网访问验证）
+- v120.0: 数据源可靠性增强（确保 https://oclaw.mochencloud.cn:1443/onboard/ 可正常访问）
 - v119.0: CSS Level 5颜色函数支持（light-dark()实现现代主题切换）
 - v119.0: 快速操作工具栏（刷新/主题切换/命令面板/演示模式四个快捷按钮）
 - v119.0: Toast通知系统（v119ShowToast带动画的成功/警告/错误提示）
@@ -709,7 +711,17 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 ## 启动
 
 ```bash
-python3 ~/.openclaw/workspace/skills/dashboard-service/scripts/server.py &
+# 推荐方式：使用启动脚本（带健康检查和外网访问验证）
+bash ~/.openclaw/workspace/skills/dashboard-service/scripts/start.sh start
+
+# 其他命令
+bash ~/.openclaw/workspace/skills/dashboard-service/scripts/start.sh status  # 查看状态
+bash ~/.openclaw/workspace/skills/dashboard-service/scripts/start.sh stop   # 停止
+bash ~/.openclaw/workspace/skills/dashboard-service/scripts/start.sh restart # 重启
+bash ~/.openclaw/workspace/skills/dashboard-service/scripts/start.sh log    # 查看日志
+
+# 或直接启动
+node ~/.openclaw/workspace/skills/dashboard-service/scripts/server.js &
 ```
 
 ## 访问

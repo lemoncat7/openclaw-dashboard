@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v119.0 (Next-Gen)">
+    <meta name="description" content="MoShang - Real-time OpenClaw Status Dashboard v120.0 (Next-Gen)">
     <meta name="theme-color" content="#08080c">
-    <title>MoShang Status v119.0</title>
+    <title>MoShang Status v120.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -32578,7 +32578,7 @@
             }
 
             try {
-                sseConnection = new EventSource('/api/stream');
+                sseConnection = new EventSource(API_BASE + '/api/stream');
 
                 sseConnection.onopen = () => {
                     console.log('[SSE] Connected to real-time stream');
@@ -36084,6 +36084,11 @@
 
         // ========== Fetch with Retry ==========
         // v42.0: Enhanced fetch with retry and skeleton loading
+        // v120.0: API Base URL - resolved dynamically based on deployment
+        const _apiHost = window.location.hostname.includes('mochencloud') ? window.location.hostname + ':1443' : (window.location.port === '19000' ? 'localhost:19000' : 'localhost:19000');
+        const _apiProto = window.location.protocol === 'https:' ? 'https:' : 'http:';
+        const API_BASE = _apiProto + '//' + _apiHost;
+        
         async function fetchWithRetry(url, options = {}, retries = retryConfig.maxRetries, baseDelay = retryConfig.baseDelay) {
             // Show syncing indicator
             showSyncIndicator(true);
@@ -36092,7 +36097,7 @@
                 try {
                     const controller = new AbortController();
                     const timeout = setTimeout(() => controller.abort(), 5000);
-                    const res = await fetch(url, { ...options, signal: controller.signal });
+                    const res = await fetch(API_BASE + url, { ...options, signal: controller.signal });
                     clearTimeout(timeout);
                     
                     if (!res.ok && attempt < retries) {
@@ -41110,7 +41115,7 @@
             }
             
             try {
-                const response = await fetch(url, {
+                const response = await fetch(API_BASE + url, {
                     ...options,
                     signal: AbortSignal.timeout(5000)
                 });
@@ -44671,7 +44676,7 @@
         // v119.0: Initialize v119 features
         function initV119Features() {
             initV119QuickActions();
-            console.log('[v119.0] Quick actions and toast features initialized');
+            console.log('[v120.0] Quick actions and toast features initialized');
         }
 
         // Initialize all features after DOM is ready
@@ -44868,7 +44873,7 @@
 
     <!-- v82.0: Command Palette Hint -->
     <div class="v82-version-badge v81-version-badge" id="v78VersionHint" style="position:fixed;bottom:20px;left:20px;opacity:0.5;font-size:10px;cursor:pointer;" onclick="toggleV78CmdPalette()" title="Open Command Palette (Ctrl+K)">
-        ⚡ v119.0 · Ctrl+K
+        ⚡ v120.0 · Ctrl+K
     </div>
     
     <!-- v80.0: Demo Mode Badge (shown when API unavailable) -->
