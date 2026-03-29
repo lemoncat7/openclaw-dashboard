@@ -9,6 +9,12 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+- v114.0: 数据验证层（v114-validateHeartbeatData函数验证所有API和SSE数据，确保数据来源可靠、稳定、有效）
+- v114.0: 心跳数据验证（heartbeat: 0-300BPM范围检查）
+- v114.0: 活动数据验证（activity: 0-100%范围检查）
+- v114.0: 状态数据验证（status: 仅允许已知状态值）
+- v114.0: 信誉数据验证（reputation: 0-100范围检查）
+- v114.0: SSE数据验证（实时数据流同样经过验证后更新UI）
 - v113.0: SSE质量监控器（v113-sse-quality跟踪消息频率，显示连接质量等级）
 - v113.0: 数据过期警告（v113-stale-warning数据超过30秒未更新时显示醒目警告）
 - v113.0: 数据新鲜度计时器（v113-freshness-timer实时显示数据年龄）
