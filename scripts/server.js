@@ -296,7 +296,7 @@ async function fetchEvomapStatus() {
   return result.data;
 }
 
-// Dashboard API (simplified for frontend) - v118.0: 增强EvoMap状态信息
+// Dashboard API (simplified for frontend) - v130.0: Fixed heartbeat, added memory/cpu/status
   if (url === '/api/dashboard') {
     apiCalls++;
     metrics.requestsTotal++;
@@ -305,8 +305,94 @@ async function fetchEvomapStatus() {
     const hours = Math.floor(uptime / 3600);
     const uptimeStr = hours > 0 ? `${hours}h` : '<1h';
     
-    const now = new Date();
-    const heartbeat = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+    // v130.0: Get system info for memory and CPU
+    const totalMem = os.totalmem();
+    const freeMem = os.freemem();
+    const usedMem = totalMem - freeMem;
+    const memPercent = Math.round((usedMem / totalMem) * 100);
+    const memoryStr = `${Math.round(usedMem / 1024 / 1024)}MB`;
+    
+    const cpus = os.cpus();
+    let totalIdle = 0, totalTick = 0;
+    cpus.forEach(cpu => {
+      for (let type in cpu.times) totalTick += cpu.times[type];
+      totalIdle += cpu.times.idle;
+    });
+    const cpuPercent = Math.round((1 - totalIdle / totalTick) * 100);
+    
+    // v130.0: Calculate heartbeat as duration since last activity
+    let heartbeat = '--';
+    let dataAge = 0;
+    let dataFreshness = 'stale';
+    const stateFiles = [
+      '/home/root/.openclaw/workspace/memory/heartbeat_tasks/state.json',
+      '/home/root/.openclaw/workspace/memory/heartbeat-state.json',
+      '/tmp/openclaw_heartbeat.json'
+    ];
+    
+    for (const stateFile of stateFiles) {
+      try {
+        if (fs.existsSync(stateFile)) {
+          const content = JSON.parse(fs.readFileSync(stateFile, 'utf8'));
+          const lastHb = content.lastHeartbeat || content.last_heartbeat || content.lastCheck || content.lastUpdate;
+          if (lastHb) {
+            const ts = typeof lastHb === 'number' ? lastHb : parseFloat(lastHb);
+            if (!isNaN(ts) && ts > 1000000000) {
+              dataAge = Math.floor((Date.now() / 1000) - ts);
+              if (dataAge < 0) dataAge = 0;
+              if (dataAge < 60) {
+                heartbeat = `${dataAge}s`;
+                dataFreshness = 'fresh';
+              } else if (dataAge < 3600) {
+                heartbeat = `${Math.floor(dataAge / 60)}m`;
+                dataFreshness = dataAge < 300 ? 'fresh' : 'normal';
+              } else {
+                heartbeat = `${Math.floor(dataAge / 3600)}h`;
+                dataFreshness = 'stale';
+              }
+              break;
+            }
+          }
+        }
+      } catch (e) {}
+    }
+    
+    // Fallback: if no heartbeat found, use task scheduler output
+    if (heartbeat === '--') {
+      const taskOutputDir = '/home/root/.openclaw/workspace/skills/task-scheduler/output';
+      try {
+        if (fs.existsSync(taskOutputDir)) {
+          const files = fs.readdirSync(taskOutputDir).filter(f => f.endsWith('.md'));
+          if (files.length > 0) {
+            const latest = files.map(f => ({ name: f, mtime: fs.statSync(path.join(taskOutputDir, f)).mtime }))
+              .sort((a, b) => b.mtime - a.mtime)[0];
+            const age = Math.floor((Date.now() - latest.mtime) / 1000);
+            if (age < 60) {
+              heartbeat = `${age}s`;
+              dataFreshness = 'fresh';
+            } else if (age < 3600) {
+              heartbeat = `${Math.floor(age / 60)}m`;
+              dataFreshness = 'normal';
+            } else {
+              heartbeat = `${Math.floor(age / 3600)}h`;
+              dataFreshness = 'stale';
+            }
+          }
+        }
+      } catch (e) {}
+    }
+    
+    // Determine status based on activity level and data freshness
+    let status = 'idle';
+    if (dataFreshness === 'stale' || activityLevel < 20) {
+      status = 'sleeping';
+    } else if (activityLevel > 80) {
+      status = 'excited';
+    } else if (activityLevel > 60) {
+      status = 'working';
+    } else if (currentTaskInfo) {
+      status = 'working';
+    }
     
     // v118.0: 使用增强的EvoMap获取（带重试）
     const evomapResult = await fetchEvomapStatusWithRetry();
@@ -326,12 +412,19 @@ async function fetchEvomapStatus() {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       heartbeat: heartbeat,
+      status: status,
+      activityLevel: activityLevel,
+      memory: memoryStr,
+      memoryPercent: memPercent,
+      cpu: String(cpuPercent),
+      cpuPercent: cpuPercent,
+      dataFreshness: dataFreshness,
+      dataAge: dataAge,
       msgCount: chatCount,
       taskDone: taskCount,
       uptime: uptimeStr,
       currentTask: currentTaskInfo,
       taskQueue: taskQueue,
-      activityLevel: activityLevel,
       evomap: evomap ? {
         reputation: evomap.reputation_score,
         published: evomap.total_published,
