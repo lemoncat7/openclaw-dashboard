@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MoShang - OpenClaw Status Dashboard">
     <meta name="theme-color" content="#0a0a0f">
-    <title>MoShang Status</title>
+    <title>MoShang Status v121.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -1535,6 +1535,232 @@
             .entrance-4 { animation: entrance-fade 0.5s var(--ease-out) 0.4s both; }
             .entrance-5 { animation: entrance-fade 0.5s var(--ease-out) 0.5s both; }
             
+            /* v121.0: Modern CSS 2026 Animations */
+            /* Scroll-driven reveal animation */
+            @keyframes scroll-reveal {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            
+            /* Spring physics bounce */
+            @keyframes spring-bounce {
+                0% { transform: scale(0.9); opacity: 0; }
+                60% { transform: scale(1.05); }
+                80% { transform: scale(0.98); }
+                100% { transform: scale(1); opacity: 1; }
+            }
+            
+            /* Stagger entrance */
+            @keyframes stagger-in {
+                from { opacity: 0; transform: translateY(16px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            
+            /* Glass shimmer sweep */
+            @keyframes glass-shimmer {
+                0% { background-position: -200% center; }
+                100% { background-position: 200% center; }
+            }
+            
+            /* Neural pulse v2 */
+            @keyframes neural-pulse-v2 {
+                0%, 100% { 
+                    box-shadow: 0 0 8px var(--accent-glow),
+                                0 0 16px var(--accent-glow);
+                }
+                50% { 
+                    box-shadow: 0 0 16px var(--accent),
+                                0 0 32px var(--accent-glow),
+                                0 0 48px var(--accent-subtle);
+                }
+            }
+            
+            /* Morph blob v2 */
+            @keyframes morph-blob-v2 {
+                0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+                25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+                50% { border-radius: 50% 60% 30% 60% / 30% 60% 70% 40%; }
+                75% { border-radius: 60% 40% 60% 30% / 70% 30% 50% 60%; }
+            }
+            
+            /* Ripple spread */
+            @keyframes ripple-spread {
+                0% { transform: scale(0); opacity: 0.6; }
+                100% { transform: scale(4); opacity: 0; }
+            }
+            
+            /* Focus ring pulse */
+            @keyframes focus-ring-pulse {
+                0%, 100% { 
+                    box-shadow: 0 0 0 2px var(--primary),
+                                0 0 12px var(--primary-glow);
+                }
+                50% { 
+                    box-shadow: 0 0 0 4px var(--primary),
+                                0 0 24px var(--primary-glow);
+                }
+            }
+            
+            /* Data flow line */
+            @keyframes data-flow {
+                0% { background-position: 0% center; }
+                100% { background-position: 200% center; }
+            }
+            
+            /* Aurora shift */
+            @keyframes aurora-shift {
+                0%, 100% { filter: hue-rotate(0deg) brightness(1); }
+                50% { filter: hue-rotate(30deg) brightness(1.1); }
+            }
+            
+            /* Breathing glow v2 */
+            @keyframes breathing-glow-v2 {
+                0%, 100% { 
+                    opacity: 0.5;
+                    filter: blur(12px) brightness(1);
+                }
+                50% { 
+                    opacity: 0.8;
+                    filter: blur(16px) brightness(1.2);
+                }
+            }
+            
+            /* Float entrance with spring */
+            @keyframes float-entrance {
+                0% { 
+                    opacity: 0; 
+                    transform: translateY(24px) scale(0.95);
+                }
+                60% { transform: translateY(-4px) scale(1.02); }
+                100% { 
+                    opacity: 1; 
+                    transform: translateY(0) scale(1);
+                }
+            }
+            
+            /* Pulse ring expansion */
+            @keyframes pulse-ring-expand {
+                0% { 
+                    transform: scale(0.9);
+                    opacity: 1;
+                }
+                100% { 
+                    transform: scale(1.5);
+                    opacity: 0;
+                }
+            }
+            
+            /* Number tick animation */
+            @keyframes number-tick {
+                0% { transform: translateY(0); }
+                50% { transform: translateY(-4px); }
+                100% { transform: translateY(0); }
+            }
+            
+            /* Magnetic hover effect */
+            .magnetic-hover {
+                transition: transform 0.2s var(--ease-out);
+            }
+            
+            .magnetic-hover:hover {
+                transform: translateY(-4px) scale(1.02);
+            }
+            
+            /* Scroll-driven animation class */
+            .scroll-reveal {
+                animation: scroll-reveal 0.6s var(--ease-out) both;
+            }
+            
+            /* Spring bounce utility */
+            .spring-bounce {
+                animation: spring-bounce 0.5s var(--ease-spring) both;
+            }
+            
+            /* Stagger container */
+            .stagger-container > * {
+                animation: stagger-in 0.4s var(--ease-out) both;
+            }
+            
+            .stagger-container > *:nth-child(1) { animation-delay: 0.05s; }
+            .stagger-container > *:nth-child(2) { animation-delay: 0.1s; }
+            .stagger-container > *:nth-child(3) { animation-delay: 0.15s; }
+            .stagger-container > *:nth-child(4) { animation-delay: 0.2s; }
+            .stagger-container > *:nth-child(5) { animation-delay: 0.25s; }
+            .stagger-container > *:nth-child(6) { animation-delay: 0.3s; }
+            
+            /* Glass shimmer on hover */
+            .glass-shimmer:hover {
+                background: linear-gradient(
+                    110deg,
+                    transparent 25%,
+                    rgba(255, 255, 255, 0.08) 45%,
+                    rgba(255, 255, 255, 0.12) 50%,
+                    rgba(255, 255, 255, 0.08) 55%,
+                    transparent 75%
+                );
+                background-size: 200% 100%;
+                animation: glass-shimmer 1.5s ease-in-out infinite;
+            }
+            
+            /* Neural indicator active */
+            .neural-active {
+                animation: neural-pulse-v2 1.5s ease-in-out infinite;
+            }
+            
+            /* Morph blob container */
+            .morph-blob-v2 {
+                animation: morph-blob-v2 12s ease-in-out infinite;
+            }
+            
+            /* Focus ring for accessibility */
+            .focus-ring:focus-visible {
+                animation: focus-ring-pulse 1.5s ease-in-out infinite;
+            }
+            
+            /* Data flow line animation */
+            .data-flow-line {
+                background: linear-gradient(
+                    90deg,
+                    transparent 0%,
+                    var(--accent) 50%,
+                    transparent 100%
+                );
+                background-size: 200% 100%;
+                animation: data-flow 2s linear infinite;
+            }
+            
+            /* Aurora effect */
+            .aurora-effect {
+                animation: aurora-shift 8s ease-in-out infinite;
+            }
+            
+            /* Breathing glow v2 */
+            .breathing-glow-v2 {
+                animation: breathing-glow-v2 3.5s ease-in-out infinite;
+            }
+            
+            /* Float entrance */
+            .float-entrance {
+                animation: float-entrance 0.6s var(--ease-spring) both;
+            }
+            
+            /* Reduced motion support */
+            @media (prefers-reduced-motion: reduce) {
+                .scroll-reveal,
+                .spring-bounce,
+                .stagger-container > *,
+                .glass-shimmer:hover,
+                .neural-active,
+                .morph-blob-v2,
+                .focus-ring:focus-visible,
+                .data-flow-line,
+                .aurora-effect,
+                .breathing-glow-v2,
+                .float-entrance {
+                    animation: none;
+                }
+            }
+            
             /* State-based animations */
             .fox-container.breathing .fox-canvas-wrapper {
                 animation: breathing 3s ease-in-out infinite;
@@ -2012,7 +2238,8 @@
             skillsList: [],
             dataFreshness: 'fresh', // v4.0 new
             dataAge: 0, // v4.0 new
-            _lastFetch: 0
+            _lastFetch: 0,
+            _reducedPolling: false // v121.0: Visibility-based polling control
         };
         
         // DOM Elements
@@ -2033,7 +2260,22 @@
             excited: '🎉',
             thinking: '🤔',
             laughing: '😂',
-            focused: '🎯'
+            focused: '🎯',
+            error: '😿',
+            learning: '📚'
+        };
+        
+        // v121.0: Enhanced fox colors for different moods
+        const foxColors = {
+            idle: { body: '#ffa64d', face: '#ffcc99', accent: '#ff8833' },
+            working: { body: '#64b5f6', face: '#bbdefb', accent: '#42a5f5' },
+            sleeping: { body: '#ba68c8', face: '#e1bee7', accent: '#ab47bc' },
+            excited: { body: '#ff7043', face: '#ffccbc', accent: '#ff5722' },
+            thinking: { body: '#4db6ac', face: '#b2dfdb', accent: '#26a69a' },
+            laughing: { body: '#ffd54f', face: '#ffecb3', accent: '#ffc107' },
+            focused: { body: '#81c784', face: '#c8e6c9', accent: '#66bb6a' },
+            error: { body: '#e57373', face: '#ffcdd2', accent: '#f44336' },
+            learning: { body: '#ffb74d', face: '#ffe0b2', accent: '#ffa726' }
         };
         
         // v4.0: Neural thinking state
@@ -2058,8 +2300,11 @@
                 earWiggle = Math.sin(foxFrame * 0.15) * 4; // More ear movement when thinking
             }
             
+            // v121.0: Get mood-based colors
+            const colors = foxColors[foxMood] || foxColors.idle;
+            
             // Draw fox body (simplified pixel art style)
-            foxCtx.fillStyle = '#ffa64d';
+            foxCtx.fillStyle = colors.body;
             
             // Body
             foxCtx.beginPath();
@@ -2085,7 +2330,7 @@
             foxCtx.fill();
             
             // Inner ears
-            foxCtx.fillStyle = '#ffcc99';
+            foxCtx.fillStyle = colors.face;
             foxCtx.beginPath();
             foxCtx.moveTo(cx - 23, cy - 47 + bounce);
             foxCtx.lineTo(cx - 30 + earWiggle, cy - 62 + bounce);
@@ -2099,7 +2344,7 @@
             foxCtx.fill();
             
             // Face
-            foxCtx.fillStyle = '#ffcc99';
+            foxCtx.fillStyle = colors.face;
             foxCtx.beginPath();
             foxCtx.ellipse(cx, cy - 15 + bounce, 20, 18, 0, 0, Math.PI * 2);
             foxCtx.fill();
@@ -2790,8 +3035,24 @@
             // Poll for updates (reduced from 3s to 2s for fresher data - v4.0)
             setInterval(fetchData, 2000);
             
-            // Scroll handler
-            window.addEventListener('scroll', handleScroll);
+            // v121.0: requestIdleCallback for non-critical updates
+            const scheduleIdleUpdate = () => {
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(() => {
+                        updateCharts();
+                        scheduleIdleUpdate();
+                    }, { timeout: 2000 });
+                } else {
+                    setTimeout(() => {
+                        updateCharts();
+                        scheduleIdleUpdate();
+                    }, 5000);
+                }
+            };
+            scheduleIdleUpdate();
+            
+            // Scroll handler with passive flag for performance
+            window.addEventListener('scroll', handleScroll, { passive: true });
             
             // Start FPS counter
             requestAnimationFrame(updateFPS);
@@ -2806,7 +3067,18 @@
                 if (e.key === '3') setMode('sleeping');
             });
             
-            console.log('🚀 MoShang Dashboard v4.0 initialized');
+            // v121.0: Visibility API to reduce updates when hidden
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    // Reduce polling frequency when tab is hidden
+                    state._reducedPolling = true;
+                } else {
+                    state._reducedPolling = false;
+                    fetchData(); // Immediate fetch when visible
+                }
+            });
+            
+            console.log('🚀 MoShang Dashboard v121.0 initialized');
         }
         
         // Start when DOM is ready
