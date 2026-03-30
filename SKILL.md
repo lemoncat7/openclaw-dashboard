@@ -9,12 +9,11 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
-- v136.0: Scroll-Driven Animations（animation-timeline: view()驱动的卡片入场动画）
-- v136.0: Enhanced Data Validation（validateDashboardData函数增强，验证心率0-300BPM/活动0-100%/状态白名单）
-- v136.0: Spatial Lighting v2（fox-container空间光照效果，CSS自定义属性驱动的鼠标追踪光效）
-- v136.0: Glass Card Reflections（stat-card玻璃反射效果::after伪元素）
-- v136.0: Status-aware Pulse Animation（critical状态卡片脉冲动画）
-- v136.0: text-wrap: pretty（stat-card文本布局优化）
+- v137.0: Predictive Refresh System（预测性刷新指示器，基于历史fetch duration预测下次刷新时间）
+- v137.0: @when Conditional Rules（2026 CSS @when条件规则增强，支持:has()状态感知样式）
+- v137.0: animation-composition: accumulate（性能优化，多层动画复合叠加）
+- v137.0: Enhanced GPU Optimization（contain:layout/style/paint + will-change优化渲染性能）
+- v137.0: Predictive Refresh Ring（环形倒计时指示器，实时显示距下次刷新的剩余时间）
 - v122.0: Modern CSS 2026 Enhancements（@when条件规则/transition-behavior:allow-discrete/@starting-style入场动画/animation-composition性能优化/scroll-driven view-timeline动画）
 - v122.0: 增强型数据验证层（validateDashboardData函数验证心率/活动/状态/信誉范围）
 - v122.0: Fetch增强（AbortController超时控制/scheduler.yield()非阻塞更新/no-store缓存禁用）
@@ -747,6 +746,13 @@ node ~/.openclaw/workspace/skills/dashboard-service/scripts/server.js &
 - https://oclaw.mochencloud.cn:1443/onboard → localhost:19000
 
 ## 更新日志
+
+### v137.0 (2026-03-30)
+- **Predictive Refresh System预测性刷新系统**: 基于历史fetch duration动态预测最优刷新间隔，实时显示环形倒计时指示器，提升数据刷新可预测性
+- **@when Conditional Rules 2026 CSS**: 使用现代CSS @when条件规则配合:has()选择器实现状态感知样式，支持stat-card警告/错误状态发光效果
+- **animation-composition: accumulate性能优化**: 为fox-glow-aura、neural-sync-indicator、mood-sync-ring、status-dot等核心动画添加animation-composition:accumulate，减少重绘提升性能
+- **Enhanced GPU Optimization**: 为stat-card、fox-canvas-wrapper、particle-container添加contain:layout/style/paint和will-change优化，大幅减少渲染开销
+- **版本更新至 v137.0**
 
 ### v107.0 (2026-03-28)
 - **Enhanced Light Mode增强型浅色模式**: 全面重新设计的浅色主题，使用#f0f4f8背景配合透明玻璃卡片inset高光边，浅色模式下狐狸名渐变色更鲜艳（橙黄渐变），狐狸容器添加温暖光晕阴影，所有交互元素浅色模式优化
