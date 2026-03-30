@@ -9,6 +9,11 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+- v122.0: Modern CSS 2026 Enhancements（@when条件规则/transition-behavior:allow-discrete/@starting-style入场动画/animation-composition性能优化/scroll-driven view-timeline动画）
+- v122.0: 增强型数据验证层（validateDashboardData函数验证心率/活动/状态/信誉范围）
+- v122.0: Fetch增强（AbortController超时控制/scheduler.yield()非阻塞更新/no-store缓存禁用）
+- v122.0: Light-dark()主题自动适配（surface-bg/surface-text/surface-muted自动响应系统主题）
+- v122.0: Spatial Lighting效果（鼠标位置驱动的狐狸容器空间光照效果）
 - v120.0: 启动脚本优化（start.sh带健康检查和外网访问验证）
 - v120.0: 数据源可靠性增强（确保 https://oclaw.mochencloud.cn:1443/onboard/ 可正常访问）
 - v119.0: CSS Level 5颜色函数支持（light-dark()实现现代主题切换）

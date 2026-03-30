@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MoShang - OpenClaw Status Dashboard">
     <meta name="theme-color" content="#0a0a0f">
-    <title>MoShang Status v121.0</title>
+    <title>MoShang Status v122.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -1761,14 +1761,97 @@
                 }
             }
             
-            /* State-based animations */
-            .fox-container.breathing .fox-canvas-wrapper {
+            /* v122.0: Modern CSS 2026 Enhancements */
+            
+            /* @when conditional rules - state-aware styling */
+            @when supports selector(:has(.fox-container)) {
+                .fox-container:hover ~ .status-info {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            
+            /* Enhanced discrete transition support */
+            @supports (transition-behavior: allow-discrete) {
+                .stat-card {
+                    transition: transform 0.25s var(--ease-out),
+                                box-shadow 0.25s var(--ease-out),
+                                opacity 0.25s var(--ease-out);
+                    transition-behavior: allow-discrete;
+                }
+            }
+            
+            /* @starting-style for entrance animations */
+            @supports (@starting-style) {
+                .glass-card {
+                    @starting-style {
+                        opacity: 0;
+                        transform: translateY(16px) scale(0.98);
+                    }
+                }
+            }
+            
+            /* animation-composition for better performance */
+            .fox-canvas-wrapper {
                 animation: breathing 3s ease-in-out infinite;
+                animation-composition: accumulate;
             }
             
             @keyframes breathing {
                 0%, 100% { transform: scale(1); }
                 50% { transform: scale(1.03); }
+            }
+            
+            /* Scroll-driven animation with view-timeline */
+            @supports (animation-timeline: view()) {
+                .stat-card {
+                    animation: scroll-card-reveal linear both;
+                    animation-range: entry 0% entry 100%;
+                    animation-timeline: view();
+                }
+                
+                @keyframes scroll-card-reveal {
+                    from { 
+                        opacity: 0.3;
+                        transform: translateY(24px) scale(0.96);
+                    }
+                    to { 
+                        opacity: 1;
+                        transform: translateY(0) scale(1);
+                    }
+                }
+            }
+            
+            /* State-aware color transitions with color-mix() */
+            .stat-value {
+                transition: color 0.3s ease, text-shadow 0.3s ease;
+            }
+            
+            /* Light-dark() for automatic theme adaptation */
+            :root {
+                --surface-bg: light-dark(#ffffff, #12121a);
+                --surface-text: light-dark(#1a1a1a, #e8e8ed);
+                --surface-muted: light-dark(#666666, #9898a8);
+            }
+            
+            /* Spatial lighting effect */
+            .fox-container::before {
+                content: '';
+                position: absolute;
+                inset: -20%;
+                background: radial-gradient(
+                    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                    rgba(255, 200, 100, 0.08) 0%,
+                    transparent 50%
+                );
+                pointer-events: none;
+                z-index: -1;
+            }
+            
+            /* State-based animations */
+            .fox-container.breathing .fox-canvas-wrapper {
+                animation: breathing 3s ease-in-out infinite;
+                animation-composition: accumulate;
             }
             
             /* Glow effects */
@@ -2612,21 +2695,80 @@
         }
         
         // ============================================================
-        // Data Fetching
-        // ============================================================
+        // v122.0: Data validation schema
+        function validateDashboardData(data) {
+            const errors = [];
+            
+            if (data.heartbeat !== undefined) {
+                const hb = parseInt(data.heartbeat);
+                if (isNaN(hb) || hb < 0 || hb > 300) {
+                    errors.push('Invalid heartbeat range');
+                }
+            }
+            
+            if (data.activityLevel !== undefined || data.activity !== undefined) {
+                const act = parseInt(data.activityLevel || data.activity);
+                if (isNaN(act) || act < 0 || act > 100) {
+                    errors.push('Invalid activity range');
+                }
+            }
+            
+            if (data.status !== undefined) {
+                const validStatuses = ['idle', 'working', 'sleeping', 'excited', 'thinking', 'laughing', 'error', 'focused', 'learning'];
+                if (!validStatuses.includes(data.status)) {
+                    errors.push('Unknown status: ' + data.status);
+                }
+            }
+            
+            if (data.reputation !== undefined) {
+                const rep = parseInt(data.reputation);
+                if (isNaN(rep) || rep < 0 || rep > 100) {
+                    errors.push('Invalid reputation range');
+                }
+            }
+            
+            return { valid: errors.length === 0, errors };
+        }
+        
+        // v122.0: Enhanced fetch with validation
         async function fetchData() {
+            // Skip if tab is hidden and reduced polling is enabled
+            if (state._reducedPolling && document.hidden) return;
+            
             try {
-                const response = await fetch('/api/dashboard');
-                if (!response.ok) throw new Error('API error');
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                
+                const response = await fetch('/api/dashboard', { 
+                    signal: controller.signal,
+                    cache: 'no-store'
+                });
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) throw new Error('API error: ' + response.status);
                 
                 const data = await response.json();
+                
+                // v122.0: Validate incoming data
+                const validation = validateDashboardData(data);
+                if (!validation.valid) {
+                    console.warn('Data validation warnings:', validation.errors);
+                }
+                
                 updateDashboard(data);
                 
                 state.isOnline = true;
                 state._lastFetch = Date.now();
                 updateConnectionStatus(true);
+                
+                // v122.0: Yield to scheduler for non-blocking UI updates
+                if ('scheduler' in window && 'yield' in scheduler) {
+                    await scheduler.yield();
+                }
             } catch (error) {
-                console.error('Fetch error:', error);
+                if (error.name !== 'AbortError') {
+                    console.error('Fetch error:', error);
+                }
                 state.isOnline = false;
                 updateConnectionStatus(false);
             }
@@ -3078,7 +3220,7 @@
                 }
             });
             
-            console.log('🚀 MoShang Dashboard v121.0 initialized');
+            console.log('🚀 MoShang Dashboard v122.0 initialized');
         }
         
         // Start when DOM is ready
