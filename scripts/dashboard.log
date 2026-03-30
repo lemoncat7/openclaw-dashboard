@@ -1,0 +1,4 @@
+🚀 Dashboard 服务已启动: http://localhost:19000
+📊 看板: http://localhost:19000/
+🏢 Star Office: http://localhost:19000/star
+📡 SSE 端点: http://localhost:19000/api/stream

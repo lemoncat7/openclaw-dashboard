@@ -246,19 +246,44 @@ def _read_json_safe(path, default=None):
     return default
 
 def _parse_timestamp(value):
-    """安全解析时间戳，返回 (timestamp, error_msg)"""
+    """安全解析时间戳，返回 (timestamp, error_msg) - v3.1 增强版"""
     if not value:
         return None, "empty"
     try:
         if isinstance(value, (int, float)):
-            return float(value), None
+            ts = float(value)
+            # 检查是否为合理的时间戳（2010年以后）
+            if ts > 1262304000 and ts < 4102444800:
+                return ts, None
+            # 可能是毫秒时间戳
+            if ts > 1262304000000:
+                return ts / 1000, None
+            return None, "invalid_range"
         value = str(value).strip()
         if not value:
             return None, "empty string"
+        # ISO格式
         if 'T' in value:
-            dt = datetime.fromisoformat(value.replace('Z', '+00:00'))
-            return dt.timestamp(), None
-        return float(value), None
+            try:
+                dt = datetime.fromisoformat(value.replace('Z', '+00:00'))
+                return dt.timestamp(), None
+            except:
+                # 尝试其他ISO变体
+                for fmt in ['%Y-%m-%dT%H:%M:%S.%f', '%Y-%m-%dT%H:%M:%S', '%Y-%m-%d %H:%M:%S']:
+                    try:
+                        dt = datetime.strptime(value[:19], fmt)
+                        return dt.timestamp(), None
+                    except:
+                        continue
+        # 纯数字字符串
+        try:
+            ts = float(value)
+            if ts > 1262304000000:
+                return ts / 1000, None
+            return ts, None
+        except:
+            pass
+        return None, "parse_failed"
     except Exception as e:
         return None, str(e)
 
@@ -323,13 +348,19 @@ def get_dashboard_data():
     data['skillsCategories'] = skills_info.get('categories', {})
     data['skillsTopActive'] = skills_info.get('topActive', [])
     
-    # 读取心跳状态 - 多数据源增强版 v3.0
+    # 读取心跳状态 - 多数据源增强版 v3.1
+    # 优先级：最新修改的文件 > 最准确的时间戳
     hb_sources = [
         STATE_FILE,
         '/home/root/.openclaw/workspace/memory/heartbeat_tasks/state.json',
         '/tmp/openclaw_heartbeat.json',
         '/home/root/.openclaw/workspace/memory/heartbeat.json',
         '/home/root/.openclaw/workspace/memory/last_heartbeat.txt',
+        '/home/root/.openclaw/workspace/memory/heartbeat-state.json',  # v3.1 新增
+        '/home/root/.openclaw/workspace/memory/heartbeat_tasks/timestamps.json',  # v3.1 新增
+        '/home/root/.openclaw/workspace/memory/heartbeat_tasks/timestamps',  # v3.1 新增
+        '/tmp/openclaw_heartbeat_state.json',  # v3.1 新增
+        '/tmp/last_heartbeat.json',  # v3.1 新增
     ]
     
     # 任务文件来源 - 在心跳循环前定义（v20.1 修复 UnboundLocalError）
@@ -433,20 +464,54 @@ def get_dashboard_data():
             continue
     
     # 如果没有找到任何心跳数据，尝试通过任务调度器判断状态
+    # v3.1: 增强版 - 使用多种数据源综合判断
     if not heartbeat_found:
-        # 检查任务文件的时间戳来判断是否活跃
         latest_task_time = 0
+        latest_source = None
+        
+        # 1. 任务文件
         for tasks_file in tasks_sources:
             try:
                 if os.path.exists(tasks_file):
                     mtime = os.path.getmtime(tasks_file)
                     if mtime > latest_task_time:
                         latest_task_time = mtime
+                        latest_source = os.path.basename(tasks_file)
             except:
                 continue
         
+        # 2. 心跳相关文件修改时间
+        heartbeat_files = [
+            '/home/root/.openclaw/workspace/memory/heartbeat-state.json',
+            '/home/root/.openclaw/workspace/memory/heartbeat_tasks/state.json',
+            '/tmp/openclaw_heartbeat.json',
+        ]
+        for hb_file in heartbeat_files:
+            try:
+                if os.path.exists(hb_file):
+                    mtime = os.path.getmtime(hb_file)
+                    if mtime > latest_task_time:
+                        latest_task_time = mtime
+                        latest_source = os.path.basename(hb_file)
+            except:
+                continue
+        
+        # 3. 技能目录修改时间（间接判断活跃度）
+        skills_dir = '/home/root/.openclaw/workspace/skills'
+        if os.path.exists(skills_dir):
+            try:
+                skill_mtime = os.path.getmtime(skills_dir)
+                if skill_mtime > latest_task_time:
+                    latest_task_time = skill_mtime
+                    latest_source = 'skills_dir'
+            except:
+                pass
+        
         if latest_task_time > 0:
             task_age = now - latest_task_time
+            _last_heartbeat_ts = latest_task_time
+            _hb_source = latest_source or 'file_mtime'
+            
             if task_age < 60:
                 data['heartbeat'] = f'{int(task_age)}s'
                 data['activityLevel'] = 85
@@ -455,14 +520,19 @@ def get_dashboard_data():
                 data['heartbeat'] = f'{int(task_age/60)}m'
                 data['activityLevel'] = 50
                 data['status'] = 'idle'
-            else:
+            elif task_age < 86400:  # 24小时内
                 data['heartbeat'] = f'{int(task_age/3600)}h'
                 data['activityLevel'] = 20
+                data['status'] = 'sleeping'
+            else:
+                data['heartbeat'] = f'{int(task_age/86400)}d'
+                data['activityLevel'] = 10
                 data['status'] = 'sleeping'
         else:
             data['heartbeat'] = '--'
             data['status'] = 'idle'
             data['activityLevel'] = 30
+            _hb_source = 'none'
         heartbeat_found = True
     
     # 读取消息数量 - 尝试多个可能的位置
@@ -590,30 +660,31 @@ def get_dashboard_data():
     data['_version'] = '3.0'
     data['_reliability'] = 'high' if heartbeat_found else 'medium'
 
-    # 数据新鲜度分析
-    _last_heartbeat_ts = None
-    for hb_file in hb_sources:
-        try:
-            if os.path.exists(hb_file):
-                with open(hb_file, 'r') as f:
-                    content = f.read().strip()
-                if content.startswith('{'):
-                    state = json.loads(content)
-                    last_hb = state.get('lastHeartbeat', state.get('last_heartbeat', state.get('timestamp', '')))
-                else:
-                    last_hb = content
-                if last_hb:
-                    try:
-                        if 'T' in last_hb:
-                            dt = datetime.fromisoformat(last_hb.replace('Z', '+00:00'))
-                            _last_heartbeat_ts = dt.timestamp()
-                        else:
-                            _last_heartbeat_ts = float(last_hb)
-                        break
-                    except:
-                        continue
-        except:
-            continue
+    # 数据新鲜度分析 - 只在尚未获取到心跳时间时补充查找
+    # (首次循环已在 _last_heartbeat_ts 中设置了 task_output 等来源的时间戳)
+    if not _last_heartbeat_ts:
+        for hb_file in hb_sources:
+            try:
+                if os.path.exists(hb_file):
+                    with open(hb_file, 'r') as f:
+                        content = f.read().strip()
+                    if content.startswith('{'):
+                        state = json.loads(content)
+                        last_hb = state.get('lastHeartbeat', state.get('last_heartbeat', state.get('timestamp', '')))
+                    else:
+                        last_hb = content
+                    if last_hb:
+                        try:
+                            if 'T' in last_hb:
+                                dt = datetime.fromisoformat(last_hb.replace('Z', '+00:00'))
+                                _last_heartbeat_ts = dt.timestamp()
+                            else:
+                                _last_heartbeat_ts = float(last_hb)
+                            break
+                        except:
+                            continue
+            except:
+                continue
     
     # 如果心跳太旧（>30分钟），尝试用任务文件的修改时间作为备用
     if _last_heartbeat_ts and (now - _last_heartbeat_ts) > 1800:
@@ -1112,7 +1183,20 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
             sys_info = get_system_info()
             dash_data = get_dashboard_data()
             
-            # 综合健康状态判断
+            # 综合健康状态判断 - v3.1 增强版
+            hb_sources_status = {}
+            hb_source_files = [
+                STATE_FILE,
+                '/home/root/.openclaw/workspace/memory/heartbeat_tasks/state.json',
+                '/tmp/openclaw_heartbeat.json',
+                '/home/root/.openclaw/workspace/memory/heartbeat.json',
+                '/home/root/.openclaw/workspace/memory/last_heartbeat.txt',
+                '/home/root/.openclaw/workspace/memory/heartbeat-state.json',
+                '/home/root/.openclaw/workspace/memory/heartbeat_tasks/timestamps.json',
+            ]
+            for src in hb_source_files:
+                hb_sources_status[os.path.basename(src)] = os.path.exists(src)
+            
             checks = {
                 'state_file': os.path.exists(STATE_FILE),
                 'tasks_file': os.path.exists(TASKS_MAP_FILE),
@@ -1136,18 +1220,21 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
                 freshness_score = 'unknown'
             
             overall_status = 'ok'
-            if not all(checks.values()):
-                if any(k in ['frontend'] for k, v in checks.items() if not v):
-                    overall_status = 'degraded'
-                elif not checks['data_fresh'] or not checks['state_file']:
-                    overall_status = 'warning'
+            if not checks['frontend']:
+                overall_status = 'degraded'
+            elif not checks['memory_ok'] or not checks['cpu_ok']:
+                overall_status = 'warning'
+            elif not checks['data_fresh'] or not checks['state_file']:
+                overall_status = 'warning'
             
             data = {
                 'status': overall_status,
                 'service': 'dashboard',
-                'version': '3.0',
+                'version': '3.1',
                 'timestamp': datetime.now().isoformat(),
                 'checks': checks,
+                'heartbeatSources': hb_sources_status,
+                'primarySource': dash_data.get('_hbSource', 'unknown'),
                 'metrics': {
                     'memoryPercent': sys_info['memoryPercent'],
                     'cpuPercent': sys_info['cpuPercent'],
@@ -1161,6 +1248,92 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
                 }
             }
             self.wfile.write(json.dumps(data).encode())
+            return
+        
+        # v3.1: 数据源可靠性详细状态 API
+        if path == '/api/reliability':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            
+            now = time.time()
+            sources = {}
+            primary_source = None
+            latest_mtime = 0
+            
+            # 检查所有可能的心跳数据源
+            all_sources = {
+                'state_files': [
+                    STATE_FILE,
+                    '/home/root/.openclaw/workspace/memory/heartbeat_tasks/state.json',
+                    '/home/root/.openclaw/workspace/memory/heartbeat-state.json',
+                ],
+                'task_files': [
+                    TASKS_MAP_FILE,
+                    '/home/root/.openclaw/workspace/memory/heartbeat_tasks/tasks_map.json',
+                    '/tmp/tasks_map.json',
+                ],
+                'temp_files': [
+                    '/tmp/openclaw_heartbeat.json',
+                    '/tmp/openclaw_heartbeat_state.json',
+                ],
+                'memory_files': [
+                    '/home/root/.openclaw/workspace/memory/heartbeat.json',
+                    '/home/root/.openclaw/workspace/memory/last_heartbeat.txt',
+                ]
+            }
+            
+            for category, files in all_sources.items():
+                sources[category] = {}
+                for f in files:
+                    basename = os.path.basename(f)
+                    exists = os.path.exists(f)
+                    mtime = 0
+                    age = None
+                    if exists:
+                        try:
+                            mtime = os.path.getmtime(f)
+                            age = round(now - mtime, 1)
+                            if mtime > latest_mtime:
+                                latest_mtime = mtime
+                                primary_source = basename
+                        except:
+                            pass
+                    sources[category][basename] = {
+                        'exists': exists,
+                        'mtime': mtime,
+                        'age': age,
+                        'friendly': age < 60 if age is not None else None
+                    }
+            
+            # 技能目录状态
+            skills_dir = '/home/root/.openclaw/workspace/skills'
+            skills_info = {'exists': os.path.exists(skills_dir), 'count': 0, 'latest_mtime': 0}
+            if skills_info['exists']:
+                try:
+                    skills_info['count'] = len([d for d in os.listdir(skills_dir) if os.path.isdir(os.path.join(skills_dir, d))])
+                    for d in os.listdir(skills_dir):
+                        d_path = os.path.join(skills_dir, d)
+                        if os.path.isdir(d_path):
+                            try:
+                                mtime = os.path.getmtime(d_path)
+                                if mtime > skills_info['latest_mtime']:
+                                    skills_info['latest_mtime'] = mtime
+                            except:
+                                pass
+                except:
+                    pass
+            
+            reliability_data = {
+                'status': 'ok' if primary_source else 'degraded',
+                'primarySource': primary_source,
+                'dataAge': round(now - latest_mtime, 1) if latest_mtime else None,
+                'sources': sources,
+                'skills': skills_info,
+                'timestamp': datetime.now().isoformat()
+            }
+            self.wfile.write(json.dumps(reliability_data).encode())
             return
         
         # Star Office UI
@@ -1293,7 +1466,7 @@ def get_gateway_status():
     
     return data
 
-print(f"🚀 Dashboard 服务启动中 v2.14: http://localhost:{PORT}")
+print(f"🚀 Dashboard 服务启动中 v3.1: http://localhost:{PORT}")
 print(f"📊 看板: http://localhost:{PORT}/")
 print(f"🏢 Star Office: http://localhost:{PORT}/star")
 print(f"🔌 WebSocket: ws://localhost:19001 (实时更新)")

@@ -10,8 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
-           MoShang Dashboard - Modern CSS Design (2025 Edition)
-           Clean, performant, accessible
+           MoShang Dashboard - Enhanced CSS Design v4.0 (2026 Edition)
+           Features: AI Status Visualization, Kinetic UI, 
+           Neural Animations, Real-time Polling, Data Freshness
         ============================================================ */
         
         @layer base, layout, components, animations;
@@ -25,7 +26,7 @@
             }
             
             :root {
-                /* Color Palette - Modern Dark Theme */
+                /* Color Palette - Enhanced Dark Theme */
                 --bg-deep: #07070c;
                 --bg-dark: #0d0d14;
                 --bg-card: #12121a;
@@ -69,10 +70,11 @@
                 --text-muted: #9898a8;
                 --text-dim: #606070;
                 
-                /* Glass Effects */
-                --glass-bg: rgba(255, 255, 255, 0.04);
-                --glass-border: rgba(255, 255, 255, 0.08);
+                /* Enhanced Glass Effects */
+                --glass-bg: rgba(255, 255, 255, 0.03);
+                --glass-border: rgba(255, 255, 255, 0.06);
                 --glass-hover: rgba(255, 255, 255, 0.08);
+                --glass-shine: rgba(255, 255, 255, 0.02);
                 
                 /* Spacing */
                 --radius-sm: 8px;
@@ -94,6 +96,7 @@
                 /* Transitions */
                 --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
                 --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+                --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
                 --duration-fast: 150ms;
                 --duration-normal: 250ms;
                 --duration-slow: 400ms;
@@ -114,20 +117,45 @@
                 -webkit-font-smoothing: antialiased;
             }
             
+            /* Animated Background Gradient */
+            body::before {
+                content: '';
+                position: fixed;
+                inset: 0;
+                background: 
+                    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(255, 200, 100, 0.03) 0%, transparent 50%),
+                    radial-gradient(ellipse 60% 40% at 80% 60%, rgba(0, 212, 255, 0.03) 0%, transparent 50%),
+                    radial-gradient(ellipse 50% 30% at 50% 80%, rgba(168, 85, 247, 0.02) 0%, transparent 50%);
+                pointer-events: none;
+                z-index: -1;
+                animation: bg-shift 20s ease-in-out infinite alternate;
+            }
+            
+            /* Grain Texture Overlay */
+            body::after {
+                content: '';
+                position: fixed;
+                inset: 0;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+                opacity: 0.015;
+                pointer-events: none;
+                z-index: 9998;
+            }
+            
             /* Custom Scrollbar */
             ::-webkit-scrollbar {
-                width: 8px;
-                height: 8px;
+                width: 6px;
+                height: 6px;
             }
             ::-webkit-scrollbar-track {
                 background: transparent;
             }
             ::-webkit-scrollbar-thumb {
                 background: var(--glass-border);
-                border-radius: 4px;
+                border-radius: 3px;
             }
             ::-webkit-scrollbar-thumb:hover {
-                background: rgba(255, 255, 255, 0.15);
+                background: rgba(255, 255, 255, 0.12);
             }
             
             /* Selection */
@@ -255,6 +283,46 @@
                 animation: pulse 1.5s ease-in-out infinite;
             }
             
+            /* Data Freshness Indicator - v4.0 new */
+            .data-freshness {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                padding: 6px 12px;
+                background: var(--glass-bg);
+                border: 1px solid var(--glass-border);
+                border-radius: var(--radius-full);
+                font-size: 11px;
+                font-weight: 500;
+                transition: all var(--duration-normal) var(--ease-out);
+            }
+            
+            .data-freshness.fresh {
+                background: var(--success-subtle);
+                border-color: rgba(92, 219, 149, 0.3);
+                color: var(--success);
+            }
+            
+            .data-freshness.normal {
+                background: var(--warning-subtle);
+                border-color: rgba(254, 202, 122, 0.3);
+                color: var(--warning);
+            }
+            
+            .data-freshness.stale {
+                background: var(--danger-subtle);
+                border-color: rgba(255, 107, 107, 0.3);
+                color: var(--danger);
+            }
+            
+            .freshness-dot {
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: currentColor;
+                animation: pulse 2s ease-in-out infinite;
+            }
+            
             .refresh-btn {
                 display: flex;
                 align-items: center;
@@ -346,6 +414,11 @@
                 width: 100%;
                 height: 100%;
                 border-radius: 50%;
+                transition: transform 0.3s var(--ease-spring);
+            }
+            
+            .fox-container:hover .fox-canvas {
+                transform: scale(1.05);
             }
             
             .fox-shadow {
@@ -357,16 +430,18 @@
                 height: 16px;
                 background: radial-gradient(ellipse, rgba(0, 0, 0, 0.4) 0%, transparent 70%);
                 filter: blur(4px);
+                animation: shadow-pulse 3s ease-in-out infinite;
             }
             
             .mood-aura {
                 position: absolute;
                 inset: -24px;
                 border-radius: 50%;
-                opacity: 0.5;
+                opacity: 0.6;
                 filter: blur(24px);
                 transition: all var(--duration-slow) var(--ease-out);
                 pointer-events: none;
+                animation: aura-breathe 4s ease-in-out infinite;
             }
             
             .mood-aura.idle { background: radial-gradient(circle, var(--warning) 0%, transparent 70%); }
@@ -375,6 +450,68 @@
             .mood-aura.excited { background: radial-gradient(circle, #ff6b9d 0%, transparent 70%); }
             .mood-aura.focused { background: radial-gradient(circle, var(--success) 0%, transparent 70%); }
             
+            /* Neural Thinking Animation - v4.0 new */
+            .neural-waves {
+                position: absolute;
+                inset: -40px;
+                pointer-events: none;
+                opacity: 0;
+                transition: opacity var(--duration-slow) var(--ease-out);
+            }
+            
+            .neural-waves.active {
+                opacity: 1;
+            }
+            
+            .neural-wave {
+                position: absolute;
+                inset: 0;
+                border-radius: 50%;
+                border: 2px solid var(--accent);
+                opacity: 0;
+                animation: neural-ping 2s ease-out infinite;
+            }
+            
+            .neural-wave:nth-child(2) { animation-delay: 0.4s; }
+            .neural-wave:nth-child(3) { animation-delay: 0.8s; }
+            
+            @keyframes neural-ping {
+                0% {
+                    transform: scale(0.8);
+                    opacity: 0.8;
+                }
+                100% {
+                    transform: scale(1.5);
+                    opacity: 0;
+                }
+            }
+            
+            /* Particle Container */
+            .particle-container {
+                position: absolute;
+                inset: -40px;
+                pointer-events: none;
+                overflow: hidden;
+                border-radius: 50%;
+            }
+            
+            .particle {
+                position: absolute;
+                width: 4px;
+                height: 4px;
+                border-radius: 50%;
+                background: var(--primary);
+                animation: particle-float 6s ease-in-out infinite;
+                opacity: 0;
+            }
+            
+            .particle:nth-child(1) { left: 20%; animation-delay: 0s; }
+            .particle:nth-child(2) { left: 40%; animation-delay: 1s; }
+            .particle:nth-child(3) { left: 60%; animation-delay: 2s; }
+            .particle:nth-child(4) { left: 80%; animation-delay: 3s; }
+            .particle:nth-child(5) { left: 30%; animation-delay: 4s; }
+            .particle:nth-child(6) { left: 70%; animation-delay: 5s; }
+            
             .fox-expression {
                 position: absolute;
                 top: -8px;
@@ -382,6 +519,11 @@
                 font-size: 24px;
                 animation: bounce 2.5s ease-in-out infinite;
                 filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+                transition: transform 0.3s var(--ease-spring);
+            }
+            
+            .fox-container:hover .fox-expression {
+                transform: scale(1.2) rotate(10deg);
             }
             
             .energy-core {
@@ -392,7 +534,7 @@
                 left: 50%;
                 transform: translate(-50%, -50%);
                 pointer-events: none;
-                opacity: 0.6;
+                opacity: 0.7;
             }
             
             .energy-ring {
@@ -439,13 +581,54 @@
             .fox-role {
                 font-size: 13px;
                 color: var(--text-muted);
-                margin-bottom: 8px;
+                margin-bottom: 4px;
             }
             
             .fox-mood-text {
                 font-size: 12px;
                 color: var(--text-dim);
-                margin-bottom: 16px;
+                margin-bottom: 8px;
+                transition: all 0.3s ease;
+            }
+            
+            /* AI Status Indicator - v4.0 new */
+            .ai-status {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 4px 10px;
+                background: var(--glass-bg);
+                border: 1px solid var(--glass-border);
+                border-radius: var(--radius-full);
+                font-size: 10px;
+                font-weight: 500;
+                color: var(--text-muted);
+                margin-bottom: 12px;
+                transition: all var(--duration-normal) var(--ease-out);
+            }
+            
+            .ai-status.thinking {
+                background: var(--accent-subtle);
+                border-color: rgba(0, 212, 255, 0.3);
+                color: var(--accent);
+            }
+            
+            .ai-status.processing {
+                background: var(--warning-subtle);
+                border-color: rgba(254, 202, 122, 0.3);
+                color: var(--warning);
+            }
+            
+            .ai-status-indicator {
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: currentColor;
+            }
+            
+            .ai-status.thinking .ai-status-indicator,
+            .ai-status.processing .ai-status-indicator {
+                animation: pulse 1s ease-in-out infinite;
             }
             
             /* Stats Row */
@@ -520,10 +703,11 @@
                 background: var(--glass-hover);
                 border-color: var(--primary-dim);
                 color: var(--primary);
+                transform: translateY(-2px);
             }
             
             .action-btn:active {
-                transform: scale(0.97);
+                transform: scale(0.95) translateY(0);
             }
             
             /* Mood Selector */
@@ -610,14 +794,40 @@
                 overflow: hidden;
             }
             
+            .stat-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, var(--glass-shine), transparent);
+                opacity: 0;
+                transition: opacity var(--duration-normal);
+            }
+            
+            .stat-card:hover::before {
+                opacity: 1;
+            }
+            
             .stat-card:hover {
                 border-color: rgba(255, 255, 255, 0.15);
-                transform: translateY(-3px);
+                transform: translateY(-4px) scale(1.02);
                 box-shadow: var(--shadow-lg);
             }
             
             .stat-card:active {
-                transform: translateY(-1px);
+                transform: translateY(-2px) scale(0.98);
+            }
+            
+            /* Hover shine effect */
+            .stat-card .corner-fold {
+                transition: all var(--duration-normal) var(--ease-out);
+            }
+            
+            .stat-card:hover .corner-fold {
+                transform: scale(1.2);
+                opacity: 0.8;
             }
             
             .corner-fold {
@@ -737,6 +947,37 @@
                 height: 100%;
             }
             
+            /* Skills Radar - v4.0 new */
+            .skills-radar {
+                margin-top: 16px;
+                padding: 16px;
+                background: var(--glass-bg);
+                border: 1px solid var(--glass-border);
+                border-radius: var(--radius-lg);
+            }
+            
+            .skills-radar-title {
+                font-size: 13px;
+                font-weight: 600;
+                color: var(--text);
+                margin-bottom: 12px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            
+            .radar-canvas-container {
+                position: relative;
+                width: 160px;
+                height: 160px;
+                margin: 0 auto;
+            }
+            
+            .radar-canvas {
+                width: 100%;
+                height: 100%;
+            }
+            
             /* Skills Distribution */
             .skills-distribution {
                 margin-top: 16px;
@@ -810,6 +1051,8 @@
                 display: flex;
                 flex-direction: column;
                 gap: 8px;
+                max-height: 200px;
+                overflow-y: auto;
             }
             
             .timeline-item {
@@ -1223,6 +1466,69 @@
                 }
             }
             
+            @keyframes bg-shift {
+                0% { opacity: 1; transform: scale(1); }
+                50% { opacity: 0.8; transform: scale(1.05); }
+                100% { opacity: 1; transform: scale(1); }
+            }
+            
+            @keyframes aura-breathe {
+                0%, 100% { opacity: 0.4; transform: scale(1); }
+                50% { opacity: 0.7; transform: scale(1.1); }
+            }
+            
+            @keyframes shadow-pulse {
+                0%, 100% { opacity: 0.4; transform: translateX(-50%) scale(1); }
+                50% { opacity: 0.6; transform: translateX(-50%) scale(1.1); }
+            }
+            
+            @keyframes particle-float {
+                0% { 
+                    transform: translateY(100%) scale(0);
+                    opacity: 0;
+                }
+                20% { opacity: 0.8; }
+                80% { opacity: 0.8; }
+                100% { 
+                    transform: translateY(-100%) scale(1);
+                    opacity: 0;
+                }
+            }
+            
+            @keyframes counter-up {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+            
+            @keyframes float {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-8px); }
+            }
+            
+            @keyframes glow-pulse {
+                0%, 100% { box-shadow: 0 0 20px var(--primary-glow); }
+                50% { box-shadow: 0 0 40px var(--primary-glow); }
+            }
+            
+            /* v4.0: Status transition animations */
+            @keyframes status-transition {
+                0% { transform: scale(1); opacity: 1; }
+                50% { transform: scale(1.1); opacity: 0.8; }
+                100% { transform: scale(1); opacity: 1; }
+            }
+            
+            @keyframes thinking-pulse {
+                0%, 100% { transform: scale(1); opacity: 0.6; }
+                50% { transform: scale(1.05); opacity: 1; }
+            }
+            
             .entrance-1 { animation: entrance-fade 0.5s var(--ease-out) 0.1s both; }
             .entrance-2 { animation: entrance-fade 0.5s var(--ease-out) 0.2s both; }
             .entrance-3 { animation: entrance-fade 0.5s var(--ease-out) 0.3s both; }
@@ -1246,6 +1552,65 @@
             
             .glow-accent {
                 box-shadow: 0 0 20px var(--accent-glow);
+            }
+            
+            /* 3D Card Tilt Effect */
+            .glass-card {
+                transform-style: preserve-3d;
+                perspective: 1000px;
+            }
+            
+            .glass-card:hover {
+                transform: translateY(-4px) rotateX(2deg);
+            }
+            
+            /* Ripple Effect on Click */
+            .ripple {
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .ripple::after {
+                content: '';
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) scale(0);
+                background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+                pointer-events: none;
+            }
+            
+            .ripple:active::after {
+                animation: ripple 0.6s ease-out;
+            }
+            
+            /* Scroll Progress Bar */
+            .scroll-progress {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 0%;
+                height: 2px;
+                background: linear-gradient(90deg, var(--primary), var(--accent));
+                z-index: 10000;
+                transition: width 0.1s ease-out;
+            }
+            
+            /* FPS Counter */
+            .fps-counter {
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                padding: 4px 8px;
+                background: rgba(0,0,0,0.7);
+                border-radius: 4px;
+                font-family: var(--font-mono);
+                font-size: 10px;
+                color: var(--success);
+                z-index: 10001;
+                pointer-events: none;
             }
             
             /* Reduced motion */
@@ -1293,6 +1658,10 @@
                     gap: 12px;
                     text-align: center;
                 }
+                
+                .particle-container {
+                    display: none;
+                }
             }
         }
     </style>
@@ -1315,6 +1684,10 @@
                 <div class="live-clock">
                     <span>🕐</span>
                     <span id="liveClock">--:--:--</span>
+                </div>
+                <div class="data-freshness fresh" id="dataFreshness">
+                    <div class="freshness-dot"></div>
+                    <span id="freshnessText">Fresh</span>
                 </div>
                 <div class="live-indicator">Live</div>
                 <div class="connection-indicator connected" id="connectionStatus">
@@ -1340,16 +1713,37 @@
                                 <canvas class="fox-canvas" id="foxCanvas" width="160" height="160"></canvas>
                                 <div class="fox-shadow"></div>
                             </div>
+                            <!-- Neural waves for thinking state - v4.0 -->
+                            <div class="neural-waves" id="neuralWaves">
+                                <div class="neural-wave"></div>
+                                <div class="neural-wave"></div>
+                                <div class="neural-wave"></div>
+                            </div>
                             <div class="energy-core">
                                 <div class="energy-ring"></div>
                                 <div class="energy-ring"></div>
                                 <div class="energy-ring"></div>
                             </div>
                             <div class="fox-expression" id="foxExpression">😺</div>
+                        <div class="particle-container">
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                        </div>
                         </div>
                         
                         <h1 class="fox-name">MoShang</h1>
                         <p class="fox-role">Digital Assistant</p>
+                        
+                        <!-- AI Status Indicator - v4.0 new -->
+                        <div class="ai-status" id="aiStatus">
+                            <div class="ai-status-indicator"></div>
+                            <span id="aiStatusText">Idle</span>
+                        </div>
+                        
                         <p class="fox-mood-text" id="moodText">Idle Mode</p>
                         
                         <div class="stats-row">
@@ -1542,11 +1936,17 @@
                     </div>
                 </div>
                 
-                <!-- Skills & Timeline -->
+                <!-- Skills Radar & Timeline -->
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
-                    <div class="skills-distribution">
-                        <div class="skills-title">Skills Distribution</div>
-                        <div id="skillsList"></div>
+                    <!-- Skills Radar - v4.0 new -->
+                    <div class="skills-radar">
+                        <div class="skills-radar-title">
+                            <span>🎯</span>
+                            <span>Skills Radar</span>
+                        </div>
+                        <div class="radar-canvas-container">
+                            <canvas class="radar-canvas" id="skillsRadar"></canvas>
+                        </div>
                     </div>
                     
                     <div class="memory-timeline">
@@ -1562,7 +1962,7 @@
         <!-- Footer -->
         <footer class="dashboard-footer">
             <div class="footer-info">
-                <span>MoShang</span> Status Dashboard • Last updated: <span id="lastUpdated">--</span>
+                <span>MoShang</span> Status Dashboard v4.0 • Last updated: <span id="lastUpdated">--</span>
             </div>
             <div class="footer-info">
                 Uptime: <span id="uptime">--</span>
@@ -1573,6 +1973,12 @@
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
     
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+    
+    <!-- FPS Counter -->
+    <div class="fps-counter" id="fpsCounter">-- FPS</div>
+    
     <!-- Scroll to Top -->
     <button class="scroll-to-top" id="scrollToTop" onclick="scrollToTop()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -1582,8 +1988,8 @@
     
     <script>
         // ============================================================
-        // MoShang Dashboard - JavaScript Controller
-        // Modern, clean, performant
+        // MoShang Dashboard - JavaScript Controller v4.0
+        // Enhanced with AI Status Visualization, Neural Animations
         // ============================================================
         
         const state = {
@@ -1603,14 +2009,17 @@
             msgCount: 0,
             taskDone: 0,
             skillsTotal: 0,
-            skillsList: []
+            skillsList: [],
+            dataFreshness: 'fresh', // v4.0 new
+            dataAge: 0, // v4.0 new
+            _lastFetch: 0
         };
         
         // DOM Elements
         const $ = id => document.getElementById(id);
         
         // ============================================================
-        // Fox Canvas Animation
+        // Fox Canvas Animation - Enhanced v4.0
         // ============================================================
         const foxCanvas = $('foxCanvas');
         const foxCtx = foxCanvas.getContext('2d');
@@ -1627,6 +2036,10 @@
             focused: '🎯'
         };
         
+        // v4.0: Neural thinking state
+        let isThinking = false;
+        const neuralWaves = $('neuralWaves');
+        
         function drawFox() {
             const w = foxCanvas.width;
             const h = foxCanvas.height;
@@ -1636,8 +2049,14 @@
             foxCtx.clearRect(0, 0, w, h);
             
             // Animation based on mood
-            const bounce = Math.sin(foxFrame * 0.05) * 3;
-            const earWiggle = Math.sin(foxFrame * 0.08) * 2;
+            let bounce = Math.sin(foxFrame * 0.05) * 3;
+            let earWiggle = Math.sin(foxFrame * 0.08) * 2;
+            
+            // v4.0: Thinking state affects animation
+            if (isThinking) {
+                bounce *= 0.5;
+                earWiggle = Math.sin(foxFrame * 0.15) * 4; // More ear movement when thinking
+            }
             
             // Draw fox body (simplified pixel art style)
             foxCtx.fillStyle = '#ffa64d';
@@ -1685,10 +2104,15 @@
             foxCtx.ellipse(cx, cy - 15 + bounce, 20, 18, 0, 0, Math.PI * 2);
             foxCtx.fill();
             
-            // Eyes
+            // Eyes - v4.0: Enhanced for thinking state
             foxCtx.fillStyle = '#333';
             const eyeY = cy - 30 + bounce;
-            const blink = Math.sin(foxFrame * 0.02) > 0.95 ? 0.2 : 1;
+            let blink = Math.sin(foxFrame * 0.02) > 0.95 ? 0.2 : 1;
+            
+            // Thinking state: slower blink, slightly squinted
+            if (isThinking) {
+                blink = Math.sin(foxFrame * 0.01) > 0.9 ? 0.6 : 0.9;
+            }
             
             foxCtx.beginPath();
             foxCtx.ellipse(cx - 12, eyeY, 5, 5 * blink, 0, 0, Math.PI * 2);
@@ -1725,10 +2149,18 @@
                 foxCtx.arc(cx, cy - 20 + bounce, 8, 0.1 * Math.PI, 0.9 * Math.PI);
                 foxCtx.stroke();
             } else if (foxMood === 'thinking') {
+                // Thinking: slight smile with dots
                 foxCtx.beginPath();
-                foxCtx.moveTo(cx - 5, cy - 15 + bounce);
-                foxCtx.quadraticCurveTo(cx, cy - 18 + bounce, cx + 3, cy - 15 + bounce);
+                foxCtx.arc(cx, cy - 20 + bounce, 6, 0.1 * Math.PI, 0.9 * Math.PI);
                 foxCtx.stroke();
+                // Thinking dots
+                foxCtx.fillStyle = '#333';
+                foxCtx.beginPath();
+                foxCtx.arc(cx - 18, cy - 35 + bounce + Math.sin(foxFrame * 0.1) * 2, 2, 0, Math.PI * 2);
+                foxCtx.fill();
+                foxCtx.beginPath();
+                foxCtx.arc(cx - 22, cy - 32 + bounce + Math.sin(foxFrame * 0.1 + 0.5) * 2, 1.5, 0, Math.PI * 2);
+                foxCtx.fill();
             } else {
                 foxCtx.beginPath();
                 foxCtx.moveTo(cx, cy - 15 + bounce);
@@ -1738,6 +2170,109 @@
             
             foxFrame++;
             requestAnimationFrame(drawFox);
+        }
+        
+        // ============================================================
+        // Skills Radar Chart - v4.0 new
+        // ============================================================
+        function drawSkillsRadar() {
+            const canvas = $('skillsRadar');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            
+            const w = rect.width;
+            const h = rect.height;
+            const cx = w / 2;
+            const cy = h / 2;
+            const maxRadius = Math.min(w, h) / 2 - 10;
+            
+            ctx.clearRect(0, 0, w, h);
+            
+            // Get skill categories from state
+            const categories = state.skillsCategories || {};
+            const categoryNames = Object.keys(categories);
+            const numCategories = Math.max(categoryNames.length, 1);
+            
+            if (numCategories === 0) {
+                // Draw placeholder
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.arc(cx, cy, maxRadius * 0.5, 0, Math.PI * 2);
+                ctx.stroke();
+                return;
+            }
+            
+            const angleStep = (Math.PI * 2) / numCategories;
+            
+            // Draw grid circles
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 1;
+            for (let i = 1; i <= 3; i++) {
+                ctx.beginPath();
+                ctx.arc(cx, cy, (maxRadius * i) / 3, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            
+            // Draw axis lines
+            for (let i = 0; i < numCategories; i++) {
+                const angle = i * angleStep - Math.PI / 2;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(cx + Math.cos(angle) * maxRadius, cy + Math.sin(angle) * maxRadius);
+                ctx.stroke();
+            }
+            
+            // Draw data polygon
+            ctx.beginPath();
+            for (let i = 0; i < numCategories; i++) {
+                const angle = i * angleStep - Math.PI / 2;
+                const count = categories[categoryNames[i]] || 0;
+                const maxCount = Math.max(...Object.values(categories), 1);
+                const radius = (count / maxCount) * maxRadius;
+                
+                const x = cx + Math.cos(angle) * radius;
+                const y = cy + Math.sin(angle) * radius;
+                
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.closePath();
+            
+            // Fill with gradient
+            const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxRadius);
+            gradient.addColorStop(0, 'rgba(0, 212, 255, 0.3)');
+            gradient.addColorStop(1, 'rgba(0, 212, 255, 0.05)');
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            
+            // Stroke
+            ctx.strokeStyle = 'rgba(0, 212, 255, 0.8)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Draw labels
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.font = '10px JetBrains Mono';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            for (let i = 0; i < numCategories; i++) {
+                const angle = i * angleStep - Math.PI / 2;
+                const labelRadius = maxRadius + 15;
+                const x = cx + Math.cos(angle) * labelRadius;
+                const y = cy + Math.sin(angle) * labelRadius;
+                
+                ctx.fillText(categoryNames[i] || '', x, y);
+            }
         }
         
         // ============================================================
@@ -1828,6 +2363,7 @@
             drawChart('activityChart', state.dataHistory.activity, chartColors.activity);
             drawChart('memoryChart', state.dataHistory.memory, chartColors.memory);
             drawChart('cpuChart', state.dataHistory.cpu, chartColors.cpu);
+            drawSkillsRadar(); // v4.0
         }
         
         // ============================================================
@@ -1842,6 +2378,7 @@
                 updateDashboard(data);
                 
                 state.isOnline = true;
+                state._lastFetch = Date.now();
                 updateConnectionStatus(true);
             } catch (error) {
                 console.error('Fetch error:', error);
@@ -1865,6 +2402,17 @@
             state.taskDone = data.taskDone || 0;
             state.skillsTotal = data.skillsTotal || 0;
             state.skillsList = data.skillsList || [];
+            state.skillsCategories = data.skillsCategories || {};
+            
+            // v4.0: Data freshness
+            state.dataAge = data._dataAge || 0;
+            if (state.dataAge < 60) {
+                state.dataFreshness = 'fresh';
+            } else if (state.dataAge < 300) {
+                state.dataFreshness = 'normal';
+            } else {
+                state.dataFreshness = 'stale';
+            }
             
             // Update history
             if (state.heartbeat !== '--') {
@@ -1904,20 +2452,13 @@
         }
         
         function updateUI() {
-            // Update stat values
-            $('heartbeat').textContent = state.heartbeat;
-            $('heartbeat').classList.remove('skeleton-loading');
+            // Update stat values with animation
+            animateValue('heartbeat', state.heartbeat);
+            animateValue('activity', state.activity);
+            animateValue('memory', state.memory);
+            animateValue('cpu', state.cpu);
             
-            $('activity').textContent = state.activity;
-            $('activity').classList.remove('skeleton-loading');
-            
-            $('memory').textContent = state.memory;
-            $('memory').classList.remove('skeleton-loading');
-            
-            $('cpu').textContent = state.cpu;
-            $('cpu').classList.remove('skeleton-loading');
-            
-            // Update mini stats
+            // Update mini stats with animation
             $('heartbeatValue').textContent = state.heartbeat;
             $('activityValue').textContent = state.activity + '%';
             $('msgCount').textContent = state.msgCount;
@@ -1931,6 +2472,9 @@
             // Update status badge
             const statusBadge = $('statusBadge');
             statusBadge.className = 'status-badge ' + state.status;
+            
+            // v4.0: Update AI status indicator
+            updateAIStatus(state.status, state.currentTask);
             
             // Update mood
             updateMood(state.status);
@@ -1961,12 +2505,58 @@
                 $('reputationValue').textContent = state.reputation;
             }
             
+            // v4.0: Update data freshness indicator
+            updateDataFreshness();
+            
             // Update footer
             $('lastUpdated').textContent = state.lastUpdated;
             $('uptime').textContent = state.uptime;
             
             // Update skills list
             updateSkillsList();
+        }
+        
+        // v4.0: AI Status Indicator
+        function updateAIStatus(status, task) {
+            const aiStatus = $('aiStatus');
+            const aiStatusText = $('aiStatusText');
+            
+            if (task && status === 'working') {
+                aiStatus.className = 'ai-status processing';
+                aiStatusText.textContent = 'Processing';
+                isThinking = true;
+                neuralWaves.classList.add('active');
+            } else if (status === 'idle') {
+                aiStatus.className = 'ai-status';
+                aiStatusText.textContent = 'Idle';
+                isThinking = false;
+                neuralWaves.classList.remove('active');
+            } else {
+                aiStatus.className = 'ai-status';
+                aiStatusText.textContent = capitalize(status);
+                isThinking = false;
+                neuralWaves.classList.remove('active');
+            }
+        }
+        
+        // v4.0: Data Freshness Indicator
+        function updateDataFreshness() {
+            const freshness = $('dataFreshness');
+            const freshnessText = $('freshnessText');
+            
+            freshness.className = 'data-freshness ' + state.dataFreshness;
+            
+            if (state.dataFreshness === 'fresh') {
+                freshnessText.textContent = 'Fresh';
+            } else if (state.dataFreshness === 'normal') {
+                freshnessText.textContent = state.dataAge < 120 ? 
+                    `${Math.floor(state.dataAge)}s ago` : 
+                    `${Math.floor(state.dataAge / 60)}m ago`;
+            } else {
+                freshnessText.textContent = state.dataAge < 3600 ? 
+                    `${Math.floor(state.dataAge / 60)}m ago` : 
+                    `${Math.floor(state.dataAge / 3600)}h ago`;
+            }
         }
         
         function updateProgressBar(barId, value, max) {
@@ -2037,6 +2627,7 @@
             $('currentStatus').textContent = capitalize(mode);
             $('statusText').textContent = capitalize(mode);
             $('statusBadge').className = 'status-badge ' + mode;
+            updateAIStatus(mode, state.currentTask);
             showToast(`${capitalize(mode)} mode activated`, 'success');
         }
         
@@ -2071,6 +2662,21 @@
         // ============================================================
         function capitalize(str) {
             return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+        
+        function animateValue(id, newValue) {
+            const el = $(id);
+            if (!el) return;
+            
+            const oldValue = el.textContent;
+            if (oldValue === newValue) return;
+            
+            // Add animation class
+            el.style.animation = 'none';
+            el.offsetHeight; // Trigger reflow
+            el.style.animation = 'counter-up 0.3s ease-out';
+            el.textContent = newValue;
+            el.classList.remove('skeleton-loading');
         }
         
         function showToast(message, type = 'info') {
@@ -2111,18 +2717,60 @@
             }
             $('greetingText').textContent = greeting;
             $('greetingIcon').textContent = icon;
+            
+            // v4.0: Update data freshness periodically
+            if (state._lastFetch > 0) {
+                state.dataAge = (Date.now() - state._lastFetch) / 1000;
+                updateDataFreshness();
+            }
         }
         
         // ============================================================
         // Scroll handling
         // ============================================================
+        let lastScrollTop = 0;
+        let frameCount = 0;
+        let lastFPSTime = performance.now();
+        
         function handleScroll() {
             const scrollBtn = $('scrollToTop');
+            const scrollProgress = $('scrollProgress');
+            
             if (window.scrollY > 300) {
                 scrollBtn.classList.add('visible');
             } else {
                 scrollBtn.classList.remove('visible');
             }
+            
+            // Update scroll progress
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            if (scrollProgress) {
+                scrollProgress.style.width = scrollPercent + '%';
+            }
+            
+            lastScrollTop = scrollTop;
+        }
+        
+        // FPS Counter
+        function updateFPS() {
+            frameCount++;
+            const now = performance.now();
+            const delta = now - lastFPSTime;
+            
+            if (delta >= 1000) {
+                const fps = Math.round((frameCount * 1000) / delta);
+                const fpsEl = $('fpsCounter');
+                if (fpsEl) {
+                    fpsEl.textContent = fps + ' FPS';
+                    fpsEl.style.color = fps >= 55 ? 'var(--success)' : fps >= 30 ? 'var(--warning)' : 'var(--danger)';
+                }
+                frameCount = 0;
+                lastFPSTime = now;
+            }
+            
+            requestAnimationFrame(updateFPS);
         }
         
         // ============================================================
@@ -2139,11 +2787,14 @@
             // Fetch initial data
             fetchData();
             
-            // Poll for updates
-            setInterval(fetchData, 3000);
+            // Poll for updates (reduced from 3s to 2s for fresher data - v4.0)
+            setInterval(fetchData, 2000);
             
             // Scroll handler
             window.addEventListener('scroll', handleScroll);
+            
+            // Start FPS counter
+            requestAnimationFrame(updateFPS);
             
             // Keyboard shortcuts
             document.addEventListener('keydown', (e) => {
@@ -2155,7 +2806,7 @@
                 if (e.key === '3') setMode('sleeping');
             });
             
-            console.log('🚀 MoShang Dashboard initialized');
+            console.log('🚀 MoShang Dashboard v4.0 initialized');
         }
         
         // Start when DOM is ready
