@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MoShang - OpenClaw Status Dashboard">
     <meta name="theme-color" content="#0a0a0f">
-    <title>MoShang Status v136.0</title>
+    <title>MoShang Status v137.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
-           MoShang Dashboard - Ultra Modern CSS Design v5.0 (2026 Edition)
-           Features: Holographic UI, Neural Animations, Spatial Design,
-           AI Status, Real-time Streaming, Glassmorphism 3.0
+           MoShang Dashboard - Ultra Modern CSS Design v6.0 (2026)
+           Features: Scroll-Driven Animations, Container Queries,
+           Neural Animations, Real-time Streaming, Glassmorphism 4.0
         ============================================================ */
         
         @layer base, layout, components, animations, effects;
@@ -33,14 +33,14 @@
                 --holo-gold: #ffd700;
                 --holo-rose: #ff6b9d;
                 
-                /* v136.0: CSS Level 5 Color Functions */
+                /* CSS Level 5 Color Functions */
                 --surface-bg: light-dark(#f8fafc, #0a0a0f);
                 --surface-text: light-dark(#1e293b, #ffffff);
                 --surface-muted: light-dark(#64748b, #9898a8);
                 --accent-primary: light-dark(#0284c7, var(--holo-cyan));
                 --accent-glow: light-dark(rgba(2, 132, 199, 0.3), rgba(0, 245, 255, 0.3));
                 
-                /* Glass 3.0 Colors */
+                /* Glass 4.0 Colors */
                 --glass-1: rgba(255, 255, 255, 0.03);
                 --glass-2: rgba(255, 255, 255, 0.06);
                 --glass-3: rgba(255, 255, 255, 0.10);
@@ -123,7 +123,7 @@
                 animation: aurora-shift 20s ease-in-out infinite alternate;
             }
             
-            /* v136.0: Scroll-Driven Animations - Cards reveal on scroll */
+            /* Scroll-Driven Animations */
             @keyframes reveal-on-scroll {
                 from {
                     opacity: 0;
@@ -141,7 +141,6 @@
                 animation-range: entry 0% entry 25%;
             }
             
-            /* v136.0: Progress ring animation using scroll-driven timeline */
             @keyframes progress-fill {
                 from { stroke-dashoffset: 157; }
             }
@@ -152,7 +151,6 @@
                 animation-range: entry 0% entry 20%;
             }
             
-            /* v136.0: Entrance animations with @starting-style */
             @keyframes slide-in-from-top {
                 from {
                     transform: translateY(-20px);
@@ -261,7 +259,7 @@
                 pointer-events: none;
             }
             
-            .header-left, .header-header-right {
+            .header-left, .header-right {
                 display: flex;
                 align-items: center;
                 gap: 16px;
@@ -389,7 +387,7 @@
             /* Main Grid */
             .dashboard-grid {
                 display: grid;
-                grid-template-columns: 340px 1fr;
+                grid-template-columns: 360px 1fr;
                 gap: 24px;
             }
             
@@ -453,7 +451,6 @@
                 width: 180px;
                 height: 180px;
                 margin-bottom: 20px;
-                /* v136.0: Spatial lighting - mouse position driven */
                 --mouse-x: 0.5;
                 --mouse-y: 0.5;
                 --spatial-light: radial-gradient(
@@ -883,7 +880,6 @@
                 cursor: pointer;
                 transition: all 0.3s var(--ease-out-expo);
                 overflow: hidden;
-                /* v136.0: text-wrap balance for better readability */
                 text-wrap: pretty;
             }
             
@@ -897,7 +893,6 @@
                 background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
             }
             
-            /* v136.0: Glass reflection effect */
             .stat-card::after {
                 content: '';
                 position: absolute;
@@ -922,7 +917,6 @@
                 transform: translateY(-3px) scale(0.98);
             }
             
-            /* v136.0: Status-aware color transition */
             .stat-card[data-status="critical"] {
                 animation: pulse-critical 2s ease-in-out infinite;
             }
@@ -1048,6 +1042,7 @@
                 background: var(--glass-1);
                 border: 1px solid var(--glass-border);
                 border-radius: var(--radius-lg);
+                position: relative;
             }
             
             .chart-title {
@@ -1065,6 +1060,29 @@
             .chart-canvas {
                 width: 100%;
                 height: 100%;
+            }
+            
+            /* Tooltip */
+            .chart-tooltip {
+                position: absolute;
+                padding: 8px 12px;
+                background: rgba(10, 10, 15, 0.95);
+                border: 1px solid var(--glass-border-bright);
+                border-radius: var(--radius-sm);
+                font-size: 12px;
+                font-family: var(--font-mono);
+                color: var(--text-primary);
+                pointer-events: none;
+                opacity: 0;
+                transform: translateY(4px);
+                transition: all 0.2s var(--ease-out-expo);
+                z-index: 100;
+                white-space: nowrap;
+            }
+            
+            .chart-tooltip.visible {
+                opacity: 1;
+                transform: translateY(0);
             }
             
             /* Skills Radar */
@@ -1310,16 +1328,259 @@
                 font-family: var(--font-mono);
             }
             
+            /* ======= NEW COMPONENTS v137.0 ======= */
+            
+            /* Quick Actions Panel */
+            .quick-actions {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+                margin-top: 16px;
+            }
+            
+            .quick-action-btn {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 6px;
+                padding: 14px 8px;
+                background: var(--glass-1);
+                border: 1px solid var(--glass-border);
+                border-radius: var(--radius-md);
+                cursor: pointer;
+                transition: all 0.2s var(--ease-out-expo);
+            }
+            
+            .quick-action-btn:hover {
+                background: var(--glass-2);
+                border-color: var(--holo-cyan);
+                transform: translateY(-3px);
+            }
+            
+            .quick-action-btn:active {
+                transform: scale(0.95);
+            }
+            
+            .quick-action-icon {
+                font-size: 22px;
+                transition: transform 0.2s var(--ease-spring);
+            }
+            
+            .quick-action-btn:hover .quick-action-icon {
+                transform: scale(1.2);
+            }
+            
+            .quick-action-label {
+                font-size: 10px;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            
+            /* Status Timeline History */
+            .status-history {
+                padding: 20px;
+                background: var(--glass-1);
+                border: 1px solid var(--glass-border);
+                border-radius: var(--radius-lg);
+            }
+            
+            .status-history-title {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--text-primary);
+                margin-bottom: 16px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            
+            .status-timeline {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                max-height: 160px;
+                overflow-y: auto;
+            }
+            
+            .status-timeline-item {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 8px 12px;
+                background: var(--glass-1);
+                border-radius: var(--radius-sm);
+                font-size: 12px;
+            }
+            
+            .status-timeline-dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                flex-shrink: 0;
+            }
+            
+            .status-timeline-text {
+                flex: 1;
+                color: var(--text-secondary);
+            }
+            
+            .status-timeline-time {
+                font-family: var(--font-mono);
+                font-size: 10px;
+                color: var(--text-dim);
+            }
+            
+            /* Animated Counter */
+            .animated-counter {
+                display: inline-block;
+                transition: transform 0.15s var(--ease-spring);
+            }
+            
+            .animated-counter.bump {
+                transform: scale(1.15);
+            }
+            
+            /* Sparkline */
+            .sparkline-container {
+                display: flex;
+                align-items: flex-end;
+                gap: 2px;
+                height: 32px;
+                margin-top: 8px;
+            }
+            
+            .sparkline-bar {
+                flex: 1;
+                background: linear-gradient(to top, var(--holo-cyan), var(--holo-magenta));
+                border-radius: 2px 2px 0 0;
+                transition: height 0.3s var(--ease-out-expo);
+                min-height: 4px;
+            }
+            
+            /* Breathing Exercise Widget */
+            .breathing-widget {
+                padding: 20px;
+                background: var(--glass-1);
+                border: 1px solid var(--glass-border);
+                border-radius: var(--radius-lg);
+                text-align: center;
+            }
+            
+            .breathing-circle {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, rgba(0, 245, 255, 0.2), rgba(139, 92, 246, 0.2));
+                border: 2px solid var(--holo-cyan);
+                margin: 0 auto 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.5s var(--ease-out-expo);
+                animation: breathe-idle 4s ease-in-out infinite;
+            }
+            
+            .breathing-circle.active {
+                animation: breathe-active 8s ease-in-out infinite;
+            }
+            
+            @keyframes breathe-idle {
+                0%, 100% { transform: scale(1); opacity: 0.7; }
+                50% { transform: scale(1.05); opacity: 1; }
+            }
+            
+            @keyframes breathe-active {
+                0%, 100% { transform: scale(1); }
+                25% { transform: scale(1.3); }
+                50% { transform: scale(1); }
+                75% { transform: scale(0.8); }
+            }
+            
+            .breathing-text {
+                font-size: 12px;
+                color: var(--text-muted);
+                margin-bottom: 4px;
+            }
+            
+            .breathing-phase {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--holo-cyan);
+            }
+            
+            .breathing-btn {
+                margin-top: 12px;
+                padding: 8px 16px;
+                background: var(--glass-1);
+                border: 1px solid var(--holo-cyan);
+                border-radius: var(--radius-full);
+                color: var(--holo-cyan);
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s var(--ease-out-expo);
+            }
+            
+            .breathing-btn:hover {
+                background: rgba(0, 245, 255, 0.1);
+                transform: scale(1.05);
+            }
+            
+            /* Activity Heatmap */
+            .activity-heatmap {
+                padding: 20px;
+                background: var(--glass-1);
+                border: 1px solid var(--glass-border);
+                border-radius: var(--radius-lg);
+            }
+            
+            .heatmap-title {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--text-primary);
+                margin-bottom: 12px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            
+            .heatmap-grid {
+                display: grid;
+                grid-template-columns: repeat(24, 1fr);
+                gap: 3px;
+            }
+            
+            .heatmap-cell {
+                aspect-ratio: 1;
+                border-radius: 2px;
+                background: rgba(255, 255, 255, 0.05);
+                transition: all 0.2s var(--ease-out-expo);
+            }
+            
+            .heatmap-cell:hover {
+                transform: scale(1.3);
+                z-index: 1;
+            }
+            
+            .heatmap-cell.level-1 { background: rgba(0, 245, 255, 0.2); }
+            .heatmap-cell.level-2 { background: rgba(0, 245, 255, 0.4); }
+            .heatmap-cell.level-3 { background: rgba(0, 245, 255, 0.6); }
+            .heatmap-cell.level-4 { background: rgba(0, 245, 255, 0.8); }
+            .heatmap-cell.level-5 { background: var(--holo-cyan); }
+            
             /* Mobile */
             @media (max-width: 768px) {
                 .dashboard-container { padding: 12px; }
                 .dashboard-header { flex-direction: column; gap: 12px; padding: 12px 16px; }
-                .header-left, .header-header-right { width: 100%; justify-content: center; flex-wrap: wrap; }
+                .header-left, .header-right { width: 100%; justify-content: center; flex-wrap: wrap; }
                 .fox-container { width: 140px; height: 140px; }
                 .fox-name { font-size: 22px; }
                 .stat-value { font-size: 28px; }
                 .dashboard-footer { flex-direction: column; gap: 12px; text-align: center; }
                 .particle-container { display: none; }
+                .quick-actions { grid-template-columns: repeat(2, 1fr); }
+                .heatmap-grid { grid-template-columns: repeat(12, 1fr); }
             }
         }
         
@@ -1472,6 +1733,7 @@
         
         <!-- Ambient Floating Particles -->
         <div class="ambient-particles" id="ambientParticles"></div>
+        
         <!-- Header -->
         <header class="dashboard-header entrance-1">
             <div class="header-left">
@@ -1484,7 +1746,7 @@
                     <span id="statusText">Online</span>
                 </div>
             </div>
-            <div class="header-header-right">
+            <div class="header-right">
                 <div class="live-clock">
                     <span>🕐</span>
                     <span id="liveClock">--:--:--</span>
@@ -1546,11 +1808,11 @@
                         
                         <div class="stats-row">
                             <div class="mini-stat">
-                                <span class="mini-stat-value" id="heartbeatValue">--</span>
+                                <span class="mini-stat-value animated-counter" id="heartbeatValue">--</span>
                                 <span class="mini-stat-label">Heartbeat</span>
                             </div>
                             <div class="mini-stat">
-                                <span class="mini-stat-value" id="activityValue">--</span>
+                                <span class="mini-stat-value animated-counter" id="activityValue">--</span>
                                 <span class="mini-stat-label">Activity</span>
                             </div>
                         </div>
@@ -1573,15 +1835,15 @@
                         
                         <div class="quick-stats">
                             <div class="quick-stat">
-                                <div class="quick-stat-value" id="msgCount">--</div>
+                                <div class="quick-stat-value animated-counter" id="msgCount">--</div>
                                 <div class="quick-stat-label">Messages</div>
                             </div>
                             <div class="quick-stat">
-                                <div class="quick-stat-value" id="taskDone">--</div>
+                                <div class="quick-stat-value animated-counter" id="taskDone">--</div>
                                 <div class="quick-stat-label">Tasks</div>
                             </div>
                             <div class="quick-stat">
-                                <div class="quick-stat-value" id="skillsTotal">--</div>
+                                <div class="quick-stat-value animated-counter" id="skillsTotal">--</div>
                                 <div class="quick-stat-label">Skills</div>
                             </div>
                         </div>
@@ -1590,6 +1852,47 @@
                             <span>⭐</span>
                             <span id="reputationValue">--</span>
                         </div>
+                        
+                        <!-- Quick Actions v137.0 -->
+                        <div class="quick-actions">
+                            <button class="quick-action-btn" onclick="quickAction('copy')" title="Copy Stats">
+                                <span class="quick-action-icon">📋</span>
+                                <span class="quick-action-label">Copy</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="quickAction('share')" title="Share Status">
+                                <span class="quick-action-icon">🔗</span>
+                                <span class="quick-action-label">Share</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="quickAction('export')" title="Export Data">
+                                <span class="quick-action-icon">📤</span>
+                                <span class="quick-action-label">Export</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="quickAction('settings')" title="Settings">
+                                <span class="quick-action-icon">⚙️</span>
+                                <span class="quick-action-label">Settings</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Breathing Exercise Widget v137.0 -->
+                <div class="breathing-widget entrance-2">
+                    <div class="breathing-circle" id="breathingCircle">
+                        <span id="breathingEmoji">🌬️</span>
+                    </div>
+                    <div class="breathing-text" id="breathingText">Take a moment</div>
+                    <div class="breathing-phase" id="breathingPhase">Idle</div>
+                    <button class="breathing-btn" id="breathingBtn" onclick="toggleBreathing()">Start Breathing</button>
+                </div>
+                
+                <!-- Activity Heatmap v137.0 -->
+                <div class="activity-heatmap entrance-3">
+                    <div class="heatmap-title">
+                        <span>📊</span>
+                        <span>24h Activity</span>
+                    </div>
+                    <div class="heatmap-grid" id="heatmapGrid">
+                        <!-- Generated by JS -->
                     </div>
                 </div>
             </div>
@@ -1603,9 +1906,11 @@
                         <div class="stat-card-header">
                             <div class="stat-icon" style="background: rgba(0, 245, 255, 0.1); color: var(--holo-cyan);">💓</div>
                         </div>
-                        <div class="stat-value" id="heartbeatStat">--</div>
+                        <div class="stat-value animated-counter" id="heartbeatStat">--</div>
                         <div class="stat-label">Heart Rate</div>
                         <div class="stat-subtext">BPM • Click to copy</div>
+                        <!-- Sparkline v137.0 -->
+                        <div class="sparkline-container" id="heartbeatSparkline"></div>
                         <div class="progress-bar">
                             <div class="progress-fill" id="heartbeatBar" style="width: 0%; background: linear-gradient(90deg, var(--holo-cyan), var(--holo-magenta));"></div>
                         </div>
@@ -1616,7 +1921,7 @@
                         <div class="stat-card-header">
                             <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--holo-violet);">⚡</div>
                         </div>
-                        <div class="stat-value" id="activityStat">--</div>
+                        <div class="stat-value animated-counter" id="activityStat">--</div>
                         <div class="stat-label">Activity Level</div>
                         <div class="stat-subtext">% • Click to copy</div>
                         <div class="progress-ring-container">
@@ -1633,9 +1938,11 @@
                         <div class="stat-card-header">
                             <div class="stat-icon" style="background: rgba(92, 219, 149, 0.1); color: var(--status-online);">🧠</div>
                         </div>
-                        <div class="stat-value" id="memoryStat">--</div>
+                        <div class="stat-value animated-counter" id="memoryStat">--</div>
                         <div class="stat-label">Memory Usage</div>
                         <div class="stat-subtext">MB • Click to copy</div>
+                        <!-- Sparkline v137.0 -->
+                        <div class="sparkline-container" id="memorySparkline"></div>
                         <div class="progress-bar">
                             <div class="progress-fill" id="memoryBar" style="width: 0%; background: linear-gradient(90deg, var(--status-online), var(--holo-cyan));"></div>
                         </div>
@@ -1646,9 +1953,11 @@
                         <div class="stat-card-header">
                             <div class="stat-icon" style="background: rgba(255, 215, 0, 0.1); color: var(--holo-gold);">🔲</div>
                         </div>
-                        <div class="stat-value" id="cpuStat">--</div>
+                        <div class="stat-value animated-counter" id="cpuStat">--</div>
                         <div class="stat-label">CPU Usage</div>
                         <div class="stat-subtext">% • Click to copy</div>
+                        <!-- Sparkline v137.0 -->
+                        <div class="sparkline-container" id="cpuSparkline"></div>
                         <div class="progress-bar">
                             <div class="progress-fill" id="cpuBar" style="width: 0%; background: linear-gradient(90deg, var(--holo-gold), var(--status-error));"></div>
                         </div>
@@ -1661,18 +1970,21 @@
                         <div class="chart-title">⚡ Activity Rhythm</div>
                         <div class="chart-canvas-container">
                             <canvas class="chart-canvas" id="activityChart"></canvas>
+                            <div class="chart-tooltip" id="activityTooltip"></div>
                         </div>
                     </div>
                     <div class="chart-card">
                         <div class="chart-title">🧠 Memory History</div>
                         <div class="chart-canvas-container">
                             <canvas class="chart-canvas" id="memoryChart"></canvas>
+                            <div class="chart-tooltip" id="memoryTooltip"></div>
                         </div>
                     </div>
                     <div class="chart-card">
                         <div class="chart-title">🔥 CPU History</div>
                         <div class="chart-canvas-container">
                             <canvas class="chart-canvas" id="cpuChart"></canvas>
+                            <div class="chart-tooltip" id="cpuTooltip"></div>
                         </div>
                     </div>
                 </div>
@@ -1689,7 +2001,7 @@
                         </div>
                     </div>
                     
-                    <!-- Task Queue - NEW -->
+                    <!-- Task Queue -->
                     <div class="memory-timeline entrance-5">
                         <div class="timeline-title">📋 Task Queue</div>
                         <div class="timeline-items" id="taskQueueItems" style="max-height: 180px;">
@@ -1704,7 +2016,22 @@
                     </div>
                 </div>
                 
-                <!-- EvoMap Status Card - NEW -->
+                <!-- Status History Timeline v137.0 -->
+                <div class="status-history entrance-4">
+                    <div class="status-history-title">
+                        <span>📜</span>
+                        <span>Status History</span>
+                    </div>
+                    <div class="status-timeline" id="statusTimeline">
+                        <div class="status-timeline-item">
+                            <div class="status-timeline-dot" style="background: var(--status-idle);"></div>
+                            <div class="status-timeline-text">System initialized</div>
+                            <div class="status-timeline-time">--</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- EvoMap Status Card -->
                 <div id="evomapCard" class="glass-card entrance-4" style="display: none;">
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
                         <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(0, 245, 255, 0.2)); border-radius: 10px; font-size: 20px;">🧬</div>
@@ -1734,7 +2061,7 @@
                     </div>
                 </div>
                 
-                <!-- System Health Bars - NEW -->
+                <!-- System Health Bars -->
                 <div class="glass-card entrance-4" style="padding: 20px;">
                     <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
                         <span>🔬</span> System Health
@@ -1775,7 +2102,7 @@
         <!-- Footer -->
         <footer class="dashboard-footer entrance-5">
             <div class="footer-info">
-                <span>MoShang</span> Status Dashboard v5.0 • Last updated: <span id="lastUpdated">--</span>
+                <span>MoShang</span> Status Dashboard v137.0 • Last updated: <span id="lastUpdated">--</span>
                 <span id="dataSourceTag" style="margin-left: 8px; padding: 2px 8px; background: rgba(92, 219, 149, 0.15); border-radius: 4px; font-size: 10px; color: var(--status-online);"></span>
             </div>
             <div class="footer-info">
@@ -1790,7 +2117,7 @@
     
     <script>
         // ============================================================
-        // MoShang Dashboard - JavaScript Controller v5.0
+        // MoShang Dashboard - JavaScript Controller v137.0
         // Ultra Modern Design with Holographic UI
         // ============================================================
         
@@ -1821,7 +2148,14 @@
             evomap: null,
             taskQueue: [],
             _source: 'gateway',
-            _health: { memory: 'ok', cpu: 'ok', disk: 'ok' }
+            _health: { memory: 'ok', cpu: 'ok', disk: 'ok' },
+            // v137.0: New state
+            statusHistory: [],
+            heatmapData: new Array(24).fill(0),
+            _breathingActive: false,
+            _breathingPhase: 0,
+            _prevHeartbeat: null,
+            _prevActivity: null
         };
         
         const $ = id => document.getElementById(id);
@@ -2077,14 +2411,16 @@
             }
         }
         
-        // Charts
+        // Charts with Tooltips v137.0
         const chartColors = {
             activity: { stroke: '#00f5ff', fill: 'rgba(0, 245, 255, 0.15)' },
             memory: { stroke: '#5cdb95', fill: 'rgba(92, 219, 149, 0.15)' },
             cpu: { stroke: '#ffd700', fill: 'rgba(255, 215, 0, 0.15)' }
         };
         
-        function drawChart(canvasId, data, color) {
+        let chartHoverData = { activity: [], memory: [], cpu: [] };
+        
+        function drawChart(canvasId, data, color, tooltipId) {
             const canvas = $(canvasId);
             if (!canvas) return;
             
@@ -2106,6 +2442,14 @@
             const min = 0;
             const range = max - min || 1;
             const stepX = (w - padding * 2) / (data.length - 1);
+            
+            // Store hover data
+            const chartKey = canvasId.replace('Chart', '');
+            chartHoverData[chartKey] = data.map((val, i) => ({
+                value: val,
+                x: padding + i * stepX,
+                y: h - padding - ((val - min) / range) * (h - padding * 2)
+            }));
             
             // Fill
             ctx.beginPath();
@@ -2147,25 +2491,92 @@
                 ctx.fillStyle = color.stroke;
                 ctx.fill();
             });
+            
+            // Setup hover events
+            setupChartHover(canvasId, tooltipId, chartKey);
+        }
+        
+        function setupChartHover(canvasId, tooltipId, dataKey) {
+            const canvas = $(canvasId);
+            const tooltip = $(tooltipId);
+            if (!canvas || !tooltip) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            
+            canvas.onmousemove = (e) => {
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const data = chartHoverData[dataKey];
+                if (!data || data.length === 0) return;
+                
+                // Find closest point
+                let closest = null;
+                let minDist = Infinity;
+                data.forEach(point => {
+                    const dist = Math.abs(point.x - x);
+                    if (dist < minDist) {
+                        minDist = dist;
+                        closest = point;
+                    }
+                });
+                
+                if (closest && minDist < 30) {
+                    tooltip.textContent = `Value: ${closest.value}`;
+                    tooltip.style.left = `${closest.x - 30}px`;
+                    tooltip.style.top = `${closest.y - 40}px`;
+                    tooltip.classList.add('visible');
+                } else {
+                    tooltip.classList.remove('visible');
+                }
+            };
+            
+            canvas.onmouseleave = () => {
+                tooltip.classList.remove('visible');
+            };
         }
         
         function updateCharts() {
-            drawChart('activityChart', state.dataHistory.activity, chartColors.activity);
-            drawChart('memoryChart', state.dataHistory.memory, chartColors.memory);
-            drawChart('cpuChart', state.dataHistory.cpu, chartColors.cpu);
+            drawChart('activityChart', state.dataHistory.activity, chartColors.activity, 'activityTooltip');
+            drawChart('memoryChart', state.dataHistory.memory, chartColors.memory, 'memoryTooltip');
+            drawChart('cpuChart', state.dataHistory.cpu, chartColors.cpu, 'cpuTooltip');
             drawSkillsRadar();
         }
         
-        // Data Fetching with v136.0 reliability enhancements
+        // Sparklines v137.0
+        function updateSparklines() {
+            updateSparkline('heartbeatSparkline', state.dataHistory.heartbeat.slice(-12));
+            updateSparkline('memorySparkline', state.dataHistory.memory.slice(-12));
+            updateSparkline('cpuSparkline', state.dataHistory.cpu.slice(-12));
+        }
+        
+        function updateSparkline(containerId, data) {
+            const container = $(containerId);
+            if (!container) return;
+            
+            if (data.length < 2) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            const max = Math.max(...data, 1);
+            const min = Math.min(...data, 0);
+            const range = max - min || 1;
+            
+            container.innerHTML = data.map(val => {
+                const height = Math.max(((val - min) / range) * 100, 10);
+                return `<div class="sparkline-bar" style="height: ${height}%;"></div>`;
+            }).join('');
+        }
+        
+        // Data Fetching
         async function fetchData() {
             if (document.hidden) return;
             
-            // v136.0: AbortController for timeout
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 5000);
             
             try {
-                // v136.0: Try primary API first
                 const response = await fetch('/api/dashboard', { 
                     cache: 'no-store',
                     signal: controller.signal
@@ -2176,7 +2587,6 @@
                 
                 const data = await response.json();
                 
-                // v136.0: Validate fetched data before updating
                 if (validateDashboardData(data)) {
                     updateDashboard(data);
                     state.isOnline = true;
@@ -2190,32 +2600,22 @@
                 clearTimeout(timeoutId);
                 console.error('Fetch error:', error);
                 state.isOnline = false;
-                // v136.0: Show offline indicator
-                const indicator = $('sse-indicator');
-                if (indicator) {
-                    indicator.dataset.sseStatus = 'disconnected';
-                    indicator.innerHTML = '⚠️ Offline';
-                }
             }
         }
         
-        // v136.0: Enhanced data validation
         function validateDashboardData(data) {
             if (!data || typeof data !== 'object') return false;
             
-            // Validate heartbeat range (0-300 BPM)
             if (data.heartbeat !== undefined) {
                 const hb = parseInt(data.heartbeat);
                 if (isNaN(hb) || hb < 0 || hb > 300) return false;
             }
             
-            // Validate activity range (0-100%)
             if (data.activityLevel !== undefined) {
                 const act = parseInt(data.activityLevel);
                 if (isNaN(act) || act < 0 || act > 100) return false;
             }
             
-            // Validate status
             const validStatuses = ['online', 'working', 'sleeping', 'idle', 'learning', 'error'];
             if (data.status && !validStatuses.includes(data.status)) return false;
             
@@ -2223,6 +2623,10 @@
         }
         
         function updateDashboard(data) {
+            // Detect changes for animation
+            const heartbeatChanged = state.heartbeat !== data.heartbeat;
+            const activityChanged = state.activity !== parseInt(data.activityLevel);
+            
             state.heartbeat = data.heartbeat || '--';
             state.activity = parseInt(data.activityLevel) || 0;
             state.memory = data.memory || '--';
@@ -2230,6 +2634,12 @@
             state.cpu = parseInt(data.cpu) || 0;
             state.cpuPercent = parseInt(data.cpuPercent) || 0;
             state.diskPercent = parseInt(data.diskPercent) || 0;
+            
+            // Track status changes for history v137.0
+            if (state.status !== data.status) {
+                addStatusHistory(data.status);
+            }
+            
             state.status = data.status || 'idle';
             state.uptime = data.uptime || '--';
             state.lastUpdated = new Date().toLocaleTimeString();
@@ -2249,6 +2659,10 @@
             if (state.dataAge < 60) state.dataFreshness = 'fresh';
             else if (state.dataAge < 300) state.dataFreshness = 'normal';
             else state.dataFreshness = 'stale';
+            
+            // Update heatmap with current hour activity v137.0
+            const hour = new Date().getHours();
+            state.heatmapData[hour] = Math.max(state.heatmapData[hour], Math.floor(state.activity / 20));
             
             // History
             const hb = parseInt(state.heartbeat);
@@ -2271,10 +2685,135 @@
             
             updateUI();
             updateCharts();
+            updateSparklines();
             updateEvoMap();
             updateTaskQueue();
             updateHealthBars();
             updateDataSource();
+            updateHeatmap();
+            
+            // Trigger counter animations
+            if (heartbeatChanged) animateCounter('heartbeatValue');
+            if (heartbeatChanged) animateCounter('heartbeatStat');
+            if (activityChanged) animateCounter('activityValue');
+            if (activityChanged) animateCounter('activityStat');
+        }
+        
+        // Animated Counter v137.0
+        function animateCounter(id) {
+            const el = $(id);
+            if (!el) return;
+            el.classList.add('bump');
+            setTimeout(() => el.classList.remove('bump'), 150);
+        }
+        
+        // Status History v137.0
+        function addStatusHistory(status) {
+            const now = new Date();
+            const time = now.toLocaleTimeString('zh-CN', { hour12: false });
+            
+            state.statusHistory.unshift({
+                status,
+                time,
+                color: getStatusColor(status)
+            });
+            
+            if (state.statusHistory.length > 20) state.statusHistory.pop();
+            renderStatusHistory();
+        }
+        
+        function getStatusColor(status) {
+            const colors = {
+                online: 'var(--status-online)',
+                working: 'var(--status-working)',
+                sleeping: 'var(--status-sleeping)',
+                idle: 'var(--status-idle)',
+                error: 'var(--status-error)',
+                learning: 'var(--status-learning)'
+            };
+            return colors[status] || 'var(--text-dim)';
+        }
+        
+        function renderStatusHistory() {
+            const container = $('statusTimeline');
+            if (!container) return;
+            
+            container.innerHTML = state.statusHistory.map(item => `
+                <div class="status-timeline-item">
+                    <div class="status-timeline-dot" style="background: ${item.color};"></div>
+                    <div class="status-timeline-text">${capitalize(item.status)}</div>
+                    <div class="status-timeline-time">${item.time}</div>
+                </div>
+            `).join('');
+        }
+        
+        // Heatmap v137.0
+        function updateHeatmap() {
+            const container = $('heatmapGrid');
+            if (!container) return;
+            
+            container.innerHTML = state.heatmapData.map((level, i) => {
+                const levelClass = level > 0 ? `level-${Math.min(level, 5)}` : '';
+                return `<div class="heatmap-cell ${levelClass}" title="Hour ${i}:00 - Level ${level}"></div>`;
+            }).join('');
+        }
+        
+        // Breathing Exercise v137.0
+        let breathingInterval = null;
+        
+        function toggleBreathing() {
+            const btn = $('breathingBtn');
+            const circle = $('breathingCircle');
+            const text = $('breathingText');
+            const phase = $('breathingPhase');
+            const emoji = $('breathingEmoji');
+            
+            state._breathingActive = !state._breathingActive;
+            
+            if (state._breathingActive) {
+                btn.textContent = 'Stop';
+                circle.classList.add('active');
+                text.textContent = 'Follow the circle';
+                
+                const phases = [
+                    { text: 'Inhale', duration: 2000, emoji: '🌬️' },
+                    { text: 'Hold', duration: 2000, emoji: '⏸️' },
+                    { text: 'Exhale', duration: 2000, emoji: '💨' },
+                    { text: 'Hold', duration: 2000, emoji: '⏸️' }
+                ];
+                
+                let phaseIndex = 0;
+                
+                function runPhase() {
+                    if (!state._breathingActive) return;
+                    
+                    const p = phases[phaseIndex];
+                    phase.textContent = p.text;
+                    emoji.textContent = p.emoji;
+                    
+                    // Scale circle
+                    if (p.text === 'Inhale') {
+                        circle.style.transform = 'scale(1.3)';
+                    } else if (p.text === 'Exhale') {
+                        circle.style.transform = 'scale(0.8)';
+                    } else {
+                        circle.style.transform = 'scale(1)';
+                    }
+                    
+                    phaseIndex = (phaseIndex + 1) % phases.length;
+                    breathingInterval = setTimeout(runPhase, p.duration);
+                }
+                
+                runPhase();
+            } else {
+                btn.textContent = 'Start Breathing';
+                circle.classList.remove('active');
+                text.textContent = 'Take a moment';
+                phase.textContent = 'Idle';
+                emoji.textContent = '🌬️';
+                circle.style.transform = 'scale(1)';
+                if (breathingInterval) clearTimeout(breathingInterval);
+            }
         }
         
         function updateUI() {
@@ -2494,6 +3033,7 @@
             $('moodText').textContent = capitalize(mode) + ' Mode';
             $('statusBadge').dataset.status = mode;
             $('statusText').textContent = capitalize(mode);
+            addStatusHistory(mode);
             showToast(`${capitalize(mode)} mode`, 'success');
         }
         
@@ -2502,6 +3042,50 @@
             $('foxExpression').textContent = foxExpressions[mood] || '😺';
             $('moodText').textContent = `Feeling ${mood}!`;
             showToast(`Mood: ${mood} ${foxExpressions[mood]}`, 'success');
+        }
+        
+        // Quick Actions v137.0
+        function quickAction(action) {
+            switch(action) {
+                case 'copy':
+                    const stats = `Heartbeat: ${state.heartbeat} | Activity: ${state.activity}% | Memory: ${state.memory} | CPU: ${state.cpu}%`;
+                    navigator.clipboard.writeText(stats).then(() => {
+                        showToast('Stats copied!', 'success');
+                    });
+                    break;
+                case 'share':
+                    const shareText = `🤖 MoShang Status: ${state.status} | Activity: ${state.activity}%`;
+                    if (navigator.share) {
+                        navigator.share({ title: 'MoShang Status', text: shareText });
+                    } else {
+                        navigator.clipboard.writeText(shareText).then(() => {
+                            showToast('Share text copied!', 'success');
+                        });
+                    }
+                    break;
+                case 'export':
+                    const exportData = {
+                        timestamp: new Date().toISOString(),
+                        heartbeat: state.heartbeat,
+                        activity: state.activity,
+                        memory: state.memory,
+                        cpu: state.cpu,
+                        status: state.status,
+                        uptime: state.uptime
+                    };
+                    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `moshang-status-${Date.now()}.json`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    showToast('Data exported!', 'success');
+                    break;
+                case 'settings':
+                    showToast('Settings coming soon!', 'info');
+                    break;
+            }
         }
         
         function copyStat(stat) {
@@ -2581,6 +3165,8 @@
             { icon: '🔄', text: 'Refresh Data', action: () => refreshData(), shortcut: 'R' },
             { icon: '📋', text: 'Copy Heartbeat', action: () => copyStat('heartbeat') },
             { icon: '📋', text: 'Copy Activity', action: () => copyStat('activity') },
+            { icon: '🌬️', text: 'Toggle Breathing Exercise', action: () => toggleBreathing(), shortcut: 'B' },
+            { icon: '📤', text: 'Export Status Data', action: () => quickAction('export') },
         ];
         
         let selectedCommand = 0;
@@ -2638,7 +3224,10 @@
             // Create ambient particles
             createAmbientParticles();
             
-            // v136.0: Spatial lighting - mouse tracking for fox container
+            // Initialize heatmap
+            updateHeatmap();
+            
+            // Spatial lighting - mouse tracking for fox container
             const foxContainer = document.querySelector('.fox-container');
             if (foxContainer) {
                 document.addEventListener('mousemove', (e) => {
@@ -2688,6 +3277,9 @@
                 if (e.key === 'r' && !e.ctrlKey && !e.metaKey && document.activeElement.tagName !== 'INPUT') {
                     refreshData();
                 }
+                if (e.key === 'b' && !e.ctrlKey && !e.metaKey && document.activeElement.tagName !== 'INPUT') {
+                    toggleBreathing();
+                }
             });
             
             // Visibility API
@@ -2695,7 +3287,7 @@
                 if (!document.hidden) fetchData();
             });
             
-            console.log('🚀 MoShang Dashboard v130.0 initialized');
+            console.log('🚀 MoShang Dashboard v137.0 initialized');
         }
         
         if (document.readyState === 'loading') {
