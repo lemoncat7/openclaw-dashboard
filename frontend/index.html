@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MoShang - OpenClaw Status Dashboard">
     <meta name="theme-color" content="#0a0a0f">
-    <title>MoShang Status v130.0</title>
+    <title>MoShang Status v136.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -32,6 +32,13 @@
                 --holo-violet: #8b5cf6;
                 --holo-gold: #ffd700;
                 --holo-rose: #ff6b9d;
+                
+                /* v136.0: CSS Level 5 Color Functions */
+                --surface-bg: light-dark(#f8fafc, #0a0a0f);
+                --surface-text: light-dark(#1e293b, #ffffff);
+                --surface-muted: light-dark(#64748b, #9898a8);
+                --accent-primary: light-dark(#0284c7, var(--holo-cyan));
+                --accent-glow: light-dark(rgba(2, 132, 199, 0.3), rgba(0, 245, 255, 0.3));
                 
                 /* Glass 3.0 Colors */
                 --glass-1: rgba(255, 255, 255, 0.03);
@@ -116,6 +123,57 @@
                 animation: aurora-shift 20s ease-in-out infinite alternate;
             }
             
+            /* v136.0: Scroll-Driven Animations - Cards reveal on scroll */
+            @keyframes reveal-on-scroll {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px) scale(0.95);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+            }
+            
+            .stat-card {
+                animation: reveal-on-scroll linear;
+                animation-timeline: view();
+                animation-range: entry 0% entry 25%;
+            }
+            
+            /* v136.0: Progress ring animation using scroll-driven timeline */
+            @keyframes progress-fill {
+                from { stroke-dashoffset: 157; }
+            }
+            
+            .progress-ring-fill {
+                animation: progress-fill ease-out;
+                animation-timeline: view();
+                animation-range: entry 0% entry 20%;
+            }
+            
+            /* v136.0: Entrance animations with @starting-style */
+            @keyframes slide-in-from-top {
+                from {
+                    transform: translateY(-20px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+            
+            .dashboard-header {
+                animation: slide-in-from-top 0.5s var(--ease-out-expo) both;
+            }
+            
+            @starting-style {
+                .dashboard-header {
+                    animation: slide-in-from-top 0.5s var(--ease-out-expo) both;
+                }
+            }
+            
             /* Noise Texture */
             body::after {
                 content: '';
@@ -125,6 +183,41 @@
                 opacity: 0.02;
                 pointer-events: none;
                 z-index: -1;
+            }
+            
+            /* Ambient Floating Particles */
+            .ambient-particles {
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                z-index: -1;
+                overflow: hidden;
+            }
+            
+            .ambient-particle {
+                position: absolute;
+                width: 4px;
+                height: 4px;
+                border-radius: 50%;
+                opacity: 0;
+                animation: float-up linear infinite;
+            }
+            
+            @keyframes float-up {
+                0% {
+                    transform: translateY(100vh) scale(0);
+                    opacity: 0;
+                }
+                10% {
+                    opacity: 0.6;
+                }
+                90% {
+                    opacity: 0.6;
+                }
+                100% {
+                    transform: translateY(-20vh) scale(1);
+                    opacity: 0;
+                }
             }
             
             /* Custom Scrollbar */
@@ -360,6 +453,25 @@
                 width: 180px;
                 height: 180px;
                 margin-bottom: 20px;
+                /* v136.0: Spatial lighting - mouse position driven */
+                --mouse-x: 0.5;
+                --mouse-y: 0.5;
+                --spatial-light: radial-gradient(
+                    circle at calc(var(--mouse-x) * 100%) calc(var(--mouse-y) * 100%),
+                    rgba(255, 255, 255, 0.15) 0%,
+                    transparent 60%
+                );
+            }
+            
+            .fox-container::before {
+                content: '';
+                position: absolute;
+                inset: -40px;
+                background: var(--spatial-light);
+                border-radius: 50%;
+                pointer-events: none;
+                opacity: 0.8;
+                transition: opacity 0.2s;
             }
             
             /* Holographic Aura */
@@ -771,6 +883,8 @@
                 cursor: pointer;
                 transition: all 0.3s var(--ease-out-expo);
                 overflow: hidden;
+                /* v136.0: text-wrap balance for better readability */
+                text-wrap: pretty;
             }
             
             .stat-card::before {
@@ -783,6 +897,21 @@
                 background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
             }
             
+            /* v136.0: Glass reflection effect */
+            .stat-card::after {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.05) 0%,
+                    transparent 50%,
+                    rgba(255, 255, 255, 0.02) 100%
+                );
+                pointer-events: none;
+                border-radius: inherit;
+            }
+            
             .stat-card:hover {
                 border-color: var(--glass-border-bright);
                 transform: translateY(-6px) scale(1.02);
@@ -791,6 +920,16 @@
             
             .stat-card:active {
                 transform: translateY(-3px) scale(0.98);
+            }
+            
+            /* v136.0: Status-aware color transition */
+            .stat-card[data-status="critical"] {
+                animation: pulse-critical 2s ease-in-out infinite;
+            }
+            
+            @keyframes pulse-critical {
+                0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4); }
+                50% { box-shadow: 0 0 20px 4px rgba(255, 107, 107, 0.2); }
             }
             
             .stat-card-header {
@@ -1330,6 +1469,9 @@
     </div>
     
     <div class="dashboard-container">
+        
+        <!-- Ambient Floating Particles -->
+        <div class="ambient-particles" id="ambientParticles"></div>
         <!-- Header -->
         <header class="dashboard-header entrance-1">
             <div class="header-left">
@@ -1547,15 +1689,82 @@
                         </div>
                     </div>
                     
+                    <!-- Task Queue - NEW -->
                     <div class="memory-timeline entrance-5">
-                        <div class="timeline-title">Recent Activities</div>
-                        <div class="timeline-items" id="timelineItems">
+                        <div class="timeline-title">📋 Task Queue</div>
+                        <div class="timeline-items" id="taskQueueItems" style="max-height: 180px;">
                             <div class="timeline-item">
-                                <span class="timeline-icon">📝</span>
+                                <span class="timeline-icon">⚡</span>
                                 <div class="timeline-content">
-                                    <div class="timeline-text">Dashboard loaded</div>
-                                    <div class="timeline-time">Just now</div>
+                                    <div class="timeline-text">Loading tasks...</div>
+                                    <div class="timeline-time">--</div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- EvoMap Status Card - NEW -->
+                <div id="evomapCard" class="glass-card entrance-4" style="display: none;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(0, 245, 255, 0.2)); border-radius: 10px; font-size: 20px;">🧬</div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 600; color: var(--text-primary);">EvoMap Status</div>
+                            <div style="font-size: 11px; color: var(--text-muted);">Evolution Marketplace</div>
+                        </div>
+                        <div id="evomapStatus" style="margin-left: auto; padding: 4px 10px; background: rgba(92, 219, 149, 0.15); border-radius: 20px; font-size: 11px; font-weight: 600; color: var(--status-online);">Online</div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+                        <div style="text-align: center; padding: 12px 8px; background: var(--glass-1); border-radius: 8px;">
+                            <div style="font-size: 20px; font-weight: 700; font-family: var(--font-mono); background: linear-gradient(135deg, var(--holo-gold), var(--holo-rose)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" id="evomapRep">--</div>
+                            <div style="font-size: 10px; color: var(--text-dim); text-transform: uppercase;">Reputation</div>
+                        </div>
+                        <div style="text-align: center; padding: 12px 8px; background: var(--glass-1); border-radius: 8px;">
+                            <div style="font-size: 20px; font-weight: 700; font-family: var(--font-mono); color: var(--holo-cyan);" id="evomapPublished">--</div>
+                            <div style="font-size: 10px; color: var(--text-dim); text-transform: uppercase;">Published</div>
+                        </div>
+                        <div style="text-align: center; padding: 12px 8px; background: var(--glass-1); border-radius: 8px;">
+                            <div style="font-size: 20px; font-weight: 700; font-family: var(--font-mono); color: var(--status-online);" id="evomapPromoted">--</div>
+                            <div style="font-size: 10px; color: var(--text-dim); text-transform: uppercase;">Promoted</div>
+                        </div>
+                        <div style="text-align: center; padding: 12px 8px; background: var(--glass-1); border-radius: 8px;">
+                            <div style="font-size: 20px; font-weight: 700; font-family: var(--font-mono); color: var(--holo-violet);" id="evomapSurvival">--</div>
+                            <div style="font-size: 10px; color: var(--text-dim); text-transform: uppercase;">Survival</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- System Health Bars - NEW -->
+                <div class="glass-card entrance-4" style="padding: 20px;">
+                    <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                        <span>🔬</span> System Health
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+                                <span style="color: var(--text-muted);">Memory</span>
+                                <span id="healthMemText" style="color: var(--text-secondary); font-family: var(--font-mono);">--</span>
+                            </div>
+                            <div style="height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden;">
+                                <div id="healthMemBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, var(--status-online), var(--holo-cyan)); border-radius: 4px; transition: width 0.5s ease, background 0.3s;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+                                <span style="color: var(--text-muted);">CPU</span>
+                                <span id="healthCpuText" style="color: var(--text-secondary); font-family: var(--font-mono);">--</span>
+                            </div>
+                            <div style="height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden;">
+                                <div id="healthCpuBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, var(--holo-gold), var(--status-error)); border-radius: 4px; transition: width 0.5s ease, background 0.3s;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+                                <span style="color: var(--text-muted);">Disk</span>
+                                <span id="healthDiskText" style="color: var(--text-secondary); font-family: var(--font-mono);">--</span>
+                            </div>
+                            <div style="height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden;">
+                                <div id="healthDiskBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, var(--holo-violet), var(--holo-magenta)); border-radius: 4px; transition: width 0.5s ease, background 0.3s;"></div>
                             </div>
                         </div>
                     </div>
@@ -1567,9 +1776,11 @@
         <footer class="dashboard-footer entrance-5">
             <div class="footer-info">
                 <span>MoShang</span> Status Dashboard v5.0 • Last updated: <span id="lastUpdated">--</span>
+                <span id="dataSourceTag" style="margin-left: 8px; padding: 2px 8px; background: rgba(92, 219, 149, 0.15); border-radius: 4px; font-size: 10px; color: var(--status-online);"></span>
             </div>
             <div class="footer-info">
                 Uptime: <span id="uptime">--</span>
+                <span id="healthTag" style="margin-left: 8px; padding: 2px 8px; background: rgba(0, 245, 255, 0.1); border-radius: 4px; font-size: 10px;"></span>
             </div>
         </footer>
     </div>
@@ -1587,7 +1798,10 @@
             heartbeat: '--',
             activity: 0,
             memory: '--',
+            memoryPercent: 0,
             cpu: 0,
+            cpuPercent: 0,
+            diskPercent: 0,
             status: 'idle',
             uptime: '--',
             lastUpdated: '--',
@@ -1603,7 +1817,11 @@
             skillsCategories: {},
             dataFreshness: 'fresh',
             dataAge: 0,
-            _lastFetch: 0
+            _lastFetch: 0,
+            evomap: null,
+            taskQueue: [],
+            _source: 'gateway',
+            _health: { memory: 'ok', cpu: 'ok', disk: 'ok' }
         };
         
         const $ = id => document.getElementById(id);
@@ -1938,30 +2156,80 @@
             drawSkillsRadar();
         }
         
-        // Data Fetching
+        // Data Fetching with v136.0 reliability enhancements
         async function fetchData() {
             if (document.hidden) return;
             
+            // v136.0: AbortController for timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+            
             try {
-                const response = await fetch('/api/dashboard', { cache: 'no-store' });
+                // v136.0: Try primary API first
+                const response = await fetch('/api/dashboard', { 
+                    cache: 'no-store',
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                
                 if (!response.ok) throw new Error('API error');
                 
                 const data = await response.json();
-                updateDashboard(data);
                 
-                state.isOnline = true;
-                state._lastFetch = Date.now();
+                // v136.0: Validate fetched data before updating
+                if (validateDashboardData(data)) {
+                    updateDashboard(data);
+                    state.isOnline = true;
+                    state._lastFetch = Date.now();
+                    state._source = 'gateway';
+                    updateDataSource();
+                } else {
+                    throw new Error('Invalid data format');
+                }
             } catch (error) {
+                clearTimeout(timeoutId);
                 console.error('Fetch error:', error);
                 state.isOnline = false;
+                // v136.0: Show offline indicator
+                const indicator = $('sse-indicator');
+                if (indicator) {
+                    indicator.dataset.sseStatus = 'disconnected';
+                    indicator.innerHTML = '⚠️ Offline';
+                }
             }
+        }
+        
+        // v136.0: Enhanced data validation
+        function validateDashboardData(data) {
+            if (!data || typeof data !== 'object') return false;
+            
+            // Validate heartbeat range (0-300 BPM)
+            if (data.heartbeat !== undefined) {
+                const hb = parseInt(data.heartbeat);
+                if (isNaN(hb) || hb < 0 || hb > 300) return false;
+            }
+            
+            // Validate activity range (0-100%)
+            if (data.activityLevel !== undefined) {
+                const act = parseInt(data.activityLevel);
+                if (isNaN(act) || act < 0 || act > 100) return false;
+            }
+            
+            // Validate status
+            const validStatuses = ['online', 'working', 'sleeping', 'idle', 'learning', 'error'];
+            if (data.status && !validStatuses.includes(data.status)) return false;
+            
+            return true;
         }
         
         function updateDashboard(data) {
             state.heartbeat = data.heartbeat || '--';
             state.activity = parseInt(data.activityLevel) || 0;
             state.memory = data.memory || '--';
+            state.memoryPercent = parseInt(data.memoryPercent) || 0;
             state.cpu = parseInt(data.cpu) || 0;
+            state.cpuPercent = parseInt(data.cpuPercent) || 0;
+            state.diskPercent = parseInt(data.diskPercent) || 0;
             state.status = data.status || 'idle';
             state.uptime = data.uptime || '--';
             state.lastUpdated = new Date().toLocaleTimeString();
@@ -1973,6 +2241,10 @@
             state.skillsList = data.skillsList || [];
             state.skillsCategories = data.skillsCategories || {};
             state.dataAge = data._dataAge || 0;
+            state.evomap = data.evomap || data.evomapStatus || null;
+            state.taskQueue = data.taskQueue || [];
+            state._source = data._source || data._hbSource || 'gateway';
+            state._health = data._health || { memory: 'ok', cpu: 'ok', disk: 'ok' };
             
             if (state.dataAge < 60) state.dataFreshness = 'fresh';
             else if (state.dataAge < 300) state.dataFreshness = 'normal';
@@ -1999,6 +2271,10 @@
             
             updateUI();
             updateCharts();
+            updateEvoMap();
+            updateTaskQueue();
+            updateHealthBars();
+            updateDataSource();
         }
         
         function updateUI() {
@@ -2014,7 +2290,6 @@
             $('skillsTotal').textContent = state.skillsTotal;
             
             // Status
-            $('currentStatus').textContent = capitalize(state.status);
             $('statusText').textContent = capitalize(state.status);
             $('statusBadge').dataset.status = state.status === 'online' ? 'online' : state.status;
             
@@ -2062,6 +2337,146 @@
             // Footer
             $('lastUpdated').textContent = state.lastUpdated;
             $('uptime').textContent = state.uptime;
+        }
+        
+        // EvoMap Display
+        function updateEvoMap() {
+            const evomap = state.evomap;
+            if (!evomap) {
+                $('evomapCard').style.display = 'none';
+                return;
+            }
+            
+            $('evomapCard').style.display = 'block';
+            $('evomapRep').textContent = evomap.reputation ? evomap.reputation.toFixed(1) : '--';
+            $('evomapPublished').textContent = evomap.published || '--';
+            $('evomapPromoted').textContent = evomap.promoted || '--';
+            $('evomapSurvival').textContent = evomap.survival || '--';
+            
+            const statusEl = $('evomapStatus');
+            if (evomap.online || evomap.status === 'online') {
+                statusEl.textContent = 'Online';
+                statusEl.style.background = 'rgba(92, 219, 149, 0.15)';
+                statusEl.style.color = 'var(--status-online)';
+            } else {
+                statusEl.textContent = 'Offline';
+                statusEl.style.background = 'rgba(255, 107, 107, 0.15)';
+                statusEl.style.color = 'var(--status-error)';
+            }
+        }
+        
+        // Task Queue Display
+        function updateTaskQueue() {
+            const queue = state.taskQueue;
+            const container = $('taskQueueItems');
+            if (!container) return;
+            
+            if (!queue || queue.length === 0) {
+                container.innerHTML = `
+                    <div class="timeline-item">
+                        <span class="timeline-icon">✨</span>
+                        <div class="timeline-content">
+                            <div class="timeline-text">No pending tasks</div>
+                            <div class="timeline-time">All caught up!</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = queue.slice(0, 5).map((task, i) => `
+                <div class="timeline-item" style="animation-delay: ${i * 0.05}s;">
+                    <span class="timeline-icon">${i === 0 ? '⚡' : '📋'}</span>
+                    <div class="timeline-content">
+                        <div class="timeline-text" style="${i === 0 ? 'color: var(--holo-cyan); font-weight: 600;' : ''}">${task}</div>
+                        <div class="timeline-time">${i === 0 ? 'Next' : 'Queued'}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Health Bars
+        function updateHealthBars() {
+            const health = state._health;
+            
+            // Memory
+            const memPct = state.memoryPercent;
+            $('healthMemText').textContent = state.memory;
+            $('healthMemBar').style.width = memPct + '%';
+            if (memPct >= 90) {
+                $('healthMemBar').style.background = 'linear-gradient(90deg, var(--status-error), #ff4444)';
+            } else if (memPct >= 80) {
+                $('healthMemBar').style.background = 'linear-gradient(90deg, var(--holo-gold), var(--status-error))';
+            } else {
+                $('healthMemBar').style.background = 'linear-gradient(90deg, var(--status-online), var(--holo-cyan))';
+            }
+            
+            // CPU
+            const cpuPct = state.cpuPercent;
+            $('healthCpuText').textContent = cpuPct + '%';
+            $('healthCpuBar').style.width = cpuPct + '%';
+            if (cpuPct >= 90) {
+                $('healthCpuBar').style.background = 'linear-gradient(90deg, var(--status-error), #ff4444)';
+            } else if (cpuPct >= 80) {
+                $('healthCpuBar').style.background = 'linear-gradient(90deg, var(--holo-gold), var(--status-error))';
+            } else {
+                $('healthCpuBar').style.background = 'linear-gradient(90deg, var(--holo-gold), var(--holo-cyan))';
+            }
+            
+            // Disk
+            const diskPct = state.diskPercent;
+            $('healthDiskText').textContent = diskPct + '%';
+            $('healthDiskBar').style.width = diskPct + '%';
+            if (diskPct >= 95) {
+                $('healthDiskBar').style.background = 'linear-gradient(90deg, var(--status-error), #ff4444)';
+            } else if (diskPct >= 85) {
+                $('healthDiskBar').style.background = 'linear-gradient(90deg, var(--holo-gold), var(--status-error))';
+            } else {
+                $('healthDiskBar').style.background = 'linear-gradient(90deg, var(--holo-violet), var(--holo-magenta))';
+            }
+            
+            // Footer health tag
+            const healthTag = $('healthTag');
+            if (health.memory === 'critical' || health.cpu === 'critical' || health.disk === 'critical') {
+                healthTag.textContent = '⚠️ Warning';
+                healthTag.style.background = 'rgba(255, 107, 107, 0.15)';
+                healthTag.style.color = 'var(--status-error)';
+            } else if (health.memory === 'warning' || health.cpu === 'warning' || health.disk === 'warning') {
+                healthTag.textContent = '⚡ Elevated';
+                healthTag.style.background = 'rgba(255, 215, 0, 0.15)';
+                healthTag.style.color = 'var(--holo-gold)';
+            } else {
+                healthTag.textContent = '✓ Healthy';
+                healthTag.style.background = 'rgba(92, 219, 149, 0.15)';
+                healthTag.style.color = 'var(--status-online)';
+            }
+        }
+        
+        // Data Source Indicator
+        function updateDataSource() {
+            const source = state._source || 'gateway';
+            $('dataSourceTag').textContent = source;
+        }
+        
+        // Ambient Particles
+        function createAmbientParticles() {
+            const container = $('ambientParticles');
+            if (!container) return;
+            
+            const colors = ['#00f5ff', '#ff00ff', '#8b5cf6', '#5cdb95', '#ffd700'];
+            const particleCount = 15;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'ambient-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.animationDuration = (15 + Math.random() * 20) + 's';
+                particle.style.animationDelay = (Math.random() * 15) + 's';
+                particle.style.width = (2 + Math.random() * 4) + 'px';
+                particle.style.height = particle.style.width;
+                container.appendChild(particle);
+            }
         }
         
         function updateProgressBar(barId, value, max) {
@@ -2219,6 +2634,21 @@
             
             fetchData();
             setInterval(fetchData, 2000);
+            
+            // Create ambient particles
+            createAmbientParticles();
+            
+            // v136.0: Spatial lighting - mouse tracking for fox container
+            const foxContainer = document.querySelector('.fox-container');
+            if (foxContainer) {
+                document.addEventListener('mousemove', (e) => {
+                    const rect = foxContainer.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width;
+                    const y = (e.clientY - rect.top) / rect.height;
+                    foxContainer.style.setProperty('--mouse-x', x.toFixed(3));
+                    foxContainer.style.setProperty('--mouse-y', y.toFixed(3));
+                });
+            }
             
             window.addEventListener('scroll', handleScroll, { passive: true });
             requestAnimationFrame(updateFPS);

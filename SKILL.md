@@ -9,6 +9,12 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+- v136.0: Scroll-Driven Animations（animation-timeline: view()驱动的卡片入场动画）
+- v136.0: Enhanced Data Validation（validateDashboardData函数增强，验证心率0-300BPM/活动0-100%/状态白名单）
+- v136.0: Spatial Lighting v2（fox-container空间光照效果，CSS自定义属性驱动的鼠标追踪光效）
+- v136.0: Glass Card Reflections（stat-card玻璃反射效果::after伪元素）
+- v136.0: Status-aware Pulse Animation（critical状态卡片脉冲动画）
+- v136.0: text-wrap: pretty（stat-card文本布局优化）
 - v122.0: Modern CSS 2026 Enhancements（@when条件规则/transition-behavior:allow-discrete/@starting-style入场动画/animation-composition性能优化/scroll-driven view-timeline动画）
 - v122.0: 增强型数据验证层（validateDashboardData函数验证心率/活动/状态/信誉范围）
 - v122.0: Fetch增强（AbortController超时控制/scheduler.yield()非阻塞更新/no-store缓存禁用）
