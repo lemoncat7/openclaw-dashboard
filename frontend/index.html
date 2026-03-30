@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MoShang - OpenClaw Status Dashboard">
     <meta name="theme-color" content="#0a0a0f">
-    <title>MoShang Status v139.0</title>
+    <title>MoShang Status v140.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -13,7 +13,8 @@
            MoShang Dashboard - Ultra Modern CSS Design v9.0 (2026)
            Features: Neural Fox AI, Holographic UI, Glassmorphism 5.0,
            Scroll-Driven Animations, Real-time Streaming, Particle FX
-           v139.0: Enhanced Performance, Visual Refinements, New Effects
+           v140.0: Fox Eye Tracking, Activity Reactivity, Performance
+                   Optimizations, Trend Indicators, Visual Polish
         ============================================================ */
         
         @layer base, layout, components, animations, effects;
@@ -268,13 +269,24 @@
                 pointer-events: none;
             }
             
-            /* v139.0: Status-Aware Glow System */
+            /* v140.0: Status-Aware Glow System */
             body.status-working .fox-container { --glow-color: rgba(0, 212, 255, 0.4); }
             body.status-sleeping .fox-container { --glow-color: rgba(168, 85, 247, 0.4); }
             body.status-idle .fox-container { --glow-color: rgba(254, 202, 122, 0.4); }
             body.status-excited .fox-container { --glow-color: rgba(255, 107, 157, 0.5); }
             body.status-thinking .fox-container { --glow-color: rgba(168, 85, 247, 0.4); }
             body.status-error .fox-container { --glow-color: rgba(255, 107, 107, 0.5); }
+            
+            /* v140.0: Trend Indicator Styles */
+            .trend-indicator {
+                font-family: var(--font-mono);
+                font-weight: 600;
+                transition: color 0.3s ease, transform 0.3s ease;
+            }
+            
+            .trend-indicator.up { color: var(--status-online); transform: translateY(-1px); }
+            .trend-indicator.down { color: var(--status-error); transform: translateY(1px); }
+            .trend-indicator.stable { color: var(--text-muted); }
             
             /* v139.0: Enhanced Pulse Animation */
             @keyframes v139-pulse-glow {
@@ -312,7 +324,7 @@
                 100% { transform: scale(1); }
             }
             
-            /* v139.0: Enhanced Card Hover */
+            /* v140.0: Enhanced Card Hover with Trend Highlight */
             .stat-card {
                 transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
                             box-shadow 0.3s ease,
@@ -322,6 +334,11 @@
             .stat-card:hover {
                 transform: translateY(-4px) scale(1.02);
                 box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 30px var(--mood-glow);
+            }
+            
+            .stat-card:hover .trend-indicator {
+                opacity: 1 !important;
+                transform: scale(1.2);
             }
             
             /* v139.0: Data Flow Wire Animation */
@@ -957,7 +974,14 @@
                 background: var(--mood-primary);
                 opacity: 0;
                 animation: particle-float 4s ease-in-out infinite;
+                transition: background 0.5s ease, box-shadow 0.5s ease;
             }
+            
+            /* v140.0: Status-reactive particle glow */
+            body.status-working .particle { box-shadow: 0 0 6px var(--mood-primary); }
+            body.status-sleeping .particle { box-shadow: 0 0 4px var(--mood-primary); animation-duration: 6s; }
+            body.status-idle .particle { box-shadow: 0 0 5px var(--mood-primary); animation-duration: 5s; }
+            body.status-excited .particle { box-shadow: 0 0 8px var(--mood-primary); animation-duration: 3s; }
             
             .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
             .particle:nth-child(2) { left: 30%; animation-delay: 0.8s; }
@@ -2113,6 +2137,7 @@
                     <div class="stat-card card-3d" data-stat="heartbeat" onclick="copyStat('heartbeat')">
                         <div class="stat-card-header">
                             <div class="stat-icon" style="background: rgba(0, 245, 255, 0.1); color: var(--holo-cyan);">💓</div>
+                            <span class="trend-indicator" id="heartbeatTrend" style="font-size:14px;opacity:0.6;">-</span>
                         </div>
                         <div class="stat-value animated-counter" id="heartbeatStat">--</div>
                         <div class="stat-label">Heart Rate</div>
@@ -2126,6 +2151,7 @@
                     <div class="stat-card card-3d" data-stat="activity" onclick="copyStat('activity')">
                         <div class="stat-card-header">
                             <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--holo-violet);">⚡</div>
+                            <span class="trend-indicator" id="activityTrend" style="font-size:14px;opacity:0.6;">-</span>
                         </div>
                         <div class="stat-value animated-counter" id="activityStat">--</div>
                         <div class="stat-label">Activity Level</div>
@@ -2142,6 +2168,7 @@
                     <div class="stat-card card-3d" data-stat="memory" onclick="copyStat('memory')">
                         <div class="stat-card-header">
                             <div class="stat-icon" style="background: rgba(92, 219, 149, 0.1); color: var(--status-online);">🧠</div>
+                            <span class="trend-indicator" id="memoryTrend" style="font-size:14px;opacity:0.6;">-</span>
                         </div>
                         <div class="stat-value animated-counter" id="memoryStat">--</div>
                         <div class="stat-label">Memory Usage</div>
@@ -2155,6 +2182,7 @@
                     <div class="stat-card card-3d" data-stat="cpu" onclick="copyStat('cpu')">
                         <div class="stat-card-header">
                             <div class="stat-icon" style="background: rgba(255, 215, 0, 0.1); color: var(--holo-gold);">🔲</div>
+                            <span class="trend-indicator" id="cpuTrend" style="font-size:14px;opacity:0.6;">-</span>
                         </div>
                         <div class="stat-value animated-counter" id="cpuStat">--</div>
                         <div class="stat-label">CPU Usage</div>
@@ -2297,7 +2325,7 @@
         
         <footer class="dashboard-footer entrance-5">
             <div class="footer-info">
-                <span>MoShang</span> Status Dashboard v139.0 • Last updated: <span id="lastUpdated">--</span>
+                <span>MoShang</span> Status Dashboard v140.0 • Last updated: <span id="lastUpdated">--</span>
                 <span id="dataSourceTag" style="margin-left: 8px; padding: 2px 8px; background: rgba(92, 219, 149, 0.15); border-radius: 4px; font-size: 10px; color: var(--status-online);"></span>
             </div>
             <div class="footer-info">
@@ -2311,9 +2339,10 @@
     
     <script>
         /* ============================================================
-           MoShang Dashboard - JavaScript v139.0
+           MoShang Dashboard - JavaScript v140.0
            Neural Fox AI, Real-time Updates, Predictive Refresh
-           v139.0: Enhanced Performance, New Visual Effects
+           v140.0: Fox Eye Tracking, Activity Reactivity, Performance
+                   Optimizations, Trend Indicators, Visual Polish
         ============================================================ */
         
         const state = {
@@ -2381,7 +2410,19 @@
         
         let isThinking = false;
         
-        // Enhanced Fox Drawing v138.0
+        // v140.0: Mouse tracking for fox eye follow
+        let mousePos = { x: 0, y: 0 };
+        let eyeTargetOffset = { x: 0, y: 0 };
+        let eyeCurrentOffset = { x: 0, y: 0 };
+        
+        // v140.0: Track mouse position for fox eye tracking
+        document.addEventListener('mousemove', (e) => {
+            const rect = foxCanvas.getBoundingClientRect();
+            mousePos.x = e.clientX - rect.left - foxCanvas.width / 2;
+            mousePos.y = e.clientY - rect.top - foxCanvas.height / 2;
+        });
+        
+        // Enhanced Fox Drawing v140.0
         function drawFox() {
             const w = foxCanvas.width;
             const h = foxCanvas.height;
@@ -2502,32 +2543,39 @@
             foxCtx.ellipse(cx + 15, eyeY, 8, 8 * blink, 0, 0, Math.PI * 2);
             foxCtx.fill();
             
-            // Eye color (iris)
+            // v140.0: Smooth eye tracking with interpolation
+            const maxOffset = 2.5;
+            const targetX = Math.sign(mousePos.x) * Math.min(Math.abs(mousePos.x) * 0.03, maxOffset);
+            const targetY = Math.sign(mousePos.y) * Math.min(Math.abs(mousePos.y) * 0.03, maxOffset);
+            eyeCurrentOffset.x += (targetX - eyeCurrentOffset.x) * 0.15;
+            eyeCurrentOffset.y += (targetY - eyeCurrentOffset.y) * 0.15;
+            
+            // Eye color (iris) - v140.0 with eye tracking
             if (blink > 0.5) {
                 foxCtx.fillStyle = colors.accent;
                 foxCtx.beginPath();
-                foxCtx.ellipse(cx - 15, eyeY, 5, 5 * blink, 0, 0, Math.PI * 2);
+                foxCtx.ellipse(cx - 15 + eyeCurrentOffset.x, eyeY + eyeCurrentOffset.y * 0.5, 5, 5 * blink, 0, 0, Math.PI * 2);
                 foxCtx.fill();
                 foxCtx.beginPath();
-                foxCtx.ellipse(cx + 15, eyeY, 5, 5 * blink, 0, 0, Math.PI * 2);
+                foxCtx.ellipse(cx + 15 + eyeCurrentOffset.x, eyeY + eyeCurrentOffset.y * 0.5, 5, 5 * blink, 0, 0, Math.PI * 2);
                 foxCtx.fill();
                 
-                // Pupils
+                // Pupils - v140.0 with tracking offset
                 foxCtx.fillStyle = '#0a0a0f';
                 foxCtx.beginPath();
-                foxCtx.ellipse(cx - 15, eyeY, 2.5, 3 * blink, 0, 0, Math.PI * 2);
+                foxCtx.ellipse(cx - 15 + eyeCurrentOffset.x * 1.5, eyeY + eyeCurrentOffset.y * 0.8, 2.5, 3 * blink, 0, 0, Math.PI * 2);
                 foxCtx.fill();
                 foxCtx.beginPath();
-                foxCtx.ellipse(cx + 15, eyeY, 2.5, 3 * blink, 0, 0, Math.PI * 2);
+                foxCtx.ellipse(cx + 15 + eyeCurrentOffset.x * 1.5, eyeY + eyeCurrentOffset.y * 0.8, 2.5, 3 * blink, 0, 0, Math.PI * 2);
                 foxCtx.fill();
                 
                 // Eye highlights
                 foxCtx.fillStyle = '#ffffff';
                 foxCtx.beginPath();
-                foxCtx.arc(cx - 17, eyeY - 2, 2, 0, Math.PI * 2);
+                foxCtx.arc(cx - 17 + eyeCurrentOffset.x, eyeY - 2 + eyeCurrentOffset.y * 0.5, 2, 0, Math.PI * 2);
                 foxCtx.fill();
                 foxCtx.beginPath();
-                foxCtx.arc(cx + 13, eyeY - 2, 2, 0, Math.PI * 2);
+                foxCtx.arc(cx + 13 + eyeCurrentOffset.x, eyeY - 2 + eyeCurrentOffset.y * 0.5, 2, 0, Math.PI * 2);
                 foxCtx.fill();
             }
             
@@ -3015,6 +3063,31 @@
             
             const cpuBar = $('cpuBar');
             if (cpuBar) cpuBar.style.width = state.cpuPercent + '%';
+            
+            // v140.0: Update trend indicators based on history
+            const updateTrend = (id, history) => {
+                if (history.length < 5) return;
+                const recent = history.slice(-5);
+                const first = recent.slice(0, 2).reduce((a, b) => a + b, 0) / 2;
+                const last = recent.slice(-2).reduce((a, b) => a + b, 0) / 2;
+                const delta = last - first;
+                const el = $(id);
+                if (!el) return;
+                if (Math.abs(delta) < 1) {
+                    el.textContent = '→';
+                    el.style.color = 'var(--text-muted)';
+                } else if (delta > 0) {
+                    el.textContent = '↑';
+                    el.style.color = 'var(--status-online)';
+                } else {
+                    el.textContent = '↓';
+                    el.style.color = 'var(--status-error)';
+                }
+            };
+            updateTrend('heartbeatTrend', heartbeatHistory);
+            updateTrend('activityTrend', activityHistory);
+            updateTrend('memoryTrend', memoryHistory);
+            updateTrend('cpuTrend', cpuHistory);
             
             // Update activity ring
             const activityRing = $('activityRingFill');
@@ -3521,7 +3594,7 @@
                 if (!document.hidden) fetchData();
             });
             
-            console.log('🚀 MoShang Dashboard v139.0 initialized');
+            console.log('🚀 MoShang Dashboard v140.0 initialized');
         }
         
         if (document.readyState === 'loading') {

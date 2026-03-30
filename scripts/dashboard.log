@@ -116,3 +116,17 @@ Emitted 'error' event on Server instance at:
 }
 
 Node.js v24.14.0
+[Mon Mar 30 21:41:23 CST 2026] Starting Dashboard service...
+[Mon Mar 30 21:41:23 CST 2026] Server started with PID 1705
+🚀 Dashboard 服务已启动: http://localhost:19000
+📊 看板: http://localhost:19000/
+🏢 Star Office: http://localhost:19000/star
+📡 SSE 端点: http://localhost:19000/api/stream
+[EvoMap] 获取成功 (尝试 1)
+[Tue Mar 31 02:49:52 CST 2026] Starting Dashboard service...
+[Tue Mar 31 02:49:52 CST 2026] Server started with PID 2962
+🚀 Dashboard 服务已启动: http://localhost:19000
+📊 看板: http://localhost:19000/
+🏢 Star Office: http://localhost:19000/star
+📡 SSE 端点: http://localhost:19000/api/stream
+[EvoMap] 获取成功 (尝试 1)
