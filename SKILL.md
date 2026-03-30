@@ -9,6 +9,22 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+- v139.0: Modern CSS v139.0 Enhancements（增强型滚动驱动动画、玻璃折射增强、状态感知光晕系统）
+- v139.0: Enhanced Pulse Animation（增强脉冲发光动画，带drop-shadow光晕效果）
+- v139.0: Neural Wave Animation（神经网络波动动画，缩放+透明度呼吸效果）
+- v139.0: Data Flow Wire Animation（数据流动画，渐变色流光效果）
+- v139.0: Breathing Exercise Enhancement（呼吸练习增强，8秒周期脉冲动画）
+- v139.0: Enhanced Progress Ring（进度环动画增强，带发光阴影效果）
+- v139.0: Quick Action Enhancement（快捷操作按钮弹簧弹性交互）
+- v139.0: Mood Button Glow Effect（心情按钮激活发光效果）
+- v139.0: Toast Slide Enhancement（通知滑入弹性缩放动画）
+- v139.0: AI Status Badge Pulse（AI状态徽章脉冲动画）
+- v139.0: Fox Expression Bounce（狐狸表情弹跳动画，带旋转效果）
+- v139.0: Heatmap Cell Hover（热力图单元格悬停放大和光晕效果）
+- v139.0: Skills Radar Glow（技能雷达渐变边框旋转动画）
+- v139.0: Performance Optimization（content-visibility:auto优化渲染性能）
+- v139.0: Enhanced Focus States（焦点状态多层光晕效果）
+- v139.0: Print Styles Enhancement（增强打印样式，隐藏所有动画和装饰）
 - v137.0: Predictive Refresh System（预测性刷新指示器，基于历史fetch duration预测下次刷新时间）
 - v137.0: @when Conditional Rules（2026 CSS @when条件规则增强，支持:has()状态感知样式）
 - v137.0: animation-composition: accumulate（性能优化，多层动画复合叠加）
@@ -746,6 +762,25 @@ node ~/.openclaw/workspace/skills/dashboard-service/scripts/server.js &
 - https://oclaw.mochencloud.cn:1443/onboard → localhost:19000
 
 ## 更新日志
+
+### v139.0 (2026-03-31)
+- **Modern CSS v139.0 Enhancements**: 增强型滚动驱动动画(v139-scroll-reveal)、玻璃折射增强、状态感知光晕系统(body.status-* CSS类)
+- **Enhanced Pulse Animation**: 增强脉冲发光动画，使用drop-shadow光晕效果替代传统box-shadow
+- **Neural Wave Animation**: 神经网络波动动画，缩放+透明度呼吸效果(v139-neural-wave)
+- **Data Flow Wire Animation**: 数据流动画，渐变色流光效果(v139-data-flow)，数据刷新时触发
+- **Breathing Exercise Enhancement**: 呼吸练习增强，8秒周期脉冲动画(v139-breathing-pulse)
+- **Enhanced Progress Ring**: 进度环动画增强，带发光阴影效果(v139-ring-glow)
+- **Quick Action Enhancement**: 快捷操作按钮弹簧弹性交互，cubic-bezier(0.34, 1.56, 0.64, 1)物理弹性
+- **Mood Button Glow Effect**: 心情按钮激活发光效果(box-shadow多层光晕)
+- **Toast Slide Enhancement**: 通知滑入弹性缩放动画(v139-toast-slide)
+- **AI Status Badge Pulse**: AI状态徽章脉冲动画(v139-ai-pulse)，thinking状态时触发
+- **Fox Expression Bounce**: 狐狸表情弹跳动画(v139-expression-bounce)，带旋转效果
+- **Heatmap Cell Hover**: 热力图单元格悬停放大(scale 1.3)和光晕效果
+- **Skills Radar Glow**: 技能雷达渐变边框旋转动画(conic-gradient)
+- **Performance Optimization**: content-visibility:auto优化渲染性能，为ambient-particles等添加contain-intrinsic-size
+- **Enhanced Focus States**: 焦点状态多层光晕效果(outline+outline-offset+box-shadow)
+- **Print Styles Enhancement**: 增强打印样式，隐藏所有canvas和装饰元素，优化纸质输出
+- **版本更新至 v139.0**
 
 ### v137.0 (2026-03-30)
 - **Predictive Refresh System预测性刷新系统**: 基于历史fetch duration动态预测最优刷新间隔，实时显示环形倒计时指示器，提升数据刷新可预测性
