@@ -2,7 +2,8 @@
 📊 看板: http://localhost:19000/
 🏢 Star Office: http://localhost:19000/star
 📡 SSE 端点: http://localhost:19000/api/stream
-[Mon Mar 30 13:34:06 CST 2026] Starting Dashboard service...
+[EvoMap] 获取成功 (尝试 1)
+arting Dashboard service...
 [Mon Mar 30 13:34:06 CST 2026] Server started with PID 2563
 node:events:486
       throw er; // Unhandled 'error' event
