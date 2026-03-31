@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MoShang - OpenClaw Status Dashboard">
     <meta name="theme-color" content="#0a0a0f">
-    <title>MoShang Status v149.0</title>
+    <title>MoShang Status v150.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -3689,6 +3689,710 @@
         .command-palette-input:focus {
             box-shadow: 0 0 0 2px var(--holo-cyan), 0 0 20px rgba(0, 245, 255, 0.2);
         }
+
+        /* ========== V150.0 MAJOR ENHANCEMENTS ========== */
+
+        /* v150.0: Morphing Ambient Blobs - Dynamic Background */
+        .ambient-blobs {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -3;
+            overflow: hidden;
+        }
+
+        .ambient-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            animation: blob-float var(--blob-duration, 20s) ease-in-out infinite;
+            animation-delay: var(--blob-delay, 0s);
+        }
+
+        .ambient-blob:nth-child(1) {
+            width: 500px;
+            height: 500px;
+            left: -10%;
+            top: 20%;
+            background: var(--holo-cyan);
+            --blob-duration: 25s;
+            --blob-delay: 0s;
+        }
+
+        .ambient-blob:nth-child(2) {
+            width: 400px;
+            height: 400px;
+            right: -5%;
+            top: 40%;
+            background: var(--holo-magenta);
+            --blob-duration: 30s;
+            --blob-delay: -8s;
+        }
+
+        .ambient-blob:nth-child(3) {
+            width: 350px;
+            height: 350px;
+            left: 30%;
+            bottom: -10%;
+            background: var(--holo-violet);
+            --blob-duration: 22s;
+            --blob-delay: -15s;
+        }
+
+        .ambient-blob:nth-child(4) {
+            width: 280px;
+            height: 280px;
+            right: 20%;
+            bottom: 30%;
+            background: var(--holo-rose);
+            --blob-duration: 28s;
+            --blob-delay: -5s;
+        }
+
+        @keyframes blob-float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            }
+            25% {
+                transform: translate(30px, -40px) scale(1.1) rotate(90deg);
+                border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            }
+            50% {
+                transform: translate(-20px, 20px) scale(0.95) rotate(180deg);
+                border-radius: 50% 50% 30% 70% / 60% 40% 60% 40%;
+            }
+            75% {
+                transform: translate(40px, 30px) scale(1.05) rotate(270deg);
+                border-radius: 70% 30% 50% 50% / 40% 70% 30% 60%;
+            }
+        }
+
+        /* v150.0: Status-reactive blob colors */
+        body.status-working .ambient-blob:nth-child(1) { background: var(--status-working); }
+        body.status-working .ambient-blob:nth-child(2) { background: var(--holo-cyan); }
+        body.status-sleeping .ambient-blob:nth-child(1) { background: var(--status-sleeping); }
+        body.status-sleeping .ambient-blob:nth-child(2) { background: var(--holo-violet); }
+        body.status-excited .ambient-blob:nth-child(1) { background: var(--status-excited); }
+        body.status-excited .ambient-blob:nth-child(2) { background: var(--holo-gold); }
+        body.status-thinking .ambient-blob:nth-child(1) { background: var(--holo-violet); }
+        body.status-thinking .ambient-blob:nth-child(2) { background: var(--holo-cyan); }
+
+        /* v150.0: Notification Center Slide Panel */
+        .notification-center {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 340px;
+            height: 100vh;
+            background: var(--glass-1);
+            backdrop-filter: blur(30px);
+            border-left: 1px solid var(--glass-border);
+            z-index: 8888;
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            flex-direction: column;
+            contain: layout style;
+        }
+
+        .notification-center.open {
+            transform: translateX(0);
+        }
+
+        .notification-center-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--glass-border);
+            flex-shrink: 0;
+        }
+
+        .notification-center-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .notification-center-close {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--glass-border);
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .notification-center-close:hover {
+            background: var(--glass-2);
+            color: var(--text-primary);
+            border-color: var(--glass-border-bright);
+        }
+
+        .notification-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            margin-bottom: 4px;
+            transition: background 0.2s ease;
+            animation: v150-slide-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes v150-slide-in {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .notification-item:hover {
+            background: var(--glass-2);
+        }
+
+        .notification-item-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .notification-item-content { flex: 1; }
+
+        .notification-item-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+
+        .notification-item-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .notification-item-time {
+            font-size: 10px;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            flex-shrink: 0;
+        }
+
+        .notification-item[data-type="achievement"] {
+            background: rgba(255, 215, 0, 0.08);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .notification-item[data-type="status"] {
+            background: rgba(0, 245, 255, 0.06);
+            border: 1px solid rgba(0, 245, 255, 0.15);
+        }
+
+        .notification-item[data-type="alert"] {
+            background: rgba(255, 107, 107, 0.08);
+            border: 1px solid rgba(255, 107, 107, 0.2);
+        }
+
+        .notification-item[data-type="success"] {
+            background: rgba(92, 219, 149, 0.08);
+            border: 1px solid rgba(92, 219, 149, 0.2);
+        }
+
+        .notification-center-footer {
+            padding: 12px 20px;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: center;
+        }
+
+        .notification-center-footer button {
+            padding: 6px 16px;
+            background: var(--glass-2);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-full);
+            color: var(--text-muted);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .notification-center-footer button:hover {
+            background: var(--glass-3);
+            color: var(--text-primary);
+        }
+
+        .notification-center-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 8887;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .notification-center-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* v150.0: Notification bell button */
+        .notif-bell-btn {
+            position: relative;
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--glass-border);
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .notif-bell-btn:hover {
+            background: var(--glass-2);
+            color: var(--text-primary);
+            border-color: var(--glass-border-bright);
+        }
+
+        .notif-bell-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            min-width: 16px;
+            height: 16px;
+            background: var(--status-error);
+            border-radius: var(--radius-full);
+            font-size: 9px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            animation: v150-badge-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes v150-badge-pop {
+            0% { transform: scale(0); }
+            60% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* v150.0: Event Stream Widget */
+        .event-stream {
+            background: var(--glass-1);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            max-height: 200px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-stream-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .event-stream-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .event-stream-live {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: var(--status-online);
+        }
+
+        .event-stream-live::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--status-online);
+            animation: v148-ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        .event-stream-items {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .event-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            background: var(--glass-1);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            font-size: 12px;
+            animation: v150-event-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes v150-event-in {
+            from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .event-item-icon { font-size: 14px; flex-shrink: 0; }
+        .event-item-text { flex: 1; color: var(--text-secondary); }
+        .event-item-time { font-size: 10px; color: var(--text-dim); font-family: var(--font-mono); flex-shrink: 0; }
+
+        .event-item[data-level="info"] .event-item-icon { color: var(--holo-cyan); }
+        .event-item[data-level="success"] .event-item-icon { color: var(--status-online); }
+        .event-item[data-level="warning"] .event-item-icon { color: var(--status-idle); }
+        .event-item[data-level="error"] .event-item-icon { color: var(--status-error); }
+
+        /* v150.0: Fox Eye Glow Enhancement */
+        .fox-eye-glow {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--mood-primary);
+            filter: blur(4px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .fox-container:hover .fox-eye-glow {
+            opacity: 0.6;
+        }
+
+        /* v150.0: Fox Sparkle Effect */
+        .fox-sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: v150-sparkle 0.8s ease-out forwards;
+        }
+
+        @keyframes v150-sparkle {
+            0% { transform: scale(0) translate(0, 0); opacity: 1; }
+            50% { transform: scale(1.5) translate(var(--tx, 10px), var(--ty, -10px)); opacity: 0.8; }
+            100% { transform: scale(0) translate(var(--tx2, 20px), var(--ty2, -20px)); opacity: 0; }
+        }
+
+        /* v150.0: Status Aura Gradient Ring */
+        .aura-gradient-ring {
+            position: absolute;
+            inset: -15px;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                transparent,
+                var(--mood-primary),
+                transparent,
+                var(--mood-secondary),
+                transparent
+            );
+            opacity: 0;
+            animation: v150-aura-rotate 4s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes v150-aura-rotate {
+            from { transform: rotate(0deg); opacity: 0.3; }
+            50% { opacity: 0.15; }
+            to { transform: rotate(360deg); opacity: 0.3; }
+        }
+
+        /* v150.0: Smooth Animated Number Counter */
+        @keyframes v150-counter-up {
+            0% { transform: translateY(8px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes v150-counter-down {
+            0% { transform: translateY(-8px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .stat-value.counting-up {
+            animation: v150-counter-up 0.15s ease-out;
+        }
+
+        .stat-value.counting-down {
+            animation: v150-counter-down 0.15s ease-out;
+        }
+
+        /* v150.0: Pulse ring on stat value change */
+        .stat-value.pulse-change {
+            animation: v150-stat-pulse 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes v150-stat-pulse {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.15); text-shadow: 0 0 20px var(--mood-primary); }
+            100% { transform: scale(1); }
+        }
+
+        /* v150.0: Heartbeat line graph animation */
+        .heartbeat-line-svg {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .heartbeat-line-path {
+            fill: none;
+            stroke: var(--holo-cyan);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 0 4px var(--holo-cyan));
+            animation: v150-heartbeat-draw 2s ease-in-out infinite;
+        }
+
+        @keyframes v150-heartbeat-draw {
+            0%, 100% { stroke-dashoffset: 0; }
+            50% { stroke-dashoffset: -20; }
+        }
+
+        /* v150.0: Magnetic card hover effect */
+        .stat-card.magnetic-hover {
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        box-shadow 0.2s ease;
+        }
+
+        /* v150.0: Status-aware gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, var(--holo-cyan), var(--holo-violet), var(--holo-magenta));
+            background-size: 200% 200%;
+            animation: v146-gradient-shift 3s ease infinite;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* v150.0: Glass panel separator */
+        .glass-separator {
+            height: 1px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                var(--glass-border) 20%,
+                var(--glass-border-bright) 50%,
+                var(--glass-border) 80%,
+                transparent 100%
+            );
+            margin: 16px 0;
+        }
+
+        /* v150.0: Achievement unlock animation */
+        @keyframes v150-achievement-unlock {
+            0% { transform: scale(0.5) translateY(20px); opacity: 0; }
+            60% { transform: scale(1.1) translateY(-5px); opacity: 1; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .achievement-unlock {
+            animation: v150-achievement-unlock 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* v150.0: Mini compact metrics in header */
+        .compact-metrics {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .compact-metric {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: var(--glass-1);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            font-size: 11px;
+            transition: all 0.2s ease;
+        }
+
+        .compact-metric:hover {
+            background: var(--glass-2);
+            border-color: var(--glass-border-bright);
+        }
+
+        .compact-metric-icon { font-size: 12px; }
+        .compact-metric-value {
+            font-family: var(--font-mono);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .compact-metric-bar {
+            width: 24px;
+            height: 4px;
+            background: var(--glass-2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .compact-metric-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.4s var(--ease-out-expo);
+        }
+
+        /* v150.0: Star Office quick link */
+        .quick-link-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.12), rgba(255, 183, 77, 0.12));
+            border: 1px solid rgba(255, 215, 0, 0.25);
+            border-radius: var(--radius-md);
+            color: var(--holo-gold);
+            font-family: var(--font-sans);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-out-expo);
+            text-decoration: none;
+        }
+
+        .quick-link-btn:hover {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 183, 77, 0.2));
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+            transform: translateY(-1px);
+        }
+
+        /* v150.0: Mood color wave animation */
+        @keyframes v150-mood-wave {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        body.mood-excited {
+            --mood-wave-gradient: linear-gradient(90deg, var(--holo-gold), var(--holo-rose), var(--holo-cyan));
+        }
+
+        body.mood-thinking {
+            --mood-wave-gradient: linear-gradient(90deg, var(--holo-violet), var(--holo-cyan), var(--holo-violet));
+        }
+
+        /* v150.0: Glowing border on stat card when data changes */
+        .stat-card.data-flash {
+            animation: v150-data-flash 0.5s ease-out;
+        }
+
+        @keyframes v150-data-flash {
+            0% { border-color: var(--holo-cyan); box-shadow: 0 0 0 0 rgba(0, 245, 255, 0.4); }
+            50% { box-shadow: 0 0 0 4px rgba(0, 245, 255, 0.1); }
+            100% { border-color: var(--glass-border); box-shadow: 0 0 0 0 rgba(0, 245, 255, 0); }
+        }
+
+        /* v150.0: Ultra smooth hover lift for cards */
+        .glass-card.hover-lift {
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        box-shadow 0.35s ease,
+                        border-color 0.3s ease;
+        }
+
+        .glass-card.hover-lift:hover {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 40px var(--mood-glow);
+        }
+
+        /* v150.0: Animated underline for section titles */
+        .section-title-underline {
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--mood-primary), transparent);
+            border-radius: 1px;
+            transform: scaleX(0.5);
+            transform-origin: left;
+            transition: transform 0.3s var(--ease-out-expo);
+        }
+
+        .glass-card:hover .section-title-underline::after {
+            transform: scaleX(1);
+        }
+
+        /* v150.0: Floating card stack effect */
+        .card-stack {
+            position: relative;
+        }
+
+        .card-stack::before,
+        .card-stack::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--glass-border);
+            transform: translateY(8px) scale(0.97);
+            z-index: -1;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .card-stack::after {
+            transform: translateY(16px) scale(0.94);
+            opacity: 0.25;
+        }
+
+        .card-stack:hover::before {
+            transform: translateY(12px) scale(0.97);
+            border-color: var(--glass-border-bright);
+        }
+
+        .card-stack:hover::after {
+            transform: translateY(24px) scale(0.94);
+            border-color: var(--glass-border);
+        }
     </style>
 </head>
 <body>
@@ -3698,9 +4402,38 @@
     
     <div class="dashboard-container">
         <div class="ambient-particles" id="ambientParticles"></div>
+        <!-- v150.0: Morphing Ambient Blobs -->
+        <div class="ambient-blobs" id="ambientBlobs">
+            <div class="ambient-blob"></div>
+            <div class="ambient-blob"></div>
+            <div class="ambient-blob"></div>
+            <div class="ambient-blob"></div>
+        </div>
         <div class="glow-orb" id="glowOrb1"></div>
         <div class="glow-orb" id="glowOrb2" style="animation-delay: -2s; left: 70%; top: 20%;"></div>
         <div class="glow-orb" id="glowOrb3" style="animation-delay: -4s; left: 20%; top: 60%;"></div>
+
+        <!-- v150.0: Notification Center -->
+        <div class="notification-center-overlay" id="notifOverlay" onclick="toggleNotificationCenter()"></div>
+        <div class="notification-center" id="notificationCenter">
+            <div class="notification-center-header">
+                <div class="notification-center-title">🔔 Notifications</div>
+                <button class="notification-center-close" onclick="toggleNotificationCenter()">✕</button>
+            </div>
+            <div class="notification-list" id="notificationList">
+                <div class="notification-item" data-type="info">
+                    <div class="notification-item-icon">ℹ️</div>
+                    <div class="notification-item-content">
+                        <div class="notification-item-title">Welcome to MoShang Dashboard</div>
+                        <div class="notification-item-desc">Real-time status monitoring active</div>
+                    </div>
+                    <div class="notification-item-time">now</div>
+                </div>
+            </div>
+            <div class="notification-center-footer">
+                <button onclick="clearAllNotifications()">Clear All</button>
+            </div>
+        </div>
         
         <header class="dashboard-header">
             <div class="header-left">
@@ -3726,6 +4459,28 @@
                 </div>
             </div>
             <div class="header-right">
+                <!-- v150.0: Compact Metrics Bar -->
+                <div class="compact-metrics" id="compactMetrics">
+                    <div class="compact-metric" title="Memory">
+                        <span class="compact-metric-icon">🧠</span>
+                        <span class="compact-metric-value" id="compactMemValue">--</span>
+                        <div class="compact-metric-bar">
+                            <div class="compact-metric-fill" id="compactMemFill" style="width:0%;background:var(--status-online);"></div>
+                        </div>
+                    </div>
+                    <div class="compact-metric" title="CPU">
+                        <span class="compact-metric-icon">🔥</span>
+                        <span class="compact-metric-value" id="compactCpuValue">--</span>
+                        <div class="compact-metric-bar">
+                            <div class="compact-metric-fill" id="compactCpuFill" style="width:0%;background:var(--holo-gold);"></div>
+                        </div>
+                    </div>
+                    <div class="compact-metric" title="Tasks">
+                        <span class="compact-metric-icon">⚡</span>
+                        <span class="compact-metric-value" id="compactTaskValue">0</span>
+                    </div>
+                </div>
+
                 <div class="live-clock">
                     <span>🕐</span>
                     <span id="liveClock">--:--:--</span>
@@ -3757,6 +4512,12 @@
                     <button class="theme-btn" data-theme="purple" onclick="setTheme('purple')" title="Purple">💜</button>
                 </div>
                 
+                <!-- v150.0: Notification Bell -->
+                <button class="notif-bell-btn" id="notifBellBtn" onclick="toggleNotificationCenter()" title="Notifications">
+                    🔔
+                    <div class="notif-bell-badge" id="notifBadge" style="display:none;">0</div>
+                </button>
+
                 <button class="refresh-btn" id="refreshBtn" onclick="refreshData()">
                     <span class="refresh-icon">🔄</span>
                     <span>Refresh</span>
@@ -3880,6 +4641,24 @@
                     <div class="breathing-text" id="breathingText">Take a moment</div>
                     <div class="breathing-phase" id="breathingPhase">Idle</div>
                     <button class="breathing-btn" id="breathingBtn" onclick="toggleBreathing()">Start Breathing</button>
+                </div>
+
+                <!-- v150.0: Event Stream Widget -->
+                <div class="event-stream" id="eventStream">
+                    <div class="event-stream-header">
+                        <div class="event-stream-title">
+                            <span>⚡</span>
+                            <span>Live Events</span>
+                        </div>
+                        <div class="event-stream-live">LIVE</div>
+                    </div>
+                    <div class="event-stream-items" id="eventStreamItems">
+                        <div class="event-item" data-level="info">
+                            <div class="event-item-icon">🚀</div>
+                            <div class="event-item-text">Dashboard initialized</div>
+                            <div class="event-item-time">now</div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="activity-heatmap">
@@ -4084,12 +4863,14 @@
         
         <footer class="dashboard-footer">
             <div class="footer-info">
-                <span>MoShang</span> <span class="footer-version">Status Dashboard v146.0</span> • Last updated: <span id="lastUpdated">--</span>
+                <span>MoShang</span> <span class="footer-version">Status Dashboard v151.0</span> • Last updated: <span id="lastUpdated">--</span>
                 <span id="dataSourceTag" style="margin-left: 8px; padding: 2px 8px; background: rgba(92, 219, 149, 0.15); border-radius: 4px; font-size: 10px; color: var(--status-online);"></span>
+                <span id="gitCommitTag" style="margin-left: 6px; padding: 2px 8px; background: rgba(139, 92, 246, 0.15); border-radius: 4px; font-size: 10px; color: var(--holo-violet);" title="Git Commit"></span>
             </div>
             <div class="footer-info">
                 Uptime: <span id="uptime">--</span>
                 <span id="healthTag" style="margin-left: 8px; padding: 2px 8px; background: rgba(0, 245, 255, 0.1); border-radius: 4px; font-size: 10px;"></span>
+                <span id="dataAgeTag" style="margin-left: 8px; padding: 2px 8px; background: rgba(0, 245, 255, 0.1); border-radius: 4px; font-size: 10px;"></span>
             </div>
         </footer>
     </div>
@@ -4167,7 +4948,10 @@
             // v149.0: Command palette
             _commandPaletteOpen: false,
             _commandSelectedIndex: 0,
-            _commands: []
+            _commands: [],
+            // v151.0: Git commit info
+            _gitCommit: 'e50c240585fd395d81311464c6b7e8ff80614401',
+            _gitCommitMsg: 'v149.0: Command palette, multi-source fallback'
         };
         
         const REFRESH_INTERVAL = 2000;
@@ -4319,6 +5103,25 @@
             eyeCurrentOffset.y += (targetY - eyeCurrentOffset.y) * 0.15;
             
             if (blink > 0.5) {
+                // v150.0: Eye glow effect
+                const glowIntensity = foxMood === 'excited' ? 0.6 : foxMood === 'thinking' ? 0.4 : 0.25;
+                const eyeGlow = foxCtx.createRadialGradient(cx - 15, eyeY, 0, cx - 15, eyeY, 12);
+                eyeGlow.addColorStop(0, colors.accent + 'cc');
+                eyeGlow.addColorStop(1, 'transparent');
+                foxCtx.fillStyle = eyeGlow;
+                foxCtx.globalAlpha = glowIntensity;
+                foxCtx.beginPath();
+                foxCtx.ellipse(cx - 15, eyeY, 12, 10, 0, 0, Math.PI * 2);
+                foxCtx.fill();
+                const eyeGlow2 = foxCtx.createRadialGradient(cx + 15, eyeY, 0, cx + 15, eyeY, 12);
+                eyeGlow2.addColorStop(0, colors.accent + 'cc');
+                eyeGlow2.addColorStop(1, 'transparent');
+                foxCtx.fillStyle = eyeGlow2;
+                foxCtx.beginPath();
+                foxCtx.ellipse(cx + 15, eyeY, 12, 10, 0, 0, Math.PI * 2);
+                foxCtx.fill();
+                foxCtx.globalAlpha = 1;
+
                 foxCtx.fillStyle = colors.accent;
                 foxCtx.beginPath();
                 foxCtx.ellipse(cx - 15 + eyeCurrentOffset.x, eyeY + eyeCurrentOffset.y * 0.5, 5, 5 * blink, 0, 0, Math.PI * 2);
@@ -4686,10 +5489,12 @@
         
         // Data Fetching
         // v149.0: Multi-source data endpoints with fallback
+        // v151.0: Added reliability endpoint for data source health monitoring
         const DATA_SOURCES = [
             { url: '/api/dashboard', priority: 1, name: 'gateway' },
             { url: '/api/heartbeat', priority: 2, name: 'heartbeat' },
-            { url: '/api/status', priority: 3, name: 'status' }
+            { url: '/api/status', priority: 3, name: 'status' },
+            { url: '/api/reliability', priority: 4, name: 'reliability' }
         ];
 
         // v149.0: Update connection status UI
@@ -4929,9 +5734,59 @@
             if (heartbeatChanged) animateCounter('heartbeatStat');
             if (activityChanged) animateCounter('activityValue');
             if (activityChanged) animateCounter('activityStat');
-            
+
+            // v150.0: Flash stat cards on change
+            if (heartbeatChanged) flashStatCard('heartbeat');
+            if (activityChanged) flashStatCard('activity');
+
             // v145.0: Data pulse effect on successful refresh
             triggerDataPulse();
+
+            // v150.0: Update ambient blobs for status
+            updateAmbientBlobsStatus();
+
+            // v150.0: Update compact metrics bar
+            const compactMem = $('compactMemValue');
+            const compactCpu = $('compactCpuValue');
+            const compactTask = $('compactTaskValue');
+            const compactMemFill = $('compactMemFill');
+            const compactCpuFill = $('compactCpuFill');
+            if (compactMem) compactMem.textContent = state.memoryPercent + '%';
+            if (compactCpu) compactCpu.textContent = state.cpuPercent + '%';
+            if (compactTask) compactTask.textContent = state.taskDone;
+            if (compactMemFill) compactMemFill.style.width = state.memoryPercent + '%';
+            if (compactCpuFill) compactCpuFill.style.width = state.cpuPercent + '%';
+
+            // v150.0: Status change notifications
+            if (state.status !== data.status && state.status) {
+                const statusIcons = { online: '🟢', working: '⚡', sleeping: '🌙', idle: '☀️', error: '🔴', learning: '📚' };
+                addEvent(`${capitalize(data.status)} mode activated`, statusIcons[data.status] || '⚡', data.status === 'error' ? 'error' : data.status === 'working' ? 'info' : 'success');
+                if (data.status === 'working') {
+                    addNotification('MoShang is Working', 'Processing tasks...', 'status', '⚡');
+                } else if (data.status === 'sleeping') {
+                    addNotification('MoShang is Sleeping', 'Resting mode active', 'info', '🌙');
+                } else if (data.status === 'online') {
+                    addNotification('MoShang is Online', 'Ready to assist!', 'success', '🟢');
+                }
+            }
+
+            // v150.0: Add event on fresh data
+            addEvent('Data refreshed', '📡', 'info');
+
+            // v150.0: High CPU/Memory alert notifications
+            if (state.cpuPercent > 80 && data._health?.cpu === 'warning') {
+                addNotification('High CPU Usage', `${state.cpuPercent}% CPU usage`, 'alert', '🔥');
+                addEvent(`High CPU: ${state.cpuPercent}%`, '🔥', 'warning');
+            }
+            if (state.memoryPercent > 85 && data._health?.memory === 'warning') {
+                addNotification('High Memory Usage', `${state.memoryPercent}% memory used`, 'alert', '🧠');
+                addEvent(`High Memory: ${state.memoryPercent}%`, '🧠', 'warning');
+            }
+
+            // v150.0: Excited sparkles when status changes to excited
+            if (data.status === 'excited' || data.status === 'working') {
+                triggerFoxSparkle();
+            }
         }
         
         // v145.0: Trigger a visual pulse ring when fresh data is received
@@ -5043,6 +5898,31 @@
         function updateDataSource() {
             const tag = $('dataSourceTag');
             if (tag) tag.textContent = state._source || 'gateway';
+
+            // v151.0: Show git commit hash in footer
+            const gitTag = $('gitCommitTag');
+            if (gitTag) {
+                gitTag.textContent = 'git:' + state._gitCommit?.substring(0, 7) || 'e50c240';
+                gitTag.title = 'Last commit: ' + state._gitCommitMsg || 'v149.0';
+            }
+
+            // v151.0: Show data age indicator
+            const ageTag = $('dataAgeTag');
+            if (ageTag && state.dataAge !== undefined) {
+                if (state.dataAge < 5) {
+                    ageTag.textContent = '⚡Live';
+                    ageTag.style.color = 'var(--status-online)';
+                } else if (state.dataAge < 60) {
+                    ageTag.textContent = state.dataAge + 's ago';
+                    ageTag.style.color = 'var(--status-online)';
+                } else if (state.dataAge < 300) {
+                    ageTag.textContent = Math.floor(state.dataAge / 60) + 'm ago';
+                    ageTag.style.color = 'var(--status-idle)';
+                } else {
+                    ageTag.textContent = Math.floor(state.dataAge / 60) + 'm ago';
+                    ageTag.style.color = 'var(--status-error)';
+                }
+            }
         }
         
         // Breathing Exercise
@@ -5217,6 +6097,126 @@
             }
         }
         
+        // ========== V150.0: NOTIFICATION CENTER ==========
+        let _notificationCount = 0;
+
+        function toggleNotificationCenter() {
+            const panel = $('notificationCenter');
+            const overlay = $('notifOverlay');
+            panel.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+
+        function addNotification(title, desc, type = 'info', icon = 'ℹ️') {
+            const list = $('notificationList');
+            const badge = $('notifBadge');
+
+            _notificationCount++;
+            if (badge) {
+                badge.style.display = 'flex';
+                badge.textContent = _notificationCount > 9 ? '9+' : _notificationCount;
+            }
+
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('zh-CN', { hour12: false, hour: '2-digit', minute: '2-digit' });
+
+            const item = document.createElement('div');
+            item.className = 'notification-item';
+            item.setAttribute('data-type', type);
+            item.innerHTML = `
+                <div class="notification-item-icon">${icon}</div>
+                <div class="notification-item-content">
+                    <div class="notification-item-title">${title}</div>
+                    <div class="notification-item-desc">${desc}</div>
+                </div>
+                <div class="notification-item-time">${timeStr}</div>
+            `;
+
+            // Insert at top
+            list.insertBefore(item, list.firstChild);
+
+            // Keep max 20 notifications
+            while (list.children.length > 20) {
+                list.lastChild.remove();
+            }
+        }
+
+        function clearAllNotifications() {
+            const list = $('notificationList');
+            if (list) list.innerHTML = '';
+            const badge = $('notifBadge');
+            if (badge) badge.style.display = 'none';
+            _notificationCount = 0;
+        }
+
+        // ========== V150.0: EVENT STREAM ==========
+        const _eventStream = [];
+
+        function addEvent(text, icon = '⚡', level = 'info') {
+            const container = $('eventStreamItems');
+            if (!container) return;
+
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('zh-CN', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+            _eventStream.unshift({ text, icon, level, time: timeStr });
+            if (_eventStream.length > 15) _eventStream.pop();
+
+            const item = document.createElement('div');
+            item.className = 'event-item';
+            item.setAttribute('data-level', level);
+            item.innerHTML = `
+                <div class="event-item-icon">${icon}</div>
+                <div class="event-item-text">${text}</div>
+                <div class="event-item-time">${timeStr}</div>
+            `;
+
+            container.insertBefore(item, container.firstChild);
+
+            // Remove old events from DOM (keep max 10)
+            while (container.children.length > 10) {
+                container.lastChild.remove();
+            }
+        }
+
+        // ========== V150.0: AMBIENT BLOBS STATUS UPDATE ==========
+        function updateAmbientBlobsStatus() {
+            const status = state.status || 'idle';
+            document.body.className = '';
+            document.body.classList.add('status-' + status);
+            document.body.classList.add('mood-' + foxMood);
+        }
+
+        // ========== V150.0: ENHANCED FOX SPARKLE EFFECT ==========
+        function triggerFoxSparkle() {
+            const container = $('foxContainer');
+            if (!container) return;
+
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'fox-sparkle';
+                    sparkle.style.left = (30 + Math.random() * 40) + '%';
+                    sparkle.style.top = (20 + Math.random() * 40) + '%';
+                    sparkle.style.setProperty('--tx', (Math.random() * 20 - 10) + 'px');
+                    sparkle.style.setProperty('--ty', (Math.random() * -20 - 5) + 'px');
+                    sparkle.style.setProperty('--tx2', (Math.random() * 30 - 15) + 'px');
+                    sparkle.style.setProperty('--ty2', (Math.random() * -40 - 10) + 'px');
+                    container.appendChild(sparkle);
+                    setTimeout(() => sparkle.remove(), 800);
+                }, i * 80);
+            }
+        }
+
+        // ========== V150.0: STAT VALUE CHANGE FLASH ==========
+        function flashStatCard(statId) {
+            const card = document.querySelector(`[data-stat="${statId}"]`);
+            if (!card) return;
+            card.classList.remove('data-flash');
+            card.offsetHeight; // Reflow
+            card.classList.add('data-flash');
+        }
+
         // Toast notifications
         function showToast(message, type = 'info') {
             const container = $('toastContainer');
@@ -5247,6 +6247,7 @@
                 { section: 'Actions', label: 'Toggle Auto-Refresh', desc: 'Pause or resume auto-refresh', icon: '⏸️', shortcut: 'A', action: () => toggleAutoRefresh() },
                 { section: 'Actions', label: 'Breathing Exercise', desc: 'Start guided breathing', icon: '🌬️', shortcut: 'B', action: () => toggleBreathing() },
                 { section: 'Actions', label: 'Export Status', desc: 'Download status as JSON', icon: '📥', action: () => quickAction('export') },
+                { section: 'Actions', label: 'Notifications', desc: 'Open notification center', icon: '🔔', shortcut: 'N', action: () => toggleNotificationCenter() },
                 { section: 'Actions', label: 'Copy Status', desc: 'Copy status to clipboard', icon: '📋', action: () => quickAction('copy') },
                 // Themes
                 { section: 'Themes', label: 'Theme: Default', desc: 'Switch to default dark theme', icon: '🌑', action: () => setTheme('default') },
@@ -5673,19 +6674,28 @@
                 if (e.key === 'a' && !e.ctrlKey && !e.metaKey) {
                     toggleAutoRefresh();
                 }
+                // v150.0: Notification center
+                if (e.key === 'n' && !e.ctrlKey && !e.metaKey) {
+                    toggleNotificationCenter();
+                }
             });
             
             // v143.0: Setup gesture detection
             setupGestureDetection();
-            
+
+            // v150.0: Initialize ambient blobs and event stream
+            updateAmbientBlobsStatus();
+            addEvent('Dashboard v150.0 ready', '🚀', 'success');
+            addNotification('MoShang Dashboard v150.0', 'Real-time monitoring active', 'info', '🚀');
+
             // v143.0: Log initialization
-            v143Log('info', 'MoShang Dashboard v149.0 initialized', {
+            v143Log('info', 'MoShang Dashboard v150.0 initialized', {
                 userAgent: navigator.userAgent,
                 viewport: { width: window.innerWidth, height: window.innerHeight },
                 supportsViewTransitions: !!document.startViewTransition,
-                keyboardShortcuts: ['r=refresh', 'b=breathing', 't=theme', 'v=viewTransition', '1-5=moods', 'a=autoRefresh', 'Ctrl+K=commandPalette']
+                keyboardShortcuts: ['r=refresh', 'b=breathing', 't=theme', 'v=viewTransition', '1-5=moods', 'a=autoRefresh', 'n=notifications', 'Ctrl+K=commandPalette']
             });
-            console.log('🚀 MoShang Dashboard v149.0 initialized');
+            console.log('🚀 MoShang Dashboard v150.0 initialized');
         }
         
         if (document.readyState === 'loading') {

@@ -131,3 +131,5 @@ Node.js v24.14.0
 📡 SSE 端点: http://localhost:19000/api/stream
 [EvoMap] 获取成功 (尝试 1)
 [EvoMap] 获取成功 (尝试 1)
+[SSE] 客户端连接，当前: 1 个
+[SSE] 客户端断开，当前: 0 个
