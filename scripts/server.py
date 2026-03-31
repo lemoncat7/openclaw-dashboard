@@ -1466,7 +1466,7 @@ def get_gateway_status():
     
     return data
 
-print(f"🚀 Dashboard 服务启动中 v3.1: http://localhost:{PORT}")
+print(f"🚀 Dashboard 服务启动中 v3.2: http://localhost:{PORT}")
 print(f"📊 看板: http://localhost:{PORT}/")
 print(f"🏢 Star Office: http://localhost:{PORT}/star")
 print(f"🔌 WebSocket: ws://localhost:19001 (实时更新)")

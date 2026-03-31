@@ -9,6 +9,15 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+- v155.0: CSS 2026 新特性（update media, color-gamut, inert, scroll-start, outline-size）
+- v155.0: Web Locks API（跨标签页数据访问协调）
+- v155.0: Network Information API（网络质量自适应刷新率）
+- v155.0: View Transitions API v2（命名视图转换）
+- v153.0: World Clock Widget（世界时钟，显示北京、东京、纽约、伦敦四城市时间）
+- v153.0: Voice Wave Visualizer（活动波形可视化器，12条动态波形条随活跃度变化）
+- v153.0: Fortune Widget（莫殇智慧语录，随机展示心灵鸡汤/编程哲学/哥哥关心语）
+- v153.0: Emoji Reactions（快速表情反应，6个表情按钮发送可爱反馈）
+- v153.0: Achievement Toast（成就提示样式，金色渐变动画特殊toast）
 - v146.0: Theme Smooth Transitions（主题切换所有元素平滑过渡，0.3-0.4s动画）
 - v146.0: Discrete Property Transitions（allow-discrete离散属性平滑过渡）
 - v146.0: Enhanced Focus Ring Animation（焦点环脉冲扩散效果）
@@ -798,6 +807,29 @@ node ~/.openclaw/workspace/skills/dashboard-service/scripts/server.js &
 - https://oclaw.mochencloud.cn:1443/onboard → localhost:19000
 
 ## 更新日志
+
+### v155.0 (2026-04-01)
+- **CSS @media (update: fast/slow)**: 根据浏览器更新频率自适应动画速度，慢速更新设备自动降低动画频率
+- **CSS @media (color-gamut: p3)**: 支持Display P3广色域显示，HDR屏幕自动使用更鲜艳的色彩
+- **CSS @media (inverted-colors)**: 支持系统反转颜色模式，画布和粒子自动反转
+- **CSS inert属性**: 更好的焦点管理，模态框激活时自动inert非活跃元素
+- **CSS scroll-start属性**: 控制初始滚动位置，页面加载时滚动到顶部
+- **CSS :focus-visible outline-size**: 使用outline-size替代outline-width，更现代的焦点指示器
+- **CSS :user-valid/:user-invalid**: 表单验证样式支持，根据用户输入实时应用验证样式
+- **CSS accent-color**: 更好的表单控件颜色一致性
+- **CSS scrollbar-gutter**: 稳定的滚动条布局，防止内容抖动
+- **CSS resize改进**: 可调整大小的面板样式
+- **View Transitions API v2**: 命名视图转换，狐狸头像和统计卡片使用独立的过渡动画
+- **CSS @media (pointer: coarse)**: 触摸设备自动增加按钮最小尺寸到44px，符合无障碍标准
+- **CSS @media (hover: on-demand)**: 检测设备是否需要悬停功能，按需启用交互效果
+- **CSS overscroll-behavior**: 弹性滚动边界控制，仪表板使用contain防止连锁滚动
+- **CSS field-sizing**: 自动调整字段大小，content值让表单元素自适应内容
+- **CSS mix-blend-mode**: 叠加模式支持，屏幕混合效果
+- **JavaScript Web Locks API**: 跨标签页协调数据访问，防止并发获取冲突
+- **JavaScript Network Information API**: 根据网络质量自动调整刷新频率和超时时间
+- **自适应刷新率**: 慢速网络自动降低刷新频率(8s)，节省流量同时保证数据新鲜度
+- **自适应超时**: 网络质量差时自动延长fetch超时时间，提高成功率
+- **版本更新至 v155.0**
 
 ### v148.0 (2026-03-31)
 - **Neuomorphic 2.0 Soft UI**: 新增 .neu-card 类，带柔和阴影和高光的现代软 UI 卡片效果，悬停上浮/按压反馈
