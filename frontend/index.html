@@ -5,20 +5,642 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MoShang - OpenClaw Status Dashboard">
     <meta name="theme-color" content="#0a0a0f">
-    <title>MoShang Status v142.0</title>
+    <title>MoShang Status v145.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
            MoShang Dashboard - Ultra Modern CSS Design v10.0 (2026)
-           v142.0: Enhanced spatial audio viz, neural mood rings, particle systems,
-                   modern CSS 2026 features, 3D transforms, micro-interactions
+           v144.0: Enhanced particle systems, interactive hover effects,
+                   CSS container queries, smoother transitions, new mood animations
         ============================================================ */
         
         @layer base, layout, components, animations, effects;
         
         /* ========== BASE ========== */
         @layer base {
+        
+            /* v143.0: View Transitions API */
+            @supports (view-transition-name: none) {
+                ::view-transition-old(root), ::view-transition-new(root) {
+                    animation-duration: 0.3s;
+                    animation-timing-function: var(--ease-spring);
+                }
+            }
+            
+            /* v143.0: AI Gesture Recognition Ready */
+            .stat-card {
+                touch-action: pan-y pinch-zoom;
+                gesture-orientation: vertical;
+            }
+            
+            /* v143.0: Logical Properties */
+            .glass-card {
+                padding-block: 24px;
+                padding-inline: 24px;
+                margin-inline: auto;
+            }
+            
+            /* v143.0: Enhanced :focus-visible with multiple layers */
+            :focus-visible {
+                outline: 2px solid var(--holo-cyan);
+                outline-offset: 3px;
+                box-shadow: 
+                    0 0 12px rgba(0, 245, 255, 0.3),
+                    0 0 24px rgba(0, 245, 255, 0.15),
+                    inset 0 0 8px rgba(0, 245, 255, 0.1);
+            }
+            
+            /* v143.0: Color Level 5 - oklch native support */
+            :root {
+                --neon-mint: oklch(80% 0.15 180);
+                --neon-coral: oklch(75% 0.18 25);
+                --neon-violet: oklch(70% 0.2 300);
+            }
+            
+            /* v143.0: Scroll-driven animations - smoother */
+            @keyframes v143-scroll-reveal {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            
+            .stat-card {
+                view-timeline: --stat-card block;
+                animation: v143-scroll-reveal linear both;
+                animation-timeline: view();
+                animation-range: entry 0% cover 30%;
+            }
+            
+            /* v143.0: Physics-based spring animation */
+            @keyframes v143-spring-in {
+                0% { transform: scale(0.8) translateY(10px); opacity: 0; }
+                60% { transform: scale(1.05) translateY(-2px); }
+                100% { transform: scale(1) translateY(0); opacity: 1; }
+            }
+            
+            @keyframes v143-morph-border {
+                0%, 100% { border-radius: 16px; }
+                25% { border-radius: 20px 12px 16px 18px; }
+                50% { border-radius: 12px 18px 20px 14px; }
+                75% { border-radius: 18px 14px 12px 20px; }
+            }
+            
+            /* v143.0: Holographic shimmer enhanced */
+            @keyframes v143-holo-shimmer {
+                0% { background-position: -200% center; }
+                100% { background-position: 200% center; }
+            }
+            
+            /* v143.0: Data-driven color animation */
+            @keyframes v143-data-pulse {
+                0%, 100% { 
+                    box-shadow: 0 0 0 0 var(--mood-glow);
+                    filter: brightness(1);
+                }
+                50% { 
+                    box-shadow: 0 0 20px 5px var(--mood-glow);
+                    filter: brightness(1.1);
+                }
+            }
+            
+            /* v143.0: Floating orb enhanced with parallax */
+            @keyframes v143-orb-float {
+                0%, 100% { transform: translate(0, 0) scale(1); }
+                25% { transform: translate(10px, -15px) scale(1.05); }
+                50% { transform: translate(-5px, -25px) scale(0.95); }
+                75% { transform: translate(-15px, -10px) scale(1.02); }
+            }
+            
+            /* v143.0: Neural wave enhanced */
+            @keyframes v143-neural-wave {
+                0%, 100% { transform: scale(1); opacity: 0.6; }
+                50% { transform: scale(1.15); opacity: 0.3; }
+            }
+            
+            /* v143.0: Breathing glow enhanced with multiple layers */
+            @keyframes v143-breathing-glow {
+                0%, 100% { 
+                    box-shadow: 
+                        0 0 20px var(--mood-glow),
+                        inset 0 0 10px transparent;
+                    transform: scale(1);
+                }
+                50% { 
+                    box-shadow: 
+                        0 0 40px var(--mood-glow),
+                        inset 0 0 20px rgba(255,255,255,0.05);
+                    transform: scale(1.02);
+                }
+            }
+            
+            /* v143.0: Progress ring enhanced with glow */
+            @keyframes v143-ring-glow {
+                0% { 
+                    stroke-dashoffset: 0;
+                    filter: drop-shadow(0 0 2px var(--holo-cyan));
+                }
+                50% { 
+                    filter: drop-shadow(0 0 8px var(--holo-cyan));
+                }
+                100% { 
+                    stroke-dashoffset: -188.5;
+                    filter: drop-shadow(0 0 2px var(--holo-cyan));
+                }
+            }
+            
+            /* v143.0: Quick action spring enhanced */
+            .quick-action-btn:active {
+                transform: scale(0.92) translateY(2px);
+                transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+            }
+            
+            /* v143.0: Mood button glow enhanced */
+            .mood-btn:hover {
+                box-shadow: 
+                    0 0 15px var(--mood-primary),
+                    inset 0 0 10px rgba(255,255,255,0.1);
+            }
+            
+            /* v143.0: Toast slide enhanced with spring */
+            @keyframes v143-toast-slide {
+                0% { 
+                    opacity: 0; 
+                    transform: translateX(120px) scale(0.9) rotate(-2deg); 
+                }
+                60% { 
+                    transform: translateX(-5px) scale(1.02) rotate(0.5deg); 
+                }
+                100% { 
+                    opacity: 1; 
+                    transform: translateX(0) scale(1) rotate(0deg); 
+                }
+            }
+            
+            .toast {
+                animation: v143-toast-slide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+            }
+            
+            /* v143.0: AI status badge pulse enhanced */
+            @keyframes v143-ai-pulse {
+                0%, 100% { 
+                    opacity: 1;
+                    box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+                }
+                50% { 
+                    opacity: 0.8;
+                    box-shadow: 0 0 25px rgba(139, 92, 246, 0.6);
+                }
+            }
+            
+            /* v143.0: Fox expression bounce enhanced */
+            @keyframes v143-expression-bounce {
+                0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+                25% { transform: translateY(-4px) scale(1.1) rotate(-3deg); }
+                50% { transform: translateY(-2px) scale(1.05) rotate(2deg); }
+                75% { transform: translateY(-3px) scale(1.08) rotate(-1deg); }
+            }
+            
+            /* v143.0: Heatmap cell hover enhanced */
+            .heatmap-cell:hover {
+                transform: scale(1.4);
+                box-shadow: 0 0 15px var(--holo-cyan);
+                z-index: 5;
+            }
+            
+            /* v143.0: Skills radar glow enhanced */
+            .skills-radar-container {
+                animation: conic-gradient 8s linear infinite;
+            }
+            
+            /* v143.0: GPU optimization enhanced */
+            .stat-card, .glass-card, .fox-container, .particle-container {
+                contain: layout style paint;
+                content-visibility: auto;
+                contain-intrinsic-size: 0 200px;
+            }
+            
+            /* v143.0: Focus states enhanced */
+            .stat-card:focus-visible {
+                outline: 3px solid var(--holo-cyan);
+                outline-offset: 4px;
+                box-shadow: 
+                    0 0 20px rgba(0, 245, 255, 0.4),
+                    0 12px 40px rgba(0, 0, 0, 0.5);
+            }
+            
+            /* v143.0: Reduced motion comprehensive */
+            @media (prefers-reduced-motion: reduce) {
+                *, *::before, *::after {
+                    animation-duration: 0.01ms !important;
+                    animation-iteration-count: 1 !important;
+                    transition-duration: 0.01ms !important;
+                    scroll-behavior: auto !important;
+                }
+                .ambient-particle, .energy-ring, .neural-wave {
+                    display: none;
+                }
+            }
+            
+            /* v143.0: Print styles enhanced */
+            @media print {
+                .ambient-particles, .noise-overlay, .fox-canvas-wrapper,
+                .particle-container, .breathing-widget, .quick-actions,
+                .toast-container, .scroll-progress, .fps-counter,
+                .ambient-particle, .energy-ring, .neural-wave { 
+                    display: none !important; 
+                }
+                body { background: white !important; color: black !important; }
+                .glass-card { 
+                    background: #f5f5f5 !important; 
+                    border: 1px solid #ddd !important;
+                    box-shadow: none !important;
+                }
+                .stat-card {
+                    break-inside: avoid;
+                    page-break-inside: avoid;
+                }
+            }
+            /* v144.0: Container Queries for responsive cards */
+            @container (max-width: 300px) {
+                .stat-card {
+                    padding: 16px;
+                }
+                .stat-value {
+                    font-size: 24px;
+                }
+                .stat-icon {
+                    width: 32px;
+                    height: 32px;
+                    font-size: 16px;
+                }
+            }
+            
+            /* v144.0: CSS Nesting - Native support */
+            .glass-card {
+                &::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 60%;
+                    height: 1px;
+                    background: linear-gradient(90deg, transparent, var(--holo-cyan), transparent);
+                    opacity: 0.3;
+                }
+                
+                &:hover {
+                    &::after {
+                        opacity: 0.6;
+                        width: 80%;
+                    }
+                }
+            }
+            
+            /* v144.0: Interactive card hover - 3D tilt effect */
+            .stat-card {
+                --tilt-x: 0deg;
+                --tilt-y: 0deg;
+                transform: perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+                transition: transform 0.1s ease;
+            }
+            
+            .stat-card.interactive:hover {
+                transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+            }
+            
+            /* v144.0: Smooth state transitions */
+            .status-badge, .mood-btn, .mode-btn {
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            
+            /* v144.0: New status animations */
+            @keyframes status-glow-pulse {
+                0%, 100% { 
+                    box-shadow: 0 0 10px currentColor;
+                    filter: brightness(1);
+                }
+                50% { 
+                    box-shadow: 0 0 25px currentColor;
+                    filter: brightness(1.2);
+                }
+            }
+            
+            .status-badge[data-status="online"] .status-dot {
+                animation: status-glow-pulse 2s ease-in-out infinite;
+            }
+            
+            /* v144.0: Skill badge pop animation */
+            @keyframes skill-pop {
+                0% { transform: scale(0.8); opacity: 0; }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); opacity: 1; }
+            }
+            
+            .skill-badge-new {
+                animation: skill-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            }
+            
+            /* v144.0: Enhanced ripple effect */
+            .ripple-clean {
+                position: absolute;
+                border-radius: 50%;
+                background: radial-gradient(circle, var(--mood-primary) 0%, transparent 70%);
+                transform: scale(0);
+                animation: ripple-clean 0.6s ease-out forwards;
+                pointer-events: none;
+            }
+            
+            @keyframes ripple-clean {
+                to { transform: scale(4); opacity: 0; }
+            }
+            
+            /* v144.0: Keyboard focus ring animation */
+            @keyframes focus-ring-pulse {
+                0%, 100% { 
+                    box-shadow: 0 0 0 2px var(--holo-cyan), 0 0 12px rgba(0, 245, 255, 0.3);
+                }
+                50% { 
+                    box-shadow: 0 0 0 4px var(--holo-cyan), 0 0 20px rgba(0, 245, 255, 0.5);
+                }
+            }
+            
+            *:focus-visible {
+                animation: focus-ring-pulse 1.5s ease-in-out infinite;
+            }
+            
+            /* v144.0: Scroll reveal enhanced */
+            @keyframes v144-scroll-reveal {
+                from { 
+                    opacity: 0; 
+                    transform: translateY(30px) scale(0.95); 
+                }
+                to { 
+                    opacity: 1; 
+                    transform: translateY(0) scale(1); 
+                }
+            }
+            
+            .reveal-on-scroll {
+                animation: v144-scroll-reveal 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            }
+            
+            /* v144.0: Status bar gradient animation */
+            .status-bar-animated {
+                background: linear-gradient(90deg, 
+                    var(--holo-cyan) 0%, 
+                    var(--holo-violet) 50%, 
+                    var(--holo-magenta) 100%);
+                background-size: 200% 100%;
+                animation: gradient-slide 3s linear infinite;
+            }
+            
+            @keyframes gradient-slide {
+                0% { background-position: 100% 0; }
+                100% { background-position: -100% 0; }
+            }
+            
+            /* v144.0: New mood emoji bounce */
+            @keyframes mood-bounce {
+                0%, 100% { transform: translateY(0) rotate(0deg); }
+                25% { transform: translateY(-8px) rotate(-5deg); }
+                50% { transform: translateY(-4px) rotate(3deg); }
+                75% { transform: translateY(-6px) rotate(-2deg); }
+            }
+            
+            .fox-expression {
+                animation: mood-bounce 2s ease-in-out infinite;
+            }
+            
+            /* v144.0: Quick stat number tick animation */
+            @keyframes number-tick {
+                0% { transform: translateY(-10px); opacity: 0; }
+                50% { transform: translateY(2px); }
+                100% { transform: translateY(0); opacity: 1; }
+            }
+            
+            .animated-counter {
+                animation: number-tick 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            }
+            
+            /* v144.0: Glass card shimmer effect */
+            .glass-card {
+                position: relative;
+                overflow: hidden;
+                
+                &::before {
+                    content: '';
+                    position: absolute;
+                    top: -50%;
+                    left: -50%;
+                    width: 200%;
+                    height: 200%;
+                    background: linear-gradient(
+                        45deg,
+                        transparent 30%,
+                        rgba(255, 255, 255, 0.03) 50%,
+                        transparent 70%
+                    );
+                    transform: rotate(45deg);
+                    transition: transform 0.5s ease;
+                    pointer-events: none;
+                }
+                
+                &:hover::before {
+                    transform: rotate(45deg) translate(20%, 20%);
+                }
+            }
+            
+            /* v144.0: Progress bar stripe animation */
+            .progress-fill-striped {
+                background-image: linear-gradient(
+                    45deg,
+                    rgba(255, 255, 255, 0.1) 25%,
+                    transparent 25%,
+                    transparent 50%,
+                    rgba(255, 255, 255, 0.1) 50%,
+                    rgba(255, 255, 255, 0.1) 75%,
+                    transparent 75%,
+                    transparent
+                );
+                background-size: 1rem 1rem;
+                animation: progress-stripe 1s linear infinite;
+            }
+            
+            @keyframes progress-stripe {
+                0% { background-position: 1rem 0; }
+                100% { background-position: 0 0; }
+            }
+            
+            /* v144.0: Enhanced tooltip */
+            .stat-card[title]:hover::after {
+                content: attr(title);
+                position: absolute;
+                bottom: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 6px 12px;
+                background: var(--glass-3);
+                border: 1px solid var(--glass-border);
+                border-radius: var(--radius-sm);
+                font-size: 11px;
+                color: var(--text-secondary);
+                white-space: nowrap;
+                opacity: 1;
+                pointer-events: none;
+                z-index: 100;
+            }
+            
+            /* v144.0: Activity ring glow animation */
+            @keyframes activity-ring-pulse {
+                0%, 100% { 
+                    filter: drop-shadow(0 0 3px var(--holo-cyan)) brightness(1);
+                }
+                50% { 
+                    filter: drop-shadow(0 0 10px var(--holo-cyan)) brightness(1.2);
+                }
+            }
+            
+            .progress-ring-fill {
+                animation: activity-ring-pulse 2s ease-in-out infinite;
+            }
+            
+            /* v145.0: Data received pulse - rings that expand from fox on successful refresh */
+            @keyframes data-pulse-ring {
+                0% { transform: scale(0.8); opacity: 0.8; border-width: 3px; }
+                100% { transform: scale(1.8); opacity: 0; border-width: 1px; }
+            }
+            
+            .data-pulse-ring {
+                position: absolute;
+                inset: -15px;
+                border-radius: 50%;
+                border: 3px solid var(--holo-cyan);
+                animation: data-pulse-ring 0.8s ease-out forwards;
+                pointer-events: none;
+                z-index: 0;
+            }
+            
+            /* v145.0: Data freshness glow */
+            .data-freshness[data-freshness="fresh"] {
+                animation: fresh-glow 2s ease-in-out infinite;
+            }
+            
+            @keyframes fresh-glow {
+                0%, 100% { box-shadow: 0 0 0 rgba(92, 219, 149, 0); }
+                50% { box-shadow: 0 0 12px rgba(92, 219, 149, 0.4); }
+            }
+            
+            /* v145.0: Stale data shake */
+            @keyframes stale-shake {
+                0%, 100% { transform: translateX(0); }
+                20% { transform: translateX(-2px); }
+                40% { transform: translateX(2px); }
+                60% { transform: translateX(-1px); }
+                80% { transform: translateX(1px); }
+            }
+            
+            .data-freshness[data-freshness="stale"] {
+                animation: stale-shake 0.5s ease-out;
+            }
+            
+            /* v145.0: Memory timeline new item flash */
+            @keyframes timeline-flash {
+                0% { background: rgba(0, 245, 255, 0.2); }
+                100% { background: var(--glass-1); }
+            }
+            
+            .timeline-item-new {
+                animation: timeline-flash 1s ease-out;
+            }
+            
+            /* v144.0: Heatmap cell enhanced hover */
+            .heatmap-cell {
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                
+                &:hover {
+                    transform: scale(1.5) translateY(-5px);
+                    box-shadow: 0 8px 20px rgba(0, 245, 255, 0.4);
+                    z-index: 10;
+                }
+            }
+            
+            /* v144.0: New breathing animation phases */
+            .breathing-circle {
+                &.inhale {
+                    transform: scale(1.3);
+                    border-color: var(--holo-cyan);
+                    box-shadow: 0 0 30px var(--holo-cyan);
+                }
+                &.hold {
+                    transform: scale(1.2);
+                    border-color: var(--holo-violet);
+                }
+                &.exhale {
+                    transform: scale(1);
+                    border-color: var(--holo-magenta);
+                    box-shadow: 0 0 15px var(--holo-magenta);
+                }
+            }
+            
+            /* v144.0: Quick action button enhanced */
+            .quick-action-btn {
+                position: relative;
+                overflow: hidden;
+                
+                &::after {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 0;
+                    height: 0;
+                    background: rgba(0, 245, 255, 0.2);
+                    border-radius: 50%;
+                    transform: translate(-50%, -50%);
+                    transition: width 0.3s ease, height 0.3s ease;
+                }
+                
+                &:active::after {
+                    width: 200px;
+                    height: 200px;
+                }
+            }
+            
+            /* v144.0: Theme switch smooth transition */
+            .theme-btn {
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                
+                &:active {
+                    transform: scale(0.9);
+                }
+            }
+            
+            /* v144.0: Neural grid pulse speed based on activity */
+            .neural-grid {
+                animation-duration: 6s;
+            }
+            
+            body.status-working .neural-grid { animation-duration: 3s; }
+            body.status-sleeping .neural-grid { animation-duration: 8s; }
+            
+            /* v144.0: Glow orb enhanced */
+            .glow-orb {
+                filter: blur(30px) brightness(1.2);
+                mix-blend-mode: screen;
+            }
+            
+            /* v144.0: Print styles enhanced */
+            @media print {
+                .neural-grid, .ambient-particles, .glow-orb, .toast-container {
+                    display: none;
+                }
+                .glass-card {
+                    border: 1px solid #ccc;
+                    box-shadow: none;
+                }
+            }
+            
             *, *::before, *::after {
                 margin: 0;
                 padding: 0;
@@ -1631,6 +2253,23 @@
                 .stats-grid { grid-template-columns: 1fr 1fr; }
                 .fox-container { width: 140px; height: 140px; }
                 .fox-name { font-size: 22px; }
+                .dashboard-container { padding: 12px; }
+                .glass-card { padding: 16px; }
+                .fps-counter { display: none; }
+            }
+            
+            /* v145.0: Ultra-wide support */
+            @media (min-width: 1800px) {
+                .dashboard-container { max-width: 1800px; }
+                .stats-grid { grid-template-columns: repeat(4, 1fr); }
+            }
+            
+            /* v145.0: Touch device optimizations */
+            @media (hover: none) and (pointer: coarse) {
+                .stat-card:hover { transform: none; box-shadow: none; }
+                .stat-card:active { transform: scale(0.98); }
+                .quick-action-btn:hover { transform: translateY(-1px); }
+                .glass-card:hover { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); }
             }
         }
     </style>
@@ -2016,7 +2655,7 @@
         
         <footer class="dashboard-footer">
             <div class="footer-info">
-                <span>MoShang</span> Status Dashboard v141.0 • Last updated: <span id="lastUpdated">--</span>
+                <span>MoShang</span> Status Dashboard v145.0 • Last updated: <span id="lastUpdated">--</span>
                 <span id="dataSourceTag" style="margin-left: 8px; padding: 2px 8px; background: rgba(92, 219, 149, 0.15); border-radius: 4px; font-size: 10px; color: var(--status-online);"></span>
             </div>
             <div class="footer-info">
@@ -2030,9 +2669,9 @@
     
     <script>
         /* ============================================================
-           MoShang Dashboard - JavaScript v141.0
-           v141.0: Performance optimization, reduced motion support,
-                   accessibility improvements, adaptive refresh
+           MoShang Dashboard - JavaScript v145.0
+           v145.0: Data pulse animations, enhanced mobile support,
+                   improved data freshness feedback, new keyboard shortcuts
         ============================================================ */
         
         const state = {
@@ -2774,6 +3413,27 @@
             if (heartbeatChanged) animateCounter('heartbeatStat');
             if (activityChanged) animateCounter('activityValue');
             if (activityChanged) animateCounter('activityStat');
+            
+            // v145.0: Data pulse effect on successful refresh
+            triggerDataPulse();
+        }
+        
+        // v145.0: Trigger a visual pulse ring when fresh data is received
+        function triggerDataPulse() {
+            const foxContainer = $('foxContainer');
+            if (!foxContainer) return;
+            
+            // Remove existing pulse rings
+            foxContainer.querySelectorAll('.data-pulse-ring').forEach(el => el.remove());
+            
+            // Create new pulse ring
+            const pulse = document.createElement('div');
+            pulse.className = 'data-pulse-ring';
+            pulse.style.borderColor = state.dataFreshness === 'fresh' ? 'var(--holo-cyan)' : 
+                                     state.dataFreshness === 'normal' ? 'var(--status-idle)' : 'var(--status-error)';
+            foxContainer.appendChild(pulse);
+            
+            setTimeout(() => pulse.remove(), 800);
         }
         
         function animateCounter(id) {
@@ -3057,7 +3717,7 @@
             }
         }
         
-        // v142.0: Update neural grid color based on mood
+        // v143.0: Update neural grid color based on mood - Enhanced with oklch
         function updateNeuralGrid() {
             const grid = $('neuralGrid');
             const orbs = [$('glowOrb1'), $('glowOrb2'), $('glowOrb3')];
@@ -3065,7 +3725,7 @@
                 online: '#5cdb95',
                 working: '#00d4ff',
                 sleeping: '#a855f7',
-                idle: '#fec97a',
+                idle: '#fec97b',
                 error: '#ff6b6b',
                 learning: '#ffb74d',
                 excited: '#ff6b9d'
@@ -3077,13 +3737,123 @@
                     linear-gradient(${color} 1px, transparent 1px),
                     linear-gradient(90deg, ${color} 1px, transparent 1px)
                 `;
+                grid.style.backgroundSize = '40px 40px';
             }
             
-            orbs.forEach(orb => {
+            orbs.forEach((orb, i) => {
                 if (orb) {
                     orb.style.background = `radial-gradient(circle, ${color} 0%, transparent 70%)`;
+                    orb.style.animation = `v143-orb-float ${4 + i * 0.5}s ease-in-out infinite`;
+                    orb.style.animationDelay = `${i * 0.3}s`;
                 }
             });
+            
+            document.documentElement.style.setProperty('--mood-glow', colors[foxMood] + '40' || 'rgba(254, 201, 123, 0.4)');
+        }
+        
+        // v143.0: Enhanced fox mood transitions with spring physics
+        function setMood(mood) {
+            const oldMood = foxMood;
+            foxMood = mood;
+            const foxContainer = document.querySelector('.fox-container');
+            if (foxContainer) {
+                foxContainer.style.animation = 'none';
+                foxContainer.offsetHeight;
+                foxContainer.style.animation = 'v143-spring-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            }
+            $('foxExpression').textContent = foxExpressions[mood] || '😺';
+            $('moodText').textContent = capitalize(mood) + ' Mode';
+            updateNeuralGrid();
+        }
+        
+        // v143.0: Haptic feedback simulation via CSS
+        function triggerHapticFeedback(element) {
+            if (!element) return;
+            element.style.animation = 'none';
+            element.offsetHeight;
+            element.style.animation = 'v143-spring-in 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        }
+        
+        // v143.0: Enhanced data validation with detailed logging
+        function validateDashboardData(data) {
+            if (!data || typeof data !== 'object') {
+                v143Log('warn', 'Dashboard data validation failed: invalid data type');
+                return false;
+            }
+            if (data.heartbeat !== undefined) {
+                const hb = parseInt(data.heartbeat);
+                if (isNaN(hb) || hb < 0 || hb > 300) {
+                    v143Log('warn', 'Dashboard data validation failed: invalid heartbeat', { value: data.heartbeat });
+                    return false;
+                }
+            }
+            if (data.activityLevel !== undefined) {
+                const activity = parseInt(data.activityLevel);
+                if (isNaN(activity) || activity < 0 || activity > 100) {
+                    v143Log('warn', 'Dashboard data validation failed: invalid activity', { value: data.activityLevel });
+                    return false;
+                }
+            }
+            const validStatuses = ['online', 'working', 'sleeping', 'idle', 'learning', 'error'];
+            if (data.status && !validStatuses.includes(data.status)) {
+                v143Log('warn', 'Dashboard data validation failed: invalid status', { value: data.status });
+                return false;
+            }
+            return true;
+        }
+        
+        // v143.0: Structured logging system
+        function v143Log(level, message, context = {}) {
+            const timestamp = new Date().toISOString();
+            const logEntry = { timestamp, level, message, context, version: 'v143.0' };
+            if (window.console && window.console[level]) {
+                console[level](`[${timestamp}] [${level.toUpperCase()}] ${message}`, context);
+            }
+            return logEntry;
+        }
+        
+        // v143.0: View Transitions API integration
+        async function triggerViewTransition(callback) {
+            if (!document.startViewTransition) {
+                callback();
+                return;
+            }
+            try {
+                await document.startViewTransition(() => { callback(); }).finished;
+            } catch (e) {
+                v143Log('error', 'View transition failed', { error: e.message });
+                callback();
+            }
+        }
+        
+        // v143.0: AI-ready gesture detection
+        function setupGestureDetection() {
+            let touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
+            document.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+                touchStartY = e.changedTouches[0].screenY;
+            }, { passive: true });
+            document.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                touchEndY = e.changedTouches[0].screenY;
+                handleSwipeGesture();
+            }, { passive: true });
+            function handleSwipeGesture() {
+                const deltaX = touchEndX - touchStartX;
+                const deltaY = touchEndY - touchStartY;
+                const minSwipeDistance = 50;
+                if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                    if (Math.abs(deltaX) > minSwipeDistance && deltaX > 0) {
+                        v143Log('info', 'Gesture: swipe right detected');
+                        refreshData();
+                    }
+                } else {
+                    if (Math.abs(deltaY) > minSwipeDistance && deltaY > 0) {
+                        v143Log('info', 'Gesture: swipe down detected');
+                        toggleAutoRefresh();
+                    }
+                }
+            }
         }
         
         // FPS Counter
@@ -3149,23 +3919,49 @@
                 }
             });
             
-            // v141.0: Keyboard shortcuts
+            // v145.0: Enhanced keyboard shortcuts
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'r' && !e.ctrlKey && !e.metaKey && document.activeElement.tagName !== 'INPUT') {
+                if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+                
+                if (e.key === 'r' && !e.ctrlKey && !e.metaKey) {
                     refreshData();
                 }
-                if (e.key === 'b' && !e.ctrlKey && !e.metaKey && document.activeElement.tagName !== 'INPUT') {
+                if (e.key === 'b' && !e.ctrlKey && !e.metaKey) {
                     toggleBreathing();
                 }
-                if (e.key === 't' && !e.ctrlKey && !e.metaKey && document.activeElement.tagName !== 'INPUT') {
+                if (e.key === 't' && !e.ctrlKey && !e.metaKey) {
                     const themes = ['default', 'oled', 'purple'];
                     const current = localStorage.getItem('moshang-theme') || 'default';
                     const next = themes[(themes.indexOf(current) + 1) % themes.length];
                     setTheme(next);
                 }
+                // v145.0: View transition shortcut
+                if (e.key === 'v' && !e.ctrlKey && !e.metaKey) {
+                    triggerViewTransition(() => refreshData());
+                }
+                // v145.0: Mood cycling shortcuts
+                if (e.key === '1') setMood('idle');
+                if (e.key === '2') setMood('excited');
+                if (e.key === '3') setMood('thinking');
+                if (e.key === '4') setMood('laughing');
+                if (e.key === '5') setMood('focused');
+                // v145.0: Toggle auto-refresh
+                if (e.key === 'a' && !e.ctrlKey && !e.metaKey) {
+                    toggleAutoRefresh();
+                }
             });
             
-            console.log('🚀 MoShang Dashboard v142.0 initialized');
+            // v143.0: Setup gesture detection
+            setupGestureDetection();
+            
+            // v143.0: Log initialization
+            v143Log('info', 'MoShang Dashboard v145.0 initialized', {
+                userAgent: navigator.userAgent,
+                viewport: { width: window.innerWidth, height: window.innerHeight },
+                supportsViewTransitions: !!document.startViewTransition,
+                keyboardShortcuts: ['r=refresh', 'b=breathing', 't=theme', 'v=viewTransition', '1-5=moods', 'a=autoRefresh']
+            });
+            console.log('🚀 MoShang Dashboard v145.0 initialized');
         }
         
         if (document.readyState === 'loading') {

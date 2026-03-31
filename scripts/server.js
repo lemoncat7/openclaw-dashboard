@@ -141,7 +141,7 @@ const server = http.createServer(async (req, res) => {
     res.end(JSON.stringify({ 
       status: 'ok', 
       service: 'dashboard',
-      version: 'v118.0',
+      version: 'v145.0',
       uptime: Math.floor((Date.now() - startTime) / 1000),
       memory: memPercent,
       cpu: cpuPercent,
@@ -296,7 +296,7 @@ async function fetchEvomapStatus() {
   return result.data;
 }
 
-// Dashboard API (simplified for frontend) - v130.0: Fixed heartbeat, added memory/cpu/status
+// Dashboard API (simplified for frontend) - v145.0: Enhanced heartbeat sources, improved reliability
   if (url === '/api/dashboard') {
     apiCalls++;
     metrics.requestsTotal++;
@@ -320,24 +320,28 @@ async function fetchEvomapStatus() {
     });
     const cpuPercent = Math.round((1 - totalIdle / totalTick) * 100);
     
-    // v130.0: Calculate heartbeat as duration since last activity
+    // v145.0: Enhanced heartbeat detection from multiple reliable sources
     let heartbeat = '--';
     let dataAge = 0;
     let dataFreshness = 'stale';
+    let heartbeatSource = null;
+    
+    // Source 1: Heartbeat state files (most reliable for active agents)
     const stateFiles = [
       '/home/root/.openclaw/workspace/memory/heartbeat_tasks/state.json',
       '/home/root/.openclaw/workspace/memory/heartbeat-state.json',
-      '/tmp/openclaw_heartbeat.json'
+      '/tmp/openclaw_heartbeat.json',
+      '/home/root/.openclaw/workspace/memory/heartbeat-state.json'
     ];
     
     for (const stateFile of stateFiles) {
       try {
         if (fs.existsSync(stateFile)) {
           const content = JSON.parse(fs.readFileSync(stateFile, 'utf8'));
-          const lastHb = content.lastHeartbeat || content.last_heartbeat || content.lastCheck || content.lastUpdate;
+          const lastHb = content.lastHeartbeat || content.last_heartbeat || content.lastCheck || content.lastUpdate || content.ts || content.timestamp;
           if (lastHb) {
             const ts = typeof lastHb === 'number' ? lastHb : parseFloat(lastHb);
-            if (!isNaN(ts) && ts > 1000000000) {
+            if (!isNaN(ts) && ts > 1000000000 && ts < Date.now() / 1000 + 60) {
               dataAge = Math.floor((Date.now() / 1000) - ts);
               if (dataAge < 0) dataAge = 0;
               if (dataAge < 60) {
@@ -350,14 +354,15 @@ async function fetchEvomapStatus() {
                 heartbeat = `${Math.floor(dataAge / 3600)}h`;
                 dataFreshness = 'stale';
               }
+              heartbeatSource = 'heartbeat_state';
               break;
             }
           }
         }
-      } catch (e) {}
+      } catch (e) { /* ignore individual file errors */ }
     }
     
-    // Fallback: if no heartbeat found, use task scheduler output
+    // Source 2: Task scheduler output (fallback for batch processing)
     if (heartbeat === '--') {
       const taskOutputDir = '/home/root/.openclaw/workspace/skills/task-scheduler/output';
       try {
@@ -376,6 +381,38 @@ async function fetchEvomapStatus() {
             } else {
               heartbeat = `${Math.floor(age / 3600)}h`;
               dataFreshness = 'stale';
+            }
+            heartbeatSource = 'task_scheduler';
+          }
+        }
+      } catch (e) {}
+    }
+    
+    // Source 3: OpenClaw workspace memory (for main session context)
+    if (heartbeat === '--') {
+      const memoryDir = '/home/root/.openclaw/workspace/memory';
+      try {
+        if (fs.existsSync(memoryDir)) {
+          const today = new Date().toISOString().split('T')[0];
+          const memoryFile = path.join(memoryDir, `${today}.md`);
+          if (fs.existsSync(memoryFile)) {
+            const content = fs.readFileSync(memoryFile, 'utf8');
+            const timeMatches = content.match(/(\d{2}:\d{2}:\d{2})/g);
+            if (timeMatches && timeMatches.length > 0) {
+              const lastTime = timeMatches[timeMatches.length - 1];
+              const [h, m, s] = lastTime.split(':').map(Number);
+              const now = new Date();
+              const lastDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, s);
+              if (lastDate < now) lastDate.setDate(lastDate.getDate() - 1);
+              const age = Math.floor((now - lastDate) / 1000);
+              if (age < 3600) {
+                heartbeat = `${Math.floor(age / 60)}m`;
+                dataFreshness = age < 300 ? 'fresh' : 'normal';
+              } else {
+                heartbeat = `${Math.floor(age / 3600)}h`;
+                dataFreshness = 'stale';
+              }
+              heartbeatSource = 'memory_log';
             }
           }
         }
@@ -412,6 +449,7 @@ async function fetchEvomapStatus() {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       heartbeat: heartbeat,
+      heartbeatSource: heartbeatSource,
       status: status,
       activityLevel: activityLevel,
       memory: memoryStr,

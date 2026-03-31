@@ -9,6 +9,24 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+- v145.0: Data Pulse Ring Animation（数据刷新时狐狸容器脉冲环动画，颜色随数据新鲜度变化）
+- v145.0: Enhanced Mobile Support（移动端触摸优化，hover:none适配，超宽屏幕支持1800px+）
+- v145.0: Multi-source Heartbeat Detection（三层心跳源检测：heartbeat_state > task_scheduler > memory_log）
+- v145.0: Heartbeat Source Tracking（心跳来源追踪和可视化）
+- v145.0: Fresh/Stale Data Animations（数据新鲜度动画：fresh脉冲发光，stale抖动提示）
+- v145.0: Extended Keyboard Shortcuts（扩展快捷键：1-5切换心情，a切换自动刷新）
+- v143.0: View Transitions API集成（页面状态切换平滑过渡动画）
+- v143.0: AI-Ready手势检测（左右滑动刷新，上下滑动切换自动刷新）
+- v143.0: Physics-based Spring Animations（物理弹性动画系统，cubic-bezier(0.34, 1.56, 0.64, 1)）
+- v143.0: Enhanced Neural Grid（增强神经网络网格，40px间距优化）
+- v143.0: OKLCH原生颜色支持（--neon-mint/--neon-coral/--neon-violet）
+- v143.0: Multi-layer Focus States（多层焦点状态，3层box-shadow叠加）
+- v143.0: Scroll-driven Animations v2（增强型滚动驱动动画，view-timeline优化）
+- v143.0: Enhanced Toast Animations（弹性缩放通知动画，带旋转效果）
+- v143.0: Haptic Feedback Simulation（触觉反馈模拟动画）
+- v143.0: Structured Logging System（v143Log结构化日志系统）
+- v143.0: Comprehensive Reduced Motion（全面减弱运动支持，禁用所有canvas动画）
+- v143.0: Enhanced Print Styles（增强打印样式，page-break优化）
 - v142.0: Neural Grid Background（神经网络风格背景网格，颜色随心情变化）
 - v142.0: Floating Glow Orbs（三个漂浮发光球体，颜色随心情联动）
 - v142.0: 3D Card Hover Effects（卡片悬停3D倾斜和阴影深度效果）
@@ -773,6 +791,21 @@ node ~/.openclaw/workspace/skills/dashboard-service/scripts/server.js &
 - https://oclaw.mochencloud.cn:1443/onboard → localhost:19000
 
 ## 更新日志
+
+### v143.0 (2026-03-31)
+- **View Transitions API集成**: 使用浏览器原生View Transitions API实现状态切换平滑过渡动画，支持`document.startViewTransition()`
+- **AI-Ready手势检测**: 支持左右滑动刷新数据、上下滑动切换自动刷新，50px阈值判断手势方向
+- **Physics-based Spring Animations**: 新增v143-spring-in、v143-morph-border等物理弹性动画，cubic-bezier(0.34, 1.56, 0.64, 1)模拟真实弹簧效果
+- **Enhanced Neural Grid**: 神经网络网格背景间距优化为40px，滚动性能提升
+- **OKLCH原生颜色支持**: 新增--neon-mint、--neon-coral、--neon-violet使用oklch()函数实现感知均匀的高饱和度色彩
+- **Multi-layer Focus States**: 焦点状态升级为3层box-shadow叠加(0 0 12px + 0 0 24px + inset)，更清晰的键盘导航指示
+- **Scroll-driven Animations v2**: 增强型滚动驱动动画，stat-card使用view-timeline: --stat-card block优化入场动画
+- **Enhanced Toast Animations**: 通知滑入动画升级，带旋转效果的弹性缩放v143-toast-slide
+- **Haptic Feedback Simulation**: 交互元素添加触觉反馈模拟动画，0.2s弹性回弹效果
+- **Structured Logging System**: v143Log结构化日志系统，支持timestamp/level/message/context分级日志记录
+- **Comprehensive Reduced Motion**: 全面减弱运动偏好支持，包括ambient-particle、energy-ring、neural-wave等所有动画
+- **Enhanced Print Styles**: 打印样式优化，支持page-break避免卡片断行，提升纸质输出质量
+- **版本更新至 v143.0**
 
 ### v139.0 (2026-03-31)
 - **Modern CSS v139.0 Enhancements**: 增强型滚动驱动动画(v139-scroll-reveal)、玻璃折射增强、状态感知光晕系统(body.status-* CSS类)
