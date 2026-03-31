@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MoShang - OpenClaw Status Dashboard">
     <meta name="theme-color" content="#0a0a0f">
-    <title>MoShang Status v155.0</title>
+    <title>MoShang Status v156.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -759,7 +759,281 @@
                 --accent-blend: color-mix(in srgb, var(--holo-cyan) 70%, var(--holo-magenta) 30%);
             }
 
-            /* v147.0: Anchor positioning for tooltips - CSS 2026 */
+            /* v156.0: CSS 2026 @media (nav-preferences) for navigation style detection */
+            @media (nav-preferences: reduce) {
+                :root {
+                    --animation-duration: 0.01ms;
+                    --transition-duration: 0.01ms;
+                }
+                .particle-container, .ambient-blobs, .glow-orb {
+                    display: none;
+                }
+            }
+
+            @media (nav-preferences: no-preference) {
+                :root {
+                    --animation-duration: normal;
+                    --transition-duration: normal;
+                }
+            }
+
+            /* v156.0: CSS 2026 @media (scripting) for scripting support detection */
+            @media (scripting: none) {
+                .fox-canvas, .neural-grid, .ambient-particles {
+                    display: none;
+                }
+                .fox-container::before {
+                    content: '🖼️';
+                    font-size: 80px;
+                }
+            }
+
+            /* v156.0: CSS 2026 @media (video-color-gamut) for video color space */
+            @media (video-color-gamut: p3) {
+                :root {
+                    --holo-cyan: color(display-p3 0 0.96 1 / 1);
+                    --holo-magenta: color(display-p3 0.82 0.2 0.92 / 1);
+                    --holo-violet: color(display-p3 0.66 0.33 0.97 / 1);
+                }
+            }
+
+            @media (video-color-gamut: srgb) {
+                :root {
+                    --holo-cyan: #00f5ff;
+                    --holo-magenta: #d213eb;
+                    --holo-violet: #a854f7;
+                }
+            }
+
+            /* v156.0: CSS 2026 more @property definitions */
+            @property --pulse-x {
+                syntax: '<length>';
+                initial-value: 0px;
+                inherits: false;
+            }
+
+            @property --pulse-y {
+                syntax: '<length>';
+                initial-value: 0px;
+                inherits: false;
+            }
+
+            @property --morph-smooth {
+                syntax: '<percentage>';
+                initial-value: 0%;
+                inherits: false;
+            }
+
+            @property --data-stream {
+                syntax: '<number>';
+                initial-value: 0;
+                inherits: false;
+            }
+
+            /* v156.0: CSS 2026 text-wrap improvements */
+            .fox-name {
+                text-wrap: balance;
+            }
+
+            .fox-role {
+                text-wrap: pretty;
+            }
+
+            /* v156.0: CSS 2026 @starting-style for entrance animations */
+            .stat-card {
+                @starting-style {
+                    opacity: 0;
+                    transform: scale(0.9) translateY(20px);
+                }
+            }
+
+            /* v156.0: CSS 2026 animation-composition improvements */
+            .fox-glow-aura {
+                animation-composition: accumulate;
+            }
+
+            .neural-sync-indicator {
+                animation-composition: accumulate;
+            }
+
+            .mood-sync-ring {
+                animation-composition: accumulate;
+            }
+
+            /* v156.0: CSS 2026 interpolation-direction for smooth transitions */
+            .glass-card {
+                interpolate-size: allow-keywords;
+            }
+
+            /* v156.0: CSS 2026 relative color syntax - more oklch variations */
+            :root {
+                --holo-cyan-10: oklch(from var(--holo-cyan) calc(l + 0.1) c h);
+                --holo-cyan-20: oklch(from var(--holo-cyan) calc(l + 0.2) c h);
+                --holo-magenta-10: oklch(from var(--holo-magenta) calc(l + 0.1) c h);
+                --holo-violet-20: oklch(from var(--holo-violet) calc(l + 0.2) c h);
+            }
+
+            /* v156.0: CSS 2026 border properties improvements */
+            .glass-card {
+                border-radius: var(--radius-xl);
+                outline-offset: var(--radius-md);
+            }
+
+            /* v156.0: CSS 2026 field-sizing for form elements */
+            input, select, textarea {
+                field-sizing: content;
+            }
+
+            /* v156.0: CSS 2026 scrollbar-gutter improvements */
+            :root {
+                scrollbar-gutter: stable;
+                scrollbar-width: thin;
+            }
+
+            /* v156.0: CSS 2026 input pseudo-classes */
+            input:user-valid {
+                border-color: var(--status-online);
+                box-shadow: 0 0 8px rgba(92, 219, 149, 0.3);
+            }
+
+            input:user-invalid {
+                border-color: var(--status-error);
+                box-shadow: 0 0 8px rgba(255, 107, 107, 0.3);
+            }
+
+            /* v156.0: Enhanced @when conditional rules */
+            @when media(prefers-color-scheme: dark) {
+                :root {
+                    --default-bg: #0a0a0f;
+                }
+            }
+
+            /* v156.0: New animation keyframes */
+            @keyframes v156-data-stream {
+                0% {
+                    background-position: 0% 50%;
+                }
+                50% {
+                    background-position: 100% 50%;
+                }
+                100% {
+                    background-position: 0% 50%;
+                }
+            }
+
+            @keyframes v156-pulse-ripple {
+                0% {
+                    transform: scale(0.8);
+                    opacity: 1;
+                }
+                100% {
+                    transform: scale(2.5);
+                    opacity: 0;
+                }
+            }
+
+            @keyframes v156-morph-border {
+                0%, 100% {
+                    border-radius: 20% 80% 20% 80%;
+                }
+                25% {
+                    border-radius: 80% 20% 80% 20%;
+                }
+                50% {
+                    border-radius: 60% 40% 60% 40%;
+                }
+                75% {
+                    border-radius: 40% 60% 40% 60%;
+                }
+            }
+
+            @keyframes v156-shimmer-wave {
+                0% {
+                    background-position: -200% 0;
+                }
+                100% {
+                    background-position: 200% 0;
+                }
+            }
+
+            @keyframes v156-glow-breathe {
+                0%, 100% {
+                    filter: drop-shadow(0 0 8px var(--mood-primary)) drop-shadow(0 0 16px var(--mood-primary));
+                }
+                50% {
+                    filter: drop-shadow(0 0 16px var(--mood-primary)) drop-shadow(0 0 32px var(--mood-primary));
+                }
+            }
+
+            @keyframes v156-neural-pulse {
+                0% {
+                    opacity: 0.3;
+                    transform: scale(0.95);
+                }
+                50% {
+                    opacity: 0.8;
+                    transform: scale(1.05);
+                }
+                100% {
+                    opacity: 0.3;
+                    transform: scale(0.95);
+                }
+            }
+
+            /* v156.0: Enhanced glass effect classes */
+            .glass-card-v2026 {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.1) 0%,
+                    rgba(255, 255, 255, 0.05) 50%,
+                    rgba(255, 255, 255, 0.02) 100%
+                );
+                backdrop-filter: blur(32px) saturate(200%) contrast(1.1);
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                box-shadow:
+                    0 8px 32px rgba(0, 0, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+                    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .glass-card-v2026::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.08),
+                    transparent
+                );
+                animation: v156-shimmer-wave 3s ease-in-out infinite;
+            }
+
+            /* v156.0: Status-aware animation classes */
+            .status-pulse {
+                animation: v156-pulse-ripple 1.5s ease-out infinite;
+            }
+
+            .data-stream-text {
+                background: linear-gradient(
+                    90deg,
+                    var(--holo-cyan),
+                    var(--holo-magenta),
+                    var(--holo-violet),
+                    var(--holo-cyan)
+                );
+                background-size: 200% 100%;
+                -webkit-background-clip: text;
+                background-clip: text;
+                animation: v156-data-stream 4s linear infinite;
+            }
+
+            /* v156.0: v156.0 Anchor positioning for tooltips - CSS 2026 */
             .stat-card[title] {
                 position: relative;
                 anchor-name: --stat-card-anchor;

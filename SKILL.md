@@ -808,6 +808,29 @@ node ~/.openclaw/workspace/skills/dashboard-service/scripts/server.js &
 
 ## 更新日志
 
+### v156.0 (2026-04-01)
+- **CSS @media (nav-preferences)**: 检测用户导航偏好(减少动画)，自动禁用粒子和装饰效果
+- **CSS @media (scripting)**: 检测JavaScript支持状态，无脚本时显示静态狐狸图标
+- **CSS @media (video-color-gamut)**: 根据视频色彩空间(P3/sRGB)动态调整主题色
+- **更多 @property 定义**: 新增 --pulse-x/--pulse-y/--morph-smooth/--data-stream 可动画CSS变量
+- **text-wrap 改进**: 狐狸名字使用balance优化换行，角色描述使用pretty改善排版
+- **@starting-style 入场动画**: stat-card使用现代CSS入场动画规范
+- **animation-composition: accumulate**: 为fox-glow-aura等核心动画添加复合动画性能优化
+- **interpolate-size: allow-keywords**: 玻璃卡片支持平滑高度过渡
+- **相对颜色语法增强**: 新增holo-cyan-10/20等oklch变体色彩变量
+- **input :user-valid/:user-invalid**: 实时表单验证样式，用户输入时自动应用验证反馈
+- **@when 条件规则**: 增强型条件CSS规则，支持媒体查询条件样式
+- **v156-data-stream动画**: 数据流渐变动画，彩虹色循环流动效果
+- **v156-pulse-ripple动画**: 脉冲涟漪动画，扩散消失效果
+- **v156-morph-border动画**: 有机变形边框动画，多形状循环变形
+- **v156-shimmer-wave动画**: 扫光波浪动画，斜向扫光位移效果
+- **v156-glow-breathe动画**: 发光呼吸动画，强度周期性变化
+- **v156-neural-pulse动画**: 神经脉冲动画，透明度+缩放呼吸效果
+- **glass-card-v2026类**: 增强型玻璃卡片，带动态扫光层和多重阴影
+- **status-pulse类**: 状态脉冲动画，用于在线状态指示
+- **data-stream-text类**: 彩虹渐变流动文字效果
+- **版本更新至 v156.0**
+
 ### v155.0 (2026-04-01)
 - **CSS @media (update: fast/slow)**: 根据浏览器更新频率自适应动画速度，慢速更新设备自动降低动画频率
 - **CSS @media (color-gamut: p3)**: 支持Display P3广色域显示，HDR屏幕自动使用更鲜艳的色彩
