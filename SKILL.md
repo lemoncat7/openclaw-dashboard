@@ -9,6 +9,13 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+- v146.0: Theme Smooth Transitions（主题切换所有元素平滑过渡，0.3-0.4s动画）
+- v146.0: Discrete Property Transitions（allow-discrete离散属性平滑过渡）
+- v146.0: Enhanced Focus Ring Animation（焦点环脉冲扩散效果）
+- v146.0: Forced Colors Mode Support（Windows High Contrast Mode支持）
+- v146.0: Footer Health Badges（页脚健康状态：healthy/degraded/critical）
+- v146.0: Footer Version Gradient（版本号渐变流光动画）
+- v146.0: Neural Grid Speed Status-aware（神经网络网格速度随状态动态调整）
 - v145.0: Data Pulse Ring Animation（数据刷新时狐狸容器脉冲环动画，颜色随数据新鲜度变化）
 - v145.0: Enhanced Mobile Support（移动端触摸优化，hover:none适配，超宽屏幕支持1800px+）
 - v145.0: Multi-source Heartbeat Detection（三层心跳源检测：heartbeat_state > task_scheduler > memory_log）
@@ -791,6 +798,24 @@ node ~/.openclaw/workspace/skills/dashboard-service/scripts/server.js &
 - https://oclaw.mochencloud.cn:1443/onboard → localhost:19000
 
 ## 更新日志
+
+### v146.0 (2026-03-31)
+- **Theme Smooth Transitions**: 主题切换时所有元素（背景、边框、阴影、颜色）平滑过渡，0.3-0.4s ease动画
+- **Discrete Property Transitions**: status-badge、ai-status-badge、data-freshness使用`transition-behavior: allow-discrete`实现离散属性平滑过渡
+- **Enhanced Focus Ring Animation**: 焦点环动画升级为脉冲扩散效果(box-shadow 2px→4px 呼吸)
+- **System Accessibility - Inverted Colors**: 支持`@media (inverted-colors)`反转颜色模式
+- **Forced Colors Mode Support**: 支持Windows High Contrast Mode (forced-colors: active)，自动隐藏装饰元素
+- **Field Sizing Support**: 表单元素使用`field-sizing: content`实现自适应尺寸
+- **Sparkline Hover Glow**: 迷你折线图柱状条悬停发光和亮度增强效果
+- **Stat Card Tactile Press**: 统计卡片添加按压反馈动画(translateY(1px) scale(0.99))
+- **Toast Action Button**: 新增`.toast-action`类，支持通知内的操作按钮样式
+- **Mini Stat Hover Scale**: 迷你统计数据悬停放大1.1x弹性效果
+- **Footer Health Badges**: 页脚健康状态标签显示healthy/degraded/critical三种状态，带颜色编码
+- **Footer Version Gradient**: 版本号使用渐变色流光动画(青色→紫色→品红)
+- **Neural Grid Speed Status-aware**: 神经网络网格动画速度根据状态动态调整(working=3s/sleeping=9s/excited=2s/thinking=4s)
+- **Activity Ring Gradient Stroke**: 活动进度环使用SVG渐变描边(gradient stroke)
+- **Reputation Badge Hover Glow**: 信誉徽章悬停发光放大效果
+- **版本更新至 v146.0**
 
 ### v143.0 (2026-03-31)
 - **View Transitions API集成**: 使用浏览器原生View Transitions API实现状态切换平滑过渡动画，支持`document.startViewTransition()`

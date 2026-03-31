@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MoShang - OpenClaw Status Dashboard">
     <meta name="theme-color" content="#0a0a0f">
-    <title>MoShang Status v146.0</title>
+    <title>MoShang Status v143.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
            MoShang Dashboard - Ultra Modern CSS Design v10.0 (2026)
-           v144.0: Enhanced particle systems, interactive hover effects,
-                   CSS container queries, smoother transitions, new mood animations
+           v142.0: Enhanced spatial audio viz, neural mood rings, particle systems,
+                   modern CSS 2026 features, 3D transforms, micro-interactions
         ============================================================ */
         
         @layer base, layout, components, animations, effects;
@@ -260,535 +260,6 @@
                     page-break-inside: avoid;
                 }
             }
-            /* v144.0: Container Queries for responsive cards */
-            @container (max-width: 300px) {
-                .stat-card {
-                    padding: 16px;
-                }
-                .stat-value {
-                    font-size: 24px;
-                }
-                .stat-icon {
-                    width: 32px;
-                    height: 32px;
-                    font-size: 16px;
-                }
-            }
-            
-            /* v144.0: CSS Nesting - Native support */
-            .glass-card {
-                &::after {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    width: 60%;
-                    height: 1px;
-                    background: linear-gradient(90deg, transparent, var(--holo-cyan), transparent);
-                    opacity: 0.3;
-                }
-                
-                &:hover {
-                    &::after {
-                        opacity: 0.6;
-                        width: 80%;
-                    }
-                }
-            }
-            
-            /* v144.0: Interactive card hover - 3D tilt effect */
-            .stat-card {
-                --tilt-x: 0deg;
-                --tilt-y: 0deg;
-                transform: perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
-                transition: transform 0.1s ease;
-            }
-            
-            .stat-card.interactive:hover {
-                transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
-            }
-            
-            /* v144.0: Smooth state transitions */
-            .status-badge, .mood-btn, .mode-btn {
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-            
-            /* v144.0: New status animations */
-            @keyframes status-glow-pulse {
-                0%, 100% { 
-                    box-shadow: 0 0 10px currentColor;
-                    filter: brightness(1);
-                }
-                50% { 
-                    box-shadow: 0 0 25px currentColor;
-                    filter: brightness(1.2);
-                }
-            }
-            
-            .status-badge[data-status="online"] .status-dot {
-                animation: status-glow-pulse 2s ease-in-out infinite;
-            }
-            
-            /* v144.0: Skill badge pop animation */
-            @keyframes skill-pop {
-                0% { transform: scale(0.8); opacity: 0; }
-                50% { transform: scale(1.1); }
-                100% { transform: scale(1); opacity: 1; }
-            }
-            
-            .skill-badge-new {
-                animation: skill-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            }
-            
-            /* v144.0: Enhanced ripple effect */
-            .ripple-clean {
-                position: absolute;
-                border-radius: 50%;
-                background: radial-gradient(circle, var(--mood-primary) 0%, transparent 70%);
-                transform: scale(0);
-                animation: ripple-clean 0.6s ease-out forwards;
-                pointer-events: none;
-            }
-            
-            @keyframes ripple-clean {
-                to { transform: scale(4); opacity: 0; }
-            }
-            
-            /* v144.0: Keyboard focus ring animation */
-            @keyframes focus-ring-pulse {
-                0%, 100% { 
-                    box-shadow: 0 0 0 2px var(--holo-cyan), 0 0 12px rgba(0, 245, 255, 0.3);
-                }
-                50% { 
-                    box-shadow: 0 0 0 4px var(--holo-cyan), 0 0 20px rgba(0, 245, 255, 0.5);
-                }
-            }
-            
-            *:focus-visible {
-                animation: focus-ring-pulse 1.5s ease-in-out infinite;
-            }
-            
-            /* v144.0: Scroll reveal enhanced */
-            @keyframes v144-scroll-reveal {
-                from { 
-                    opacity: 0; 
-                    transform: translateY(30px) scale(0.95); 
-                }
-                to { 
-                    opacity: 1; 
-                    transform: translateY(0) scale(1); 
-                }
-            }
-            
-            .reveal-on-scroll {
-                animation: v144-scroll-reveal 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            }
-            
-            /* v144.0: Status bar gradient animation */
-            .status-bar-animated {
-                background: linear-gradient(90deg, 
-                    var(--holo-cyan) 0%, 
-                    var(--holo-violet) 50%, 
-                    var(--holo-magenta) 100%);
-                background-size: 200% 100%;
-                animation: gradient-slide 3s linear infinite;
-            }
-            
-            @keyframes gradient-slide {
-                0% { background-position: 100% 0; }
-                100% { background-position: -100% 0; }
-            }
-            
-            /* v144.0: New mood emoji bounce */
-            @keyframes mood-bounce {
-                0%, 100% { transform: translateY(0) rotate(0deg); }
-                25% { transform: translateY(-8px) rotate(-5deg); }
-                50% { transform: translateY(-4px) rotate(3deg); }
-                75% { transform: translateY(-6px) rotate(-2deg); }
-            }
-            
-            .fox-expression {
-                animation: mood-bounce 2s ease-in-out infinite;
-            }
-            
-            /* v144.0: Quick stat number tick animation */
-            @keyframes number-tick {
-                0% { transform: translateY(-10px); opacity: 0; }
-                50% { transform: translateY(2px); }
-                100% { transform: translateY(0); opacity: 1; }
-            }
-            
-            .animated-counter {
-                animation: number-tick 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            }
-            
-            /* v144.0: Glass card shimmer effect */
-            .glass-card {
-                position: relative;
-                overflow: hidden;
-                
-                &::before {
-                    content: '';
-                    position: absolute;
-                    top: -50%;
-                    left: -50%;
-                    width: 200%;
-                    height: 200%;
-                    background: linear-gradient(
-                        45deg,
-                        transparent 30%,
-                        rgba(255, 255, 255, 0.03) 50%,
-                        transparent 70%
-                    );
-                    transform: rotate(45deg);
-                    transition: transform 0.5s ease;
-                    pointer-events: none;
-                }
-                
-                &:hover::before {
-                    transform: rotate(45deg) translate(20%, 20%);
-                }
-            }
-            
-            /* v144.0: Progress bar stripe animation */
-            .progress-fill-striped {
-                background-image: linear-gradient(
-                    45deg,
-                    rgba(255, 255, 255, 0.1) 25%,
-                    transparent 25%,
-                    transparent 50%,
-                    rgba(255, 255, 255, 0.1) 50%,
-                    rgba(255, 255, 255, 0.1) 75%,
-                    transparent 75%,
-                    transparent
-                );
-                background-size: 1rem 1rem;
-                animation: progress-stripe 1s linear infinite;
-            }
-            
-            @keyframes progress-stripe {
-                0% { background-position: 1rem 0; }
-                100% { background-position: 0 0; }
-            }
-            
-            /* v144.0: Enhanced tooltip */
-            .stat-card[title]:hover::after {
-                content: attr(title);
-                position: absolute;
-                bottom: 100%;
-                left: 50%;
-                transform: translateX(-50%);
-                padding: 6px 12px;
-                background: var(--glass-3);
-                border: 1px solid var(--glass-border);
-                border-radius: var(--radius-sm);
-                font-size: 11px;
-                color: var(--text-secondary);
-                white-space: nowrap;
-                opacity: 1;
-                pointer-events: none;
-                z-index: 100;
-            }
-            
-            /* v144.0: Activity ring glow animation */
-            @keyframes activity-ring-pulse {
-                0%, 100% { 
-                    filter: drop-shadow(0 0 3px var(--holo-cyan)) brightness(1);
-                }
-                50% { 
-                    filter: drop-shadow(0 0 10px var(--holo-cyan)) brightness(1.2);
-                }
-            }
-            
-            .progress-ring-fill {
-                animation: activity-ring-pulse 2s ease-in-out infinite;
-            }
-            
-            /* v145.0: Data received pulse - rings that expand from fox on successful refresh */
-            @keyframes data-pulse-ring {
-                0% { transform: scale(0.8); opacity: 0.8; border-width: 3px; }
-                100% { transform: scale(1.8); opacity: 0; border-width: 1px; }
-            }
-            
-            .data-pulse-ring {
-                position: absolute;
-                inset: -15px;
-                border-radius: 50%;
-                border: 3px solid var(--holo-cyan);
-                animation: data-pulse-ring 0.8s ease-out forwards;
-                pointer-events: none;
-                z-index: 0;
-            }
-            
-            /* v145.0: Data freshness glow */
-            .data-freshness[data-freshness="fresh"] {
-                animation: fresh-glow 2s ease-in-out infinite;
-            }
-            
-            @keyframes fresh-glow {
-                0%, 100% { box-shadow: 0 0 0 rgba(92, 219, 149, 0); }
-                50% { box-shadow: 0 0 12px rgba(92, 219, 149, 0.4); }
-            }
-            
-            /* v145.0: Stale data shake */
-            @keyframes stale-shake {
-                0%, 100% { transform: translateX(0); }
-                20% { transform: translateX(-2px); }
-                40% { transform: translateX(2px); }
-                60% { transform: translateX(-1px); }
-                80% { transform: translateX(1px); }
-            }
-            
-            .data-freshness[data-freshness="stale"] {
-                animation: stale-shake 0.5s ease-out;
-            }
-            
-            /* v145.0: Memory timeline new item flash */
-            @keyframes timeline-flash {
-                0% { background: rgba(0, 245, 255, 0.2); }
-                100% { background: var(--glass-1); }
-            }
-            
-            .timeline-item-new {
-                animation: timeline-flash 1s ease-out;
-            }
-            
-            /* v146.0: Theme smooth transition - all elements transition theme changes seamlessly */
-            body, .glass-card, .stat-card, .fox-container {
-                transition: background-color 0.4s var(--ease-out-expo),
-                            border-color 0.3s ease,
-                            box-shadow 0.3s ease,
-                            color 0.3s ease;
-            }
-            
-            /* v146.0: Discrete property transitions - needs transition-behavior */
-            .status-badge, .ai-status-badge, .data-freshness {
-                transition-behavior: allow-discrete;
-                transition-duration: 0.3s;
-            }
-            
-            /* v146.0: Enhanced focus-visible with animated ring */
-            @keyframes focus-ring-ripple {
-                0%, 100% { 
-                    box-shadow: 0 0 0 2px var(--holo-cyan), 0 0 12px rgba(0, 245, 255, 0.3);
-                }
-                50% { 
-                    box-shadow: 0 0 0 4px var(--holo-cyan), 0 0 20px rgba(0, 245, 255, 0.5);
-                }
-            }
-            
-            *:focus-visible {
-                animation: focus-ring-ripple 1.5s ease-in-out infinite;
-            }
-            
-            /* v146.0: System accessibility - inverted colors support */
-            @media (inverted-colors) {
-                .glass-card, .stat-card {
-                    filter: invert(1);
-                }
-            }
-            
-            /* v146.0: Forced colors mode support (Windows High Contrast) */
-            @media (forced-colors: active) {
-                .glass-card, .stat-card {
-                    border: 2px solid CanvasText;
-                }
-                .status-dot {
-                    background: CanvasText;
-                }
-                .holo-aura, .glow-orb {
-                    display: none;
-                }
-            }
-            
-            /* v146.0: Field sizing support for form elements */
-            @supports (field-sizing: content) {
-                input, textarea {
-                    field-sizing: content;
-                }
-            }
-            
-            /* v146.0: Sparkline bar enhanced hover glow */
-            .sparkline-bar {
-                transition: filter 0.2s ease;
-            }
-            
-            .sparkline-bar:hover {
-                filter: brightness(1.3) drop-shadow(0 0 4px var(--holo-cyan));
-            }
-            
-            /* v146.0: Stat card press feedback - tactile click response */
-            .stat-card {
-                &:active {
-                    transform: translateY(1px) scale(0.99);
-                    transition: transform 0.1s ease;
-                }
-            }
-            
-            /* v146.0: Toast action button */
-            .toast-action {
-                padding: 4px 10px;
-                background: rgba(0, 245, 255, 0.15);
-                border: 1px solid rgba(0, 245, 255, 0.3);
-                border-radius: var(--radius-sm);
-                color: var(--holo-cyan);
-                font-size: 12px;
-                cursor: pointer;
-                transition: all 0.2s ease;
-            }
-            
-            .toast-action:hover {
-                background: rgba(0, 245, 255, 0.25);
-                transform: scale(1.05);
-            }
-            
-            /* v146.0: Mini stat enhanced hover */
-            .mini-stat {
-                transition: transform 0.2s var(--ease-spring);
-            }
-            
-            .mini-stat:hover {
-                transform: scale(1.1);
-            }
-            
-            .mini-stat-value {
-                transition: color 0.3s ease;
-            }
-            
-            /* v146.0: Scroll-driven card reveal - enhanced for better performance */
-            .reveal-on-scroll {
-                animation: v144-scroll-reveal 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-                animation-timeline: view();
-                animation-range: entry 0% cover 40%;
-            }
-            
-            /* v146.0: Activity ring enhanced glow with gradient stroke */
-            .progress-ring-fill {
-                stroke: url(#activityGradient);
-                animation: activity-ring-pulse 2s ease-in-out infinite;
-            }
-            
-            /* v146.0: Reputation badge shimmer on hover */
-            .reputation-badge:hover {
-                box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-                transform: scale(1.05);
-            }
-            
-            /* v146.0: Neural grid speed adjustment based on status */
-            body.status-working .neural-grid { animation-duration: 3s; }
-            body.status-sleeping .neural-grid { animation-duration: 9s; }
-            body.status-excited .neural-grid { animation-duration: 2s; }
-            body.status-thinking .neural-grid { animation-duration: 4s; }
-            
-            /* v146.0: Glow orb enhanced movement */
-            .glow-orb {
-                filter: blur(30px) brightness(1.3);
-                mix-blend-mode: screen;
-            }
-            
-            /* v146.0: Print styles enhanced */
-            @media print {
-                .neural-grid, .ambient-particles, .glow-orb, .toast-container {
-                    display: none;
-                }
-                .glass-card {
-                    border: 1px solid #ccc;
-                    box-shadow: none;
-                }
-                body {
-                    background: white;
-                    color: black;
-                }
-            }
-            
-            /* v144.0: Heatmap cell enhanced hover */
-            .heatmap-cell {
-                transition: transform 0.2s ease, box-shadow 0.2s ease;
-                
-                &:hover {
-                    transform: scale(1.5) translateY(-5px);
-                    box-shadow: 0 8px 20px rgba(0, 245, 255, 0.4);
-                    z-index: 10;
-                }
-            }
-            
-            /* v144.0: New breathing animation phases */
-            .breathing-circle {
-                &.inhale {
-                    transform: scale(1.3);
-                    border-color: var(--holo-cyan);
-                    box-shadow: 0 0 30px var(--holo-cyan);
-                }
-                &.hold {
-                    transform: scale(1.2);
-                    border-color: var(--holo-violet);
-                }
-                &.exhale {
-                    transform: scale(1);
-                    border-color: var(--holo-magenta);
-                    box-shadow: 0 0 15px var(--holo-magenta);
-                }
-            }
-            
-            /* v144.0: Quick action button enhanced */
-            .quick-action-btn {
-                position: relative;
-                overflow: hidden;
-                
-                &::after {
-                    content: '';
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    width: 0;
-                    height: 0;
-                    background: rgba(0, 245, 255, 0.2);
-                    border-radius: 50%;
-                    transform: translate(-50%, -50%);
-                    transition: width 0.3s ease, height 0.3s ease;
-                }
-                
-                &:active::after {
-                    width: 200px;
-                    height: 200px;
-                }
-            }
-            
-            /* v144.0: Theme switch smooth transition */
-            .theme-btn {
-                transition: transform 0.2s ease, box-shadow 0.2s ease;
-                
-                &:active {
-                    transform: scale(0.9);
-                }
-            }
-            
-            /* v144.0: Neural grid pulse speed based on activity */
-            .neural-grid {
-                animation-duration: 6s;
-            }
-            
-            body.status-working .neural-grid { animation-duration: 3s; }
-            body.status-sleeping .neural-grid { animation-duration: 8s; }
-            
-            /* v144.0: Glow orb enhanced */
-            .glow-orb {
-                filter: blur(30px) brightness(1.2);
-                mix-blend-mode: screen;
-            }
-            
-            /* v144.0: Print styles enhanced */
-            @media print {
-                .neural-grid, .ambient-particles, .glow-orb, .toast-container {
-                    display: none;
-                }
-                .glass-card {
-                    border: 1px solid #ccc;
-                    box-shadow: none;
-                }
-            }
-            
             *, *::before, *::after {
                 margin: 0;
                 padding: 0;
@@ -2177,46 +1648,6 @@
                 flex-wrap: wrap;
             }
             
-            /* v146.0: Footer version badge with gradient animation */
-            .footer-version {
-                background: linear-gradient(135deg, var(--holo-cyan), var(--holo-violet), var(--holo-magenta));
-                background-size: 200% 200%;
-                animation: v146-gradient-shift 3s ease infinite;
-                -webkit-background-clip: text;
-                background-clip: text;
-                color: transparent;
-                font-weight: 600;
-            }
-            
-            @keyframes v146-gradient-shift {
-                0% { background-position: 0% 50%; }
-                50% { background-position: 100% 50%; }
-                100% { background-position: 0% 50%; }
-            }
-            
-            /* v146.0: Footer health indicator enhanced */
-            #healthTag {
-                padding: 2px 8px;
-                border-radius: 4px;
-                font-size: 10px;
-                transition: all 0.3s ease;
-            }
-            
-            #healthTag.healthy {
-                background: rgba(92, 219, 149, 0.15);
-                color: var(--status-online);
-            }
-            
-            #healthTag.degraded {
-                background: rgba(254, 202, 122, 0.15);
-                color: var(--status-idle);
-            }
-            
-            #healthTag.critical {
-                background: rgba(255, 107, 107, 0.15);
-                color: var(--status-error);
-            }
-            
             /* Ripple Effect */
             .ripple {
                 position: absolute;
@@ -2441,23 +1872,6 @@
                 .stats-grid { grid-template-columns: 1fr 1fr; }
                 .fox-container { width: 140px; height: 140px; }
                 .fox-name { font-size: 22px; }
-                .dashboard-container { padding: 12px; }
-                .glass-card { padding: 16px; }
-                .fps-counter { display: none; }
-            }
-            
-            /* v145.0: Ultra-wide support */
-            @media (min-width: 1800px) {
-                .dashboard-container { max-width: 1800px; }
-                .stats-grid { grid-template-columns: repeat(4, 1fr); }
-            }
-            
-            /* v145.0: Touch device optimizations */
-            @media (hover: none) and (pointer: coarse) {
-                .stat-card:hover { transform: none; box-shadow: none; }
-                .stat-card:active { transform: scale(0.98); }
-                .quick-action-btn:hover { transform: translateY(-1px); }
-                .glass-card:hover { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); }
             }
         }
     </style>
@@ -2843,7 +2257,7 @@
         
         <footer class="dashboard-footer">
             <div class="footer-info">
-                <span>MoShang</span> <span class="footer-version">Status Dashboard v146.0</span> • Last updated: <span id="lastUpdated">--</span>
+                <span>MoShang</span> Status Dashboard v143.0 • Last updated: <span id="lastUpdated">--</span>
                 <span id="dataSourceTag" style="margin-left: 8px; padding: 2px 8px; background: rgba(92, 219, 149, 0.15); border-radius: 4px; font-size: 10px; color: var(--status-online);"></span>
             </div>
             <div class="footer-info">
@@ -2857,10 +2271,10 @@
     
     <script>
         /* ============================================================
-           MoShang Dashboard - JavaScript v146.0
-           v146.0: Theme smooth transitions, enhanced accessibility,
-                   forced-colors support, footer health badges,
-                   mini stat hover effects, neural grid speed adjustment
+           MoShang Dashboard - JavaScript v143.0
+           v143.0: Enhanced spring animations, AI-ready gesture support,
+                   View Transitions API, improved accessibility,
+                   physics-based interactions, oklch color system
         ============================================================ */
         
         const state = {
@@ -3602,27 +3016,6 @@
             if (heartbeatChanged) animateCounter('heartbeatStat');
             if (activityChanged) animateCounter('activityValue');
             if (activityChanged) animateCounter('activityStat');
-            
-            // v145.0: Data pulse effect on successful refresh
-            triggerDataPulse();
-        }
-        
-        // v145.0: Trigger a visual pulse ring when fresh data is received
-        function triggerDataPulse() {
-            const foxContainer = $('foxContainer');
-            if (!foxContainer) return;
-            
-            // Remove existing pulse rings
-            foxContainer.querySelectorAll('.data-pulse-ring').forEach(el => el.remove());
-            
-            // Create new pulse ring
-            const pulse = document.createElement('div');
-            pulse.className = 'data-pulse-ring';
-            pulse.style.borderColor = state.dataFreshness === 'fresh' ? 'var(--holo-cyan)' : 
-                                     state.dataFreshness === 'normal' ? 'var(--status-idle)' : 'var(--status-error)';
-            foxContainer.appendChild(pulse);
-            
-            setTimeout(() => pulse.remove(), 800);
         }
         
         function animateCounter(id) {
@@ -3691,26 +3084,6 @@
             $('healthMemBar').style.width = state.memoryPercent + '%';
             $('healthCpuBar').style.width = state.cpuPercent + '%';
             $('healthDiskBar').style.width = state.diskPercent + '%';
-            
-            // v146.0: Update footer health tag based on system health
-            const healthTag = $('healthTag');
-            if (healthTag) {
-                const health = state._health || {};
-                const memHigh = state.memoryPercent > 85;
-                const cpuHigh = state.cpuPercent > 85;
-                const diskHigh = state.diskPercent > 90;
-                
-                if (memHigh || cpuHigh || diskHigh) {
-                    healthTag.textContent = 'Critical';
-                    healthTag.className = 'critical';
-                } else if (state.memoryPercent > 70 || state.cpuPercent > 70) {
-                    healthTag.textContent = 'Degraded';
-                    healthTag.className = 'degraded';
-                } else {
-                    healthTag.textContent = 'Healthy';
-                    healthTag.className = 'healthy';
-                }
-            }
         }
         
         function updateDataSource() {
@@ -4128,35 +3501,23 @@
                 }
             });
             
-            // v145.0: Enhanced keyboard shortcuts
+            // v143.0: Keyboard shortcuts
             document.addEventListener('keydown', (e) => {
-                if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
-                
-                if (e.key === 'r' && !e.ctrlKey && !e.metaKey) {
+                if (e.key === 'r' && !e.ctrlKey && !e.metaKey && document.activeElement.tagName !== 'INPUT') {
                     refreshData();
                 }
-                if (e.key === 'b' && !e.ctrlKey && !e.metaKey) {
+                if (e.key === 'b' && !e.ctrlKey && !e.metaKey && document.activeElement.tagName !== 'INPUT') {
                     toggleBreathing();
                 }
-                if (e.key === 't' && !e.ctrlKey && !e.metaKey) {
+                if (e.key === 't' && !e.ctrlKey && !e.metaKey && document.activeElement.tagName !== 'INPUT') {
                     const themes = ['default', 'oled', 'purple'];
                     const current = localStorage.getItem('moshang-theme') || 'default';
                     const next = themes[(themes.indexOf(current) + 1) % themes.length];
                     setTheme(next);
                 }
-                // v145.0: View transition shortcut
-                if (e.key === 'v' && !e.ctrlKey && !e.metaKey) {
+                // v143.0: View transition shortcut
+                if (e.key === 'v' && !e.ctrlKey && !e.metaKey && document.activeElement.tagName !== 'INPUT') {
                     triggerViewTransition(() => refreshData());
-                }
-                // v145.0: Mood cycling shortcuts
-                if (e.key === '1') setMood('idle');
-                if (e.key === '2') setMood('excited');
-                if (e.key === '3') setMood('thinking');
-                if (e.key === '4') setMood('laughing');
-                if (e.key === '5') setMood('focused');
-                // v145.0: Toggle auto-refresh
-                if (e.key === 'a' && !e.ctrlKey && !e.metaKey) {
-                    toggleAutoRefresh();
                 }
             });
             
@@ -4164,13 +3525,12 @@
             setupGestureDetection();
             
             // v143.0: Log initialization
-            v143Log('info', 'MoShang Dashboard v146.0 initialized', {
+            v143Log('info', 'MoShang Dashboard v143.0 initialized', {
                 userAgent: navigator.userAgent,
                 viewport: { width: window.innerWidth, height: window.innerHeight },
-                supportsViewTransitions: !!document.startViewTransition,
-                keyboardShortcuts: ['r=refresh', 'b=breathing', 't=theme', 'v=viewTransition', '1-5=moods', 'a=autoRefresh']
+                supportsViewTransitions: !!document.startViewTransition
             });
-            console.log('🚀 MoShang Dashboard v146.0 initialized');
+            console.log('🚀 MoShang Dashboard v143.0 initialized');
         }
         
         if (document.readyState === 'loading') {
