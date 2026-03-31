@@ -799,6 +799,24 @@ node ~/.openclaw/workspace/skills/dashboard-service/scripts/server.js &
 
 ## 更新日志
 
+### v148.0 (2026-03-31)
+- **Neuomorphic 2.0 Soft UI**: 新增 .neu-card 类，带柔和阴影和高光的现代软 UI 卡片效果，悬停上浮/按压反馈
+- **Container Queries v2**: 增强型容器查询，dashboard 容器支持 900px/600px 断点自适应布局
+- **Motion Path Animations**: CSS 2026 offset-path 圆周轨道动画，.orbit-particle 类支持环绕运动
+- **Toggle-tree 折叠面板**: details[toggleable] 原生折叠面板样式，无需 JS
+- **Scroll Snap X**: 增强型横向滚动吸附，.scroll-snap-x 类支持精准停留
+- **Touch Highlight Removal**: stat-card/action-btn/mood-btn 移除移动端点击高亮，提升美观
+- **Reduced Data Mode**: prefers-reduced-data 媒体查询支持，减少视觉噪音节省流量
+- **Selection Styling**: ::selection 样式细化，stat-value 使用独立选中色
+- **Backdrop Performance**: .glass-card/.glass-panel 添加 will-change: backdrop-filter 性能优化
+- **Discrete Property Transitions**: status-badge 和 stat-value 使用 transition-behavior: allow-discrete 平滑过渡
+- **Data Table Styles**: .data-table 类支持带网格线的表格样式
+- **Overflow Scroll Indicator**: .overflow-scroll 类带渐变滚动指示器
+- **Ping Animation**: v148-ping 心跳式脉冲动画，替代传统脉冲环
+- **Cursor Hint System**: [data-hint] 属性驱动的悬停提示，无需 JS
+- **Version Badge Pulse**: 版本徽章脉冲动画，吸引更新注意
+- **版本更新至 v148.0**
+
 ### v146.0 (2026-03-31)
 - **Theme Smooth Transitions**: 主题切换时所有元素（背景、边框、阴影、颜色）平滑过渡，0.3-0.4s ease动画
 - **Discrete Property Transitions**: status-badge、ai-status-badge、data-freshness使用`transition-behavior: allow-discrete`实现离散属性平滑过渡

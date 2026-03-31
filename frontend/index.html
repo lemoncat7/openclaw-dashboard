@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MoShang - OpenClaw Status Dashboard">
     <meta name="theme-color" content="#0a0a0f">
-    <title>MoShang Status v147.0</title>
+    <title>MoShang Status v148.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
-           MoShang Dashboard - Ultra Modern CSS Design v11.0 (2026)
-           v147.0: CSS 2026 features (@when, @property, light-dark, color()),
+           MoShang Dashboard - Ultra Modern CSS Design v12.0 (2026)
+           v148.0: CSS 2026 features (@when, @property, light-dark, color()),
                    scroll-driven animations, enhanced mood effects,
-                   modern color functions, improved fox status display
+                   modern color functions, improved fox status display,
+                   neuomorphic refinements, container queries v2
         ============================================================ */
         
         @layer base, layout, components, animations, effects;
@@ -714,13 +715,279 @@
                 to { opacity: 1; transform: scale(1); }
             }
             
-            /* v147.0: Focus-visible enhanced */
+            /* v148.0: Focus-visible enhanced */
             *:focus-visible {
                 outline: 3px solid var(--holo-cyan);
                 outline-offset: 4px;
                 box-shadow: 
                     0 0 20px rgba(0, 245, 255, 0.4),
                     0 0 40px rgba(0, 245, 255, 0.2);
+            }
+            
+            /* v148.0: Neuomorphic 2.0 - Soft UI refinements */
+            @property --neu-depth {
+                syntax: '<number>';
+                initial-value: 0;
+                inherits: true;
+            }
+            
+            @property --neu-blur {
+                syntax: '<number>';
+                initial-value: 20;
+                inherits: true;
+            }
+            
+            .neu-card {
+                background: linear-gradient(145deg, 
+                    color-mix(in oklch, var(--glass-bg) 100%, white 8%), 
+                    color-mix(in oklch, var(--glass-bg) 100%, black 8%)
+                );
+                box-shadow: 
+                    8px 8px 16px color-mix(in oklch, var(--glass-bg) 100%, black 15%),
+                    -8px -8px 16px color-mix(in oklch, var(--glass-bg) 100%, white 10%);
+                transition: box-shadow 0.3s var(--ease-spring), transform 0.2s ease;
+                
+                &:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 
+                        12px 12px 24px color-mix(in oklch, var(--glass-bg) 100%, black 18%),
+                        -8px -8px 16px color-mix(in oklch, var(--glass-bg) 100%, white 12%);
+                }
+                
+                &:active {
+                    transform: translateY(0);
+                    box-shadow: 
+                        4px 4px 8px color-mix(in oklch, var(--glass-bg) 100%, black 12%),
+                        -4px -4px 8px color-mix(in oklch, var(--glass-bg) 100%, white 8%);
+                }
+            }
+            
+            /* v148.0: Container Queries v2 - Smart responsive containers */
+            @container dashboard (max-width: 900px) {
+                .stat-grid {
+                    grid-template-columns: repeat(2, 1fr) !important;
+                    gap: 12px !important;
+                }
+            }
+            
+            @container dashboard (max-width: 600px) {
+                .stat-grid {
+                    grid-template-columns: 1fr !important;
+                }
+                
+                .fox-container {
+                    transform: scale(0.85);
+                }
+            }
+            
+            /* v148.0: Motion path animations - CSS 2026 motion path */
+            @keyframes v148-orbit {
+                to { offset-distance: 100%; }
+            }
+            
+            .orbit-particle {
+                offset-path: circle(80px);
+                offset-rotate: 0deg;
+                animation: v148-orbit 8s linear infinite;
+            }
+            
+            /* v148.0: Toggle-tree for collapsible sections */
+            details[toggleable] summary {
+                cursor: pointer;
+                list-style: none;
+                &::-webkit-details-marker { display: none; }
+            }
+            
+            details[toggleable][open] summary {
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+            
+            details[toggleable] > *:not(summary) {
+                padding: 12px;
+                border: 1px solid var(--glass-border);
+                border-top: none;
+                border-bottom-left-radius: var(--radius-md);
+                border-bottom-right-radius: var(--radius-md);
+            }
+            
+            /* v148.0: Improved scroll snap for horizontal panels */
+            .scroll-snap-x {
+                scroll-snap-type: x mandatory;
+                scroll-padding-inline: 16px;
+                overflow-x: auto;
+                overscroll-behavior-x: contain;
+                
+                & > * {
+                    scroll-snap-align: start;
+                    scroll-snap-stop: always;
+                }
+            }
+            
+            /* v148.0: Touch-friendly tap highlight removal for interactive elements */
+            .stat-card, .action-btn, .mood-btn {
+                -webkit-tap-highlight-color: transparent;
+                tap-highlight-color: transparent;
+            }
+            
+            /* v148.0: Reduced data mode - less visual noise */
+            @media (prefers-reduced-data: reduce) {
+                .ambient-particle,
+                .glow-orb,
+                .particle-container,
+                .neural-mesh,
+                .morph-blob {
+                    display: none !important;
+                }
+                
+                .glass-card {
+                    backdrop-filter: none !important;
+                }
+            }
+            
+            /* v148.0: Smart font loading feedback */
+            @font-face {
+                font-display: swap;
+            }
+            
+            /* v148.0: Selection styling refinements */
+            ::selection {
+                background: color-mix(in oklch, var(--holo-cyan) 30%, transparent);
+                color: inherit;
+            }
+            
+            .stat-value::selection {
+                background: color-mix(in oklch, var(--holo-magenta) 25%, transparent);
+            }
+            
+            /* v148.0: Backdrop blur performance layer */
+            .glass-card, .glass-panel {
+                will-change: backdrop-filter;
+                contain: layout style;
+            }
+            
+            /* v148.0: Smooth interpolation for discrete properties */
+            @keyframes v148-status-fade {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            
+            .status-badge {
+                transition: 
+                    background-color 0.4s ease,
+                    border-color 0.3s ease,
+                    box-shadow 0.3s ease,
+                    opacity 0.2s ease;
+                transition-behavior: allow-discrete;
+            }
+            
+            .stat-value {
+                transition: 
+                    color 0.3s ease,
+                    text-shadow 0.3s ease,
+                    transform 0.2s var(--ease-spring);
+            }
+            
+            /* v148.0: Grid lines for data tables */
+            .data-table {
+                border-collapse: collapse;
+                width: 100%;
+                
+                th, td {
+                    padding: 8px 12px;
+                    border: 1px solid var(--glass-border);
+                    text-align: left;
+                }
+                
+                tr:hover td {
+                    background: color-mix(in oklch, var(--holo-cyan) 5%, transparent);
+                }
+            }
+            
+            /* v148.0: Horizontal scroll indicator for overflow containers */
+            .overflow-scroll {
+                position: relative;
+                
+                &::after {
+                    content: '';
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    bottom: 0;
+                    width: 40px;
+                    background: linear-gradient(to right, transparent, var(--glass-bg));
+                    pointer-events: none;
+                    opacity: 0;
+                    transition: opacity 0.2s;
+                }
+                
+                &:has(> *:last-child:nth-child(n+3))::after {
+                    opacity: 1;
+                }
+            }
+            
+            /* v148.0: Ping animation for live indicators */
+            @keyframes v148-ping {
+                75%, 100% {
+                    transform: scale(2);
+                    opacity: 0;
+                }
+            }
+            
+            .live-ping {
+                position: relative;
+                
+                &::before {
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    border-radius: 50%;
+                    background: var(--holo-cyan);
+                    animation: v148-ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+                }
+            }
+            
+            /* v148.0: Cursor interaction hints */
+            [data-hint] {
+                position: relative;
+                cursor: help;
+                
+                &::after {
+                    content: attr(data-hint);
+                    position: absolute;
+                    bottom: 100%;
+                    left: 50%;
+                    transform: translateX(-50%) translateY(-4px);
+                    padding: 4px 8px;
+                    background: var(--glass-3);
+                    border: 1px solid var(--glass-border);
+                    border-radius: var(--radius-sm);
+                    font-size: 11px;
+                    white-space: nowrap;
+                    opacity: 0;
+                    pointer-events: none;
+                    transition: opacity 0.2s, transform 0.2s;
+                    z-index: 1000;
+                }
+                
+                &:hover::after {
+                    opacity: 1;
+                    transform: translateX(-50%) translateY(-8px);
+                }
+            }
+            
+            /* v148.0: Version badge pulse for updates */
+            @keyframes v148-version-pulse {
+                0%, 100% { 
+                    box-shadow: 0 0 0 0 color-mix(in oklch, var(--holo-magenta) 50%, transparent);
+                }
+                50% { 
+                    box-shadow: 0 0 0 8px transparent;
+                }
+            }
+            
+            .version-badge {
+                animation: v148-version-pulse 3s ease-in-out infinite;
             }
             
             /* v143.0: Color Level 5 - oklch native support */
@@ -3529,10 +3796,10 @@
     
     <script>
         /* ============================================================
-           MoShang Dashboard - JavaScript v147.0
-           v147.0: CSS 2026 features, enhanced mood animations,
+           MoShang Dashboard - JavaScript v148.0
+           v148.0: CSS 2026 features, enhanced mood animations,
                    modern color functions, scroll-driven effects,
-                   improved fox status display
+                   improved fox status display, neuomorphic v2
         ============================================================ */
         
         const state = {
@@ -4836,13 +5103,13 @@
             setupGestureDetection();
             
             // v143.0: Log initialization
-            v143Log('info', 'MoShang Dashboard v146.0 initialized', {
+            v143Log('info', 'MoShang Dashboard v148.0 initialized', {
                 userAgent: navigator.userAgent,
                 viewport: { width: window.innerWidth, height: window.innerHeight },
                 supportsViewTransitions: !!document.startViewTransition,
                 keyboardShortcuts: ['r=refresh', 'b=breathing', 't=theme', 'v=viewTransition', '1-5=moods', 'a=autoRefresh']
             });
-            console.log('🚀 MoShang Dashboard v146.0 initialized');
+            console.log('🚀 MoShang Dashboard v148.0 initialized');
         }
         
         if (document.readyState === 'loading') {
