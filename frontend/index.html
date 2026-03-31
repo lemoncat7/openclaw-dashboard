@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MoShang - OpenClaw Status Dashboard">
     <meta name="theme-color" content="#0a0a0f">
-    <title>MoShang Status v141.0</title>
+    <title>MoShang Status v142.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
            MoShang Dashboard - Ultra Modern CSS Design v10.0 (2026)
-           v141.0: Performance optimization, reduced motion support,
-                   accessibility improvements, adaptive refresh, OLED theme
+           v142.0: Enhanced spatial audio viz, neural mood rings, particle systems,
+                   modern CSS 2026 features, 3D transforms, micro-interactions
         ============================================================ */
         
         @layer base, layout, components, animations, effects;
@@ -1422,6 +1422,208 @@
                 to { transform: translate(-50%, -50%) scale(4); opacity: 0; }
             }
             
+            /* v142.0: Enhanced 3D Card Effects */
+            .card-3d {
+                transform-style: preserve-3d;
+                perspective: 1000px;
+            }
+            
+            .card-3d:hover {
+                transform: rotateX(2deg) rotateY(-2deg) translateZ(10px);
+            }
+            
+            .card-3d-inner {
+                transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            }
+            
+            /* v142.0: Neural Pulse Grid */
+            @keyframes neural-grid-pulse {
+                0%, 100% { opacity: 0.03; }
+                50% { opacity: 0.08; }
+            }
+            
+            .neural-grid {
+                position: fixed;
+                inset: 0;
+                background-image: 
+                    linear-gradient(var(--mood-primary) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--mood-primary) 1px, transparent 1px);
+                background-size: 60px 60px;
+                animation: neural-grid-pulse 4s ease-in-out infinite;
+                pointer-events: none;
+                z-index: 0;
+            }
+            
+            /* v142.0: Sparkle Burst Effect */
+            @keyframes sparkle-burst {
+                0% { transform: scale(0) rotate(0deg); opacity: 1; }
+                100% { transform: scale(1.5) rotate(180deg); opacity: 0; }
+            }
+            
+            .sparkle-burst {
+                position: absolute;
+                width: 20px;
+                height: 20px;
+                pointer-events: none;
+            }
+            
+            .sparkle-burst::before,
+            .sparkle-burst::after {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: var(--mood-primary);
+                border-radius: 50%;
+                animation: sparkle-burst 0.6s ease-out forwards;
+            }
+            
+            .sparkle-burst::after {
+                animation-delay: 0.1s;
+            }
+            
+            /* v142.0: Floating Glow Orbs */
+            @keyframes float-orb {
+                0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+                50% { transform: translateY(-20px) scale(1.1); opacity: 0.6; }
+            }
+            
+            .glow-orb {
+                position: absolute;
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                background: radial-gradient(circle, var(--mood-primary) 0%, transparent 70%);
+                filter: blur(30px);
+                animation: float-orb 6s ease-in-out infinite;
+                pointer-events: none;
+                z-index: 0;
+            }
+            
+            /* v142.0: Morphing Border */
+            @keyframes morph-border {
+                0%, 100% { border-radius: 16px 24px 16px 24px; }
+                25% { border-radius: 24px 16px 24px 16px; }
+                50% { border-radius: 16px 24px 24px 16px; }
+                75% { border-radius: 24px 16px 16px 24px; }
+            }
+            
+            .morph-border-animate {
+                animation: morph-border 8s ease-in-out infinite;
+            }
+            
+            /* v142.0: Status Aura Ring */
+            @keyframes aura-ring-expand {
+                0% { transform: scale(0.8); opacity: 0.8; }
+                100% { transform: scale(1.5); opacity: 0; }
+            }
+            
+            .aura-ring {
+                position: absolute;
+                inset: -10px;
+                border: 2px solid var(--mood-primary);
+                border-radius: 50%;
+                animation: aura-ring-expand 2s ease-out infinite;
+                pointer-events: none;
+            }
+            
+            .aura-ring:nth-child(2) { animation-delay: 0.5s; }
+            .aura-ring:nth-child(3) { animation-delay: 1s; }
+            
+            /* v142.0: Interactive Holographic Shimmer */
+            @keyframes holo-shimmer {
+                0% { background-position: -200% center; }
+                100% { background-position: 200% center; }
+            }
+            
+            .holo-shimmer {
+                background: linear-gradient(
+                    90deg,
+                    transparent 0%,
+                    rgba(255, 255, 255, 0.1) 25%,
+                    var(--mood-primary) 50%,
+                    rgba(255, 255, 255, 0.1) 75%,
+                    transparent 100%
+                );
+                background-size: 200% 100%;
+                animation: holo-shimmer 3s linear infinite;
+                -webkit-background-clip: text;
+                background-clip: text;
+            }
+            
+            /* v142.0: Morphing Blob */
+            @keyframes blob-morph {
+                0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+                25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+                50% { border-radius: 50% 60% 30% 60% / 30% 40% 70% 60%; }
+                75% { border-radius: 40% 50% 60% 50% / 60% 40% 50% 60%; }
+            }
+            
+            .morphing-blob {
+                animation: blob-morph 12s ease-in-out infinite;
+            }
+            
+            /* v142.0: Breathing Glow Effect */
+            @keyframes breathing-glow {
+                0%, 100% { 
+                    box-shadow: 0 0 20px var(--mood-glow), 
+                                0 0 40px var(--mood-glow),
+                                inset 0 0 20px var(--mood-glow);
+                }
+                50% { 
+                    box-shadow: 0 0 40px var(--mood-glow), 
+                                0 0 80px var(--mood-glow),
+                                inset 0 0 40px var(--mood-glow);
+                }
+            }
+            
+            .breathing-glow {
+                animation: breathing-glow 4s ease-in-out infinite;
+            }
+            
+            /* v142.0: Data Stream Effect */
+            @keyframes data-stream {
+                0% { background-position: 0% 0%; }
+                100% { background-position: 0% 100%; }
+            }
+            
+            .data-stream-bg {
+                background: linear-gradient(
+                    180deg,
+                    transparent 0%,
+                    var(--mood-primary) 50%,
+                    transparent 100%
+                );
+                background-size: 100% 200%;
+                animation: data-stream 2s linear infinite;
+                opacity: 0.1;
+            }
+            
+            /* v142.0: Hover Lift with Shadow Depth */
+            .hover-lift-3d {
+                transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                            box-shadow 0.3s ease;
+            }
+            
+            .hover-lift-3d:hover {
+                transform: translateY(-8px) rotateX(5deg);
+                box-shadow: 
+                    0 20px 40px rgba(0, 0, 0, 0.4),
+                    0 0 30px var(--mood-glow);
+            }
+            
+            /* v142.0: Glitch Effect on Status Change */
+            @keyframes glitch-skew {
+                0%, 100% { transform: skew(0deg); filter: hue-rotate(0deg); }
+                20% { transform: skew(-5deg); filter: hue-rotate(90deg); }
+                40% { transform: skew(5deg); filter: hue-rotate(-90deg); }
+                60% { transform: skew(-3deg); filter: hue-rotate(45deg); }
+                80% { transform: skew(3deg); filter: hue-rotate(-45deg); }
+            }
+            
+            .glitch-on-change {
+                animation: glitch-skew 0.3s ease;
+            }
+            
             /* Responsive */
             @media (max-width: 768px) {
                 .dashboard-header { flex-direction: column; gap: 12px; }
@@ -1435,10 +1637,14 @@
 </head>
 <body>
     <div class="noise-overlay"></div>
+    <div class="neural-grid" id="neuralGrid"></div>
     <div class="fps-counter" id="fpsCounter">-- FPS</div>
     
     <div class="dashboard-container">
         <div class="ambient-particles" id="ambientParticles"></div>
+        <div class="glow-orb" id="glowOrb1"></div>
+        <div class="glow-orb" id="glowOrb2" style="animation-delay: -2s; left: 70%; top: 20%;"></div>
+        <div class="glow-orb" id="glowOrb3" style="animation-delay: -4s; left: 20%; top: 60%;"></div>
         
         <header class="dashboard-header">
             <div class="header-left">
@@ -2528,6 +2734,7 @@
             foxMood = state.status;
             const moodText = $('moodText');
             if (moodText) moodText.textContent = capitalize(state.status) + ' Mode';
+            updateNeuralGrid();
             
             const expression = $('foxExpression');
             if (expression) expression.textContent = foxExpressions[foxMood] || '😺';
@@ -2737,6 +2944,7 @@
             foxMood = mood;
             $('foxExpression').textContent = foxExpressions[mood] || '😺';
             $('moodText').textContent = capitalize(mood) + ' Mode';
+            updateNeuralGrid();
         }
         
         function setMode(mode) {
@@ -2849,6 +3057,35 @@
             }
         }
         
+        // v142.0: Update neural grid color based on mood
+        function updateNeuralGrid() {
+            const grid = $('neuralGrid');
+            const orbs = [$('glowOrb1'), $('glowOrb2'), $('glowOrb3')];
+            const colors = {
+                online: '#5cdb95',
+                working: '#00d4ff',
+                sleeping: '#a855f7',
+                idle: '#fec97a',
+                error: '#ff6b6b',
+                learning: '#ffb74d',
+                excited: '#ff6b9d'
+            };
+            const color = colors[foxMood] || colors.idle;
+            
+            if (grid) {
+                grid.style.backgroundImage = `
+                    linear-gradient(${color} 1px, transparent 1px),
+                    linear-gradient(90deg, ${color} 1px, transparent 1px)
+                `;
+            }
+            
+            orbs.forEach(orb => {
+                if (orb) {
+                    orb.style.background = `radial-gradient(circle, ${color} 0%, transparent 70%)`;
+                }
+            });
+        }
+        
         // FPS Counter
         let frameCount = 0;
         let lastFPSTime = performance.now();
@@ -2895,6 +3132,7 @@
             
             startPredictiveRefresh();
             createAmbientParticles();
+            updateNeuralGrid();
             updateHeatmap();
             
             setupChartHover('activityChart', 'activityTooltip', 'activity');
@@ -2927,7 +3165,7 @@
                 }
             });
             
-            console.log('🚀 MoShang Dashboard v141.0 initialized');
+            console.log('🚀 MoShang Dashboard v142.0 initialized');
         }
         
         if (document.readyState === 'loading') {

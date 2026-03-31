@@ -9,6 +9,17 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+- v142.0: Neural Grid Background（神经网络风格背景网格，颜色随心情变化）
+- v142.0: Floating Glow Orbs（三个漂浮发光球体，颜色随心情联动）
+- v142.0: 3D Card Hover Effects（卡片悬停3D倾斜和阴影深度效果）
+- v142.0: Morphing Border Animation（边框动态变形动画）
+- v142.0: Status Aura Ring（状态光晕扩散环动画）
+- v142.0: Holographic Shimmer Text（全息闪光文字效果）
+- v142.0: Morphing Blob Background（有机变形背景blob）
+- v142.0: Breathing Glow Effect（呼吸发光效果）
+- v142.0: Data Stream Background（数据流动画背景）
+- v142.0: Hover Lift 3D（3D悬停上浮效果）
+- v142.0: Glitch Effect on Status Change（状态变化时的故障效果）
 - v139.0: Modern CSS v139.0 Enhancements（增强型滚动驱动动画、玻璃折射增强、状态感知光晕系统）
 - v139.0: Enhanced Pulse Animation（增强脉冲发光动画，带drop-shadow光晕效果）
 - v139.0: Neural Wave Animation（神经网络波动动画，缩放+透明度呼吸效果）
