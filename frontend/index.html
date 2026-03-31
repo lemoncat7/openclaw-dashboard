@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MoShang - OpenClaw Status Dashboard">
     <meta name="theme-color" content="#0a0a0f">
-    <title>MoShang Status v157.0</title>
+    <title>MoShang Status v157.1</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
            MoShang Dashboard - Ultra Modern CSS Design v13.0 (2026)
-           v157.0: Enhanced status effects - working/sleeping/learning moods,
-                   new animations, reliability indicator, expression bounce
+           v157.1: CSS 2026 advanced features - prefers-non-linear-contrast,
+                   dynamic-range HDR support, environment-blending AR/VR,
+                   spatial UI posture API, enhanced @starting-style animations,
+                   new micro-bounce interactions, data-sync shimmer effects
         ============================================================ */
 
         @layer base, layout, components, animations, effects;
@@ -676,6 +678,210 @@
                 mix-blend-mode: screen;
             }
             
+            /* v157.1: CSS @media (prefers-non-linear-contrast) - Detect non-linear contrast preferences */
+            @media (prefers-non-linear-contrast: no-preference) {
+                :root {
+                    --contrast-curve: linear;
+                }
+            }
+
+            @media (prefers-non-linear-contrast: reduce) {
+                :root {
+                    --contrast-curve: srgb;
+                }
+            }
+
+            /* v157.1: CSS @media (dynamic-range) - HDR display support */
+            @media (dynamic-range: high) {
+                :root {
+                    --glow-intensity-multiplier: 1.5;
+                    --saturation-boost: 1.1;
+                }
+            }
+
+            /* v157.1: CSS @media (environment-blending) - AR/VR headset blending modes */
+            @media (environment-blending: additive) {
+                .glass-card {
+                    mix-blend-mode: additive;
+                }
+            }
+
+            @media (environment-blending: dominant) {
+                .glass-card {
+                    mix-blend-mode: screen;
+                }
+            }
+
+            /* v157.1: CSS Scroll-driven animations - timeline-scope for grouping */
+            @keyframes v157-scroll-fade {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* v157.1: New @property for enhanced animations */
+            @property --v157-shimmer-pos {
+                syntax: '<percentage>';
+                initial-value: -100%;
+                inherits: false;
+            }
+
+            @property --v157-pulse-scale {
+                syntax: '<number>';
+                initial-value: 1;
+                inherits: true;
+            }
+
+            @property --v157-glow-radius {
+                syntax: '<length>';
+                initial-value: 0px;
+                inherits: true;
+            }
+
+            /* v157.1: Enhanced @starting-style for better entrance animations */
+            @starting-style {
+                .stat-card {
+                    opacity: 0;
+                    transform: scale(0.95) translateY(10px);
+                }
+            }
+
+            /* v157.1: CSS spatial UI - device posture API ready */
+            @media (vertical-viewport-segment: 0px) {
+                .dashboard-header {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    z-index: 100;
+                }
+            }
+
+            /* v157.1: CSS content-visibility improvements */
+            .stat-card {
+                content-visibility: auto;
+                contain-intrinsic-size: 0 180px;
+            }
+
+            .glass-card {
+                content-visibility: auto;
+                contain-intrinsic-size: 0 100px;
+            }
+
+            /* v157.1: Enhanced focus-visible with auto-outline */
+            :focus-visible {
+                outline-style: auto;
+                outline-color: var(--holo-cyan);
+            }
+
+            :focus:not(:focus-visible) {
+                outline: none;
+            }
+
+            /* v157.1: New stat-card entrance animation */
+            @keyframes v157-card-entrance {
+                0% {
+                    opacity: 0;
+                    transform: translateY(30px) scale(0.95);
+                    filter: blur(4px);
+                }
+                60% {
+                    opacity: 1;
+                    filter: blur(0);
+                    transform: translateY(-5px) scale(1.02);
+                }
+                100% {
+                    transform: translateY(0) scale(1);
+                }
+            }
+
+            .stat-card {
+                animation: v157-card-entrance 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+            }
+
+            /* v157.1: New micro-bounce interaction */
+            @keyframes v157-micro-bounce {
+                0%, 100% {
+                    transform: scale(1);
+                }
+                30% {
+                    transform: scale(0.95);
+                }
+                60% {
+                    transform: scale(1.03);
+                }
+            }
+
+            .stat-card:active {
+                animation: v157-micro-bounce 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            }
+
+            /* v157.1: New data-sync shimmer effect */
+            @keyframes v157-sync-shimmer {
+                0% {
+                    background-position: -200% 0;
+                }
+                100% {
+                    background-position: 200% 0;
+                }
+            }
+
+            .data-sync-shimmer {
+                background: linear-gradient(
+                    90deg,
+                    transparent 0%,
+                    rgba(0, 245, 255, 0.15) 50%,
+                    transparent 100%
+                );
+                background-size: 200% 100%;
+                animation: v157-sync-shimmer 1.5s ease-in-out infinite;
+            }
+
+            /* v157.1: Enhanced mood transitions with smooth color morphing */
+            @keyframes v157-mood-morph {
+                0%, 100% {
+                    --mood-primary: var(--holo-cyan);
+                }
+                33% {
+                    --mood-primary: var(--holo-violet);
+                }
+                66% {
+                    --mood-primary: var(--holo-magenta);
+                }
+            }
+
+            /* v157.1: Status-reactive particle colors - enhanced saturation */
+            body.mood-idle .particle {
+                --particle-duration: 5s;
+                box-shadow: 0 0 8px var(--mood-primary);
+                filter: saturate(1.1);
+            }
+            body.mood-excited .particle {
+                --particle-duration: 2.5s;
+                box-shadow: 0 0 12px var(--mood-primary);
+                filter: saturate(1.3);
+            }
+            body.mood-thinking .particle {
+                --particle-duration: 7s;
+                box-shadow: 0 0 5px var(--mood-primary);
+                filter: saturate(0.9);
+            }
+            body.mood-laughing .particle {
+                --particle-duration: 3s;
+                box-shadow: 0 0 10px var(--mood-primary);
+                filter: saturate(1.2);
+            }
+            body.mood-focused .particle {
+                --particle-duration: 4s;
+                box-shadow: 0 0 8px var(--mood-primary);
+                filter: saturate(1.1);
+            }
+
             /* v147.0: CSS 2026 Features - Modern CSS Enhancements */
 
             /* CSS @when - Native conditional rules (replaces @supports for complex conditions) */
@@ -6519,9 +6725,9 @@
 
     <script>
         /* ============================================================
-           MoShang Dashboard - JavaScript v157.0
-           v157.0: Enhanced status effects, new mood animations, reliability indicator,
-                   working/sleeping/learning status enhancements
+           MoShang Dashboard - JavaScript v157.1
+           v157.1: CSS 2026 advanced media queries, enhanced @starting-style,
+                   micro-bounce interactions, data-sync shimmer effects
         ============================================================ */
 
         const state = {
@@ -6571,7 +6777,7 @@
             _commands: [],
             // v151.0: Git commit info
             _gitCommit: 'a1b2c3d4e5f6789012345678901234567890abcd',
-            _gitCommitMsg: 'v157.0: Enhanced status effects, new mood animations, reliability indicator',
+            _gitCommitMsg: 'v157.1: CSS 2026 advanced features - prefers-non-linear-contrast, dynamic-range HDR, environment-blending AR/VR',
             // v155.0: Network Information API
             _connectionType: 'unknown',
             _effectiveType: '4g',

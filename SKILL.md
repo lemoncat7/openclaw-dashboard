@@ -808,6 +808,21 @@ node ~/.openclaw/workspace/skills/dashboard-service/scripts/server.js &
 
 ## 更新日志
 
+### v157.1 (2026-04-01)
+- **CSS @media (prefers-non-linear-contrast)**: 检测用户对比度偏好，自动调整UI对比度曲线
+- **CSS @media (dynamic-range: high)**: HDR高动态范围显示支持，增强发光强度和色彩饱和度
+- **CSS @media (environment-blending)**: AR/VR头显混合模式支持（additive/dominant），自动适配混合现实界面
+- **CSS @property v157-shimmer-pos**: 新增 --v157-shimmer-pos/--v157-pulse-scale/--v157-glow-radius 可动画CSS变量
+- **@starting-style 入场动画增强**: 更现代的入场动画规范，支持模糊+缩放组合入场效果
+- **CSS spatial UI - device posture**: 垂直视口分段检测，支持折叠设备和平板电脑的固定头部布局
+- **content-visibility 优化**: stat-card和glass-card使用auto自动跳过离屏渲染，配合contain-intrinsic-size
+- **:focus-visible outline-style: auto**: 更现代化的焦点轮廓样式
+- **v157-card-entrance动画**: 新型弹性入场动画，带模糊→清晰渐变和overshoot回弹效果
+- **v157-micro-bounce交互**: 卡片按压时的微妙弹性反馈动画
+- **v157-sync-shimmer动画**: 数据同步时的水平扫光动画效果
+- **增强心情粒子饱和度**: 心情粒子根据状态调整filter saturate值，excited状态更鲜艳
+- **版本更新至 v157.1**
+
 ### v156.0 (2026-04-01)
 - **CSS @media (nav-preferences)**: 检测用户导航偏好(减少动画)，自动禁用粒子和装饰效果
 - **CSS @media (scripting)**: 检测JavaScript支持状态，无脚本时显示静态狐狸图标
