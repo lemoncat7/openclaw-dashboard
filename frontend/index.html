@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MoShang - OpenClaw Status Dashboard">
     <meta name="theme-color" content="#0a0a0f">
-    <title>MoShang Status v151.0</title>
+    <title>MoShang Status v152.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
            MoShang Dashboard - Ultra Modern CSS Design v12.0 (2026)
-           v151.0: CSS 2026 features (@when, @property, light-dark, color()),
+           v152.0: CSS 2026 features (@when, @property, light-dark, color()),
                    scroll-driven animations, enhanced mood effects,
                    modern color functions, improved fox status display,
                    neuomorphic refinements, container queries v2
@@ -2709,6 +2709,153 @@
             
             .breathing-btn:hover { background: linear-gradient(135deg, rgba(0, 245, 255, 0.25), rgba(139, 92, 246, 0.25)); transform: translateY(-2px); }
             
+            /* v152.0: Pomodoro Widget */
+            .pomodoro-widget {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+                padding: 16px;
+                background: var(--glass-1);
+                border: 1px solid var(--glass-border);
+                border-radius: var(--radius-lg);
+            }
+            
+            .pomodoro-header {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 13px;
+                font-weight: 500;
+                color: var(--text-primary);
+            }
+            
+            .pomodoro-mode-badge {
+                padding: 2px 8px;
+                background: rgba(255, 107, 107, 0.2);
+                border-radius: 12px;
+                font-size: 10px;
+                color: #ff6b6b;
+            }
+            
+            .pomodoro-mode-badge.break {
+                background: rgba(92, 219, 149, 0.2);
+                color: #5cdb95;
+            }
+            
+            .pomodoro-display {
+                font-size: 32px;
+                font-weight: 600;
+                font-family: var(--font-mono);
+                color: var(--text-primary);
+            }
+            
+            .pomodoro-controls {
+                display: flex;
+                gap: 8px;
+            }
+            
+            .pomodoro-btn {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                border: 1px solid var(--glass-border);
+                background: var(--glass-1);
+                color: var(--text-primary);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s var(--ease-spring);
+            }
+            
+            .pomodoro-btn:hover {
+                background: var(--glass-2);
+                transform: scale(1.05);
+            }
+            
+            .pomodoro-btn.primary {
+                width: 44px;
+                height: 44px;
+                background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 183, 77, 0.2));
+                border-color: rgba(255, 107, 107, 0.4);
+                font-size: 16px;
+            }
+            
+            .pomodoro-sessions {
+                display: flex;
+                gap: 6px;
+            }
+            
+            .session-dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: var(--glass-2);
+                border: 1px solid var(--glass-border);
+            }
+            
+            .session-dot.completed {
+                background: #5cdb95;
+                border-color: #5cdb95;
+            }
+            
+            .pomodoro-tip {
+                font-size: 10px;
+                color: var(--text-muted);
+            }
+            
+            /* v152.0: Weather Widget */
+            .weather-widget {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                padding: 16px;
+                background: var(--glass-1);
+                border: 1px solid var(--glass-border);
+                border-radius: var(--radius-lg);
+            }
+            
+            .weather-header {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 12px;
+                color: var(--text-secondary);
+            }
+            
+            .weather-main {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            
+            .weather-temp {
+                font-size: 28px;
+                font-weight: 600;
+                color: var(--text-primary);
+            }
+            
+            .weather-icon {
+                font-size: 24px;
+            }
+            
+            .weather-details {
+                display: flex;
+                gap: 12px;
+                font-size: 11px;
+                color: var(--text-muted);
+            }
+            
+            .weather-loading {
+                display: none;
+            }
+            
+            .weather-loading.show {
+                display: block;
+            }
+            
             /* Activity Heatmap */
             .activity-heatmap {
                 background: var(--glass-1);
@@ -4665,6 +4812,52 @@
                     <button class="breathing-btn" id="breathingBtn" onclick="toggleBreathing()">Start Breathing</button>
                 </div>
 
+                <!-- v152.0: Pomodoro Timer Widget -->
+                <div class="pomodoro-widget glass-card" id="pomodoroWidget">
+                    <div class="pomodoro-header">
+                        <span>🍅</span>
+                        <span>Pomodoro</span>
+                        <span class="pomodoro-mode-badge" id="pomodoroModeBadge">Work</span>
+                    </div>
+                    <div class="pomodoro-display" id="pomodoroDisplay" aria-live="polite">
+                        <span class="pomodoro-time" id="pomodoroTime">25:00</span>
+                    </div>
+                    <div class="pomodoro-controls">
+                        <button class="pomodoro-btn primary" id="pomodoroStartBtn" onclick="togglePomodoro()" title="Start/Pause Pomodoro (P)">
+                            <span id="pomodoroBtnIcon">▶</span>
+                        </button>
+                        <button class="pomodoro-btn" onclick="resetPomodoro()" title="Reset">
+                            <span>↺</span>
+                        </button>
+                    </div>
+                    <div class="pomodoro-sessions" id="pomodoroSessions" aria-label="Completed sessions">
+                        <span class="session-dot" data-session="1"></span>
+                        <span class="session-dot" data-session="2"></span>
+                        <span class="session-dot" data-session="3"></span>
+                        <span class="session-dot" data-session="4"></span>
+                    </div>
+                    <div class="pomodoro-tip" id="pomodoroTip">Press P to start focus session</div>
+                </div>
+
+                <!-- v152.0: Weather Widget -->
+                <div class="weather-widget glass-card" id="weatherWidget">
+                    <div class="weather-header">
+                        <span>🌤️</span>
+                        <span id="weatherLocation">Loading...</span>
+                    </div>
+                    <div class="weather-main" id="weatherMain">
+                        <span class="weather-temp" id="weatherTemp">--°</span>
+                        <span class="weather-icon" id="weatherIcon">🌡️</span>
+                    </div>
+                    <div class="weather-details" id="weatherDetails">
+                        <span id="weatherFeelsLike">--°</span>
+                        <span id="weatherHumidity">--%</span>
+                    </div>
+                    <div class="weather-loading" id="weatherLoading">
+                        <div class="skeleton" style="height:20px;width:80%;border-radius:4px;"></div>
+                    </div>
+                </div>
+
                 <!-- v150.0: Event Stream Widget -->
                 <div class="event-stream" id="eventStream">
                     <div class="event-stream-header">
@@ -4885,7 +5078,7 @@
         
         <footer class="dashboard-footer">
             <div class="footer-info">
-                <span>MoShang</span> <span class="footer-version">Status Dashboard v151.0</span> • Last updated: <span id="lastUpdated">--</span>
+                <span>MoShang</span> <span class="footer-version">Status Dashboard v152.0</span> • Last updated: <span id="lastUpdated">--</span>
                 <span id="dataSourceTag" style="margin-left: 8px; padding: 2px 8px; background: rgba(92, 219, 149, 0.15); border-radius: 4px; font-size: 10px; color: var(--status-online);"></span>
                 <span id="gitCommitTag" style="margin-left: 6px; padding: 2px 8px; background: rgba(139, 92, 246, 0.15); border-radius: 4px; font-size: 10px; color: var(--holo-violet);" title="Git Commit"></span>
             </div>
@@ -4920,9 +5113,9 @@
     
     <script>
         /* ============================================================
-           MoShang Dashboard - JavaScript v151.0
-           v151.0: EvoMap card display + value update, task queue empty state,
-                   evomap pulse animation, float animation for empty state
+           MoShang Dashboard - JavaScript v152.0
+           v152.0: Pomodoro timer widget, weather widget, enhanced fox expressions,
+                   improved accessibility, keyboard shortcut 'p' for Pomodoro
         ============================================================ */
         
         const state = {
@@ -6031,6 +6224,132 @@
             }
         }
         
+        // v152.0: Pomodoro Timer
+        let pomodoroInterval = null;
+        let pomodoroTimeLeft = 25 * 60;
+        let pomodoroRunning = false;
+        let pomodoroMode = 'work';
+        let pomodoroSessions = 0;
+        
+        function togglePomodoro() {
+            const btnIcon = $('pomodoroBtnIcon');
+            const modeBadge = $('pomodoroModeBadge');
+            const tip = $('pomodoroTip');
+            
+            pomodoroRunning = !pomodoroRunning;
+            
+            if (pomodoroRunning) {
+                btnIcon.textContent = '⏸';
+                tip.textContent = pomodoroMode === 'work' ? 'Focus!' : 'Relax!';
+                
+                pomodoroInterval = setInterval(() => {
+                    pomodoroTimeLeft--;
+                    updatePomodoroDisplay();
+                    
+                    if (pomodoroTimeLeft <= 0) {
+                        clearInterval(pomodoroInterval);
+                        pomodoroRunning = false;
+                        
+                        if (pomodoroMode === 'work') {
+                            pomodoroSessions++;
+                            updatePomodoroSessions();
+                            showToast('🍅 Work session done! Time for a break.', 'achievement');
+                            if (pomodoroSessions >= 4) {
+                                pomodoroMode = 'long';
+                                pomodoroTimeLeft = 15 * 60;
+                                pomodoroSessions = 0;
+                            } else {
+                                pomodoroMode = 'break';
+                                pomodoroTimeLeft = 5 * 60;
+                            }
+                        } else {
+                            showToast('☕ Break over! Ready to focus?', 'info');
+                            pomodoroMode = 'work';
+                            pomodoroTimeLeft = 25 * 60;
+                        }
+                        
+                        btnIcon.textContent = '▶';
+                        modeBadge.textContent = pomodoroMode === 'work' ? 'Work' : 'Break';
+                        modeBadge.classList.toggle('break', pomodoroMode !== 'work');
+                        tip.textContent = 'Press P to start';
+                    }
+                }, 1000);
+            } else {
+                btnIcon.textContent = '▶';
+                tip.textContent = 'Paused - press P to continue';
+                clearInterval(pomodoroInterval);
+            }
+        }
+        
+        function resetPomodoro() {
+            clearInterval(pomodoroInterval);
+            pomodoroRunning = false;
+            pomodoroMode = 'work';
+            pomodoroTimeLeft = 25 * 60;
+            $('pomodoroBtnIcon').textContent = '▶';
+            $('pomodoroModeBadge').textContent = 'Work';
+            $('pomodoroModeBadge').classList.remove('break');
+            $('pomodoroTip').textContent = 'Press P to start focus session';
+            updatePomodoroDisplay();
+        }
+        
+        function updatePomodoroDisplay() {
+            const mins = Math.floor(pomodoroTimeLeft / 60);
+            const secs = pomodoroTimeLeft % 60;
+            $('pomodoroTime').textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        function updatePomodoroSessions() {
+            const dots = document.querySelectorAll('.session-dot');
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('completed', i < pomodoroSessions);
+            });
+        }
+        
+        // v152.0: Weather Widget
+        async function fetchWeather() {
+            const loading = $('weatherLoading');
+            const location = $('weatherLocation');
+            const temp = $('weatherTemp');
+            const icon = $('weatherIcon');
+            const feelsLike = $('weatherFeelsLike');
+            const humidity = $('weatherHumidity');
+            
+            loading.classList.add('show');
+            
+            try {
+                const response = await fetch('https://wttr.in/Shanghai?format=j1');
+                if (!response.ok) throw new Error('Weather fetch failed');
+                
+                const data = await response.json();
+                const current = data.current_condition[0];
+                
+                location.textContent = 'Shanghai';
+                temp.textContent = `${Math.round(parseInt(current.temp_C))}°`;
+                feelsLike.textContent = `Feels ${Math.round(parseInt(current.FeelsLikeC))}°`;
+                humidity.textContent = `${current.humidity}%`;
+                
+                const weatherCode = parseInt(current.weatherCode);
+                icon.textContent = getWeatherEmoji(weatherCode);
+                
+                loading.classList.remove('show');
+            } catch (e) {
+                location.textContent = 'Shanghai';
+                temp.textContent = '--°';
+                loading.classList.remove('show');
+            }
+        }
+        
+        function getWeatherEmoji(code) {
+            if (code === 113) return '☀️';
+            if (code === 116) return '⛅';
+            if (code >= 119 && code <= 122) return '☁️';
+            if (code >= 176 && code <= 182) return '🌧️';
+            if (code >= 200 && code <= 232) return '⛈️';
+            if (code >= 263 && code <= 266) return '🌧️';
+            return '🌤️';
+        }
+        
         // Clock
         function updateClock() {
             const now = new Date();
@@ -6682,6 +7001,10 @@
             // v149.0: Initialize command palette
             initCommandPalette();
             
+            // v152.0: Initialize weather widget
+            fetchWeather();
+            setInterval(fetchWeather, 1800000); // Refresh every 30 minutes
+            
             setupChartHover('activityChart', 'activityTooltip', 'activity');
             setupChartHover('memoryChart', 'memoryTooltip', 'memory');
             setupChartHover('cpuChart', 'cpuTooltip', 'cpu');
@@ -6737,6 +7060,10 @@
                 if (e.key === 'n' && !e.ctrlKey && !e.metaKey) {
                     toggleNotificationCenter();
                 }
+                // v152.0: Pomodoro timer
+                if (e.key === 'p' && !e.ctrlKey && !e.metaKey) {
+                    togglePomodoro();
+                }
             });
             
             // v143.0: Setup gesture detection
@@ -6744,17 +7071,17 @@
 
             // v150.0: Initialize ambient blobs and event stream
             updateAmbientBlobsStatus();
-            addEvent('Dashboard v150.0 ready', '🚀', 'success');
-            addNotification('MoShang Dashboard v150.0', 'Real-time monitoring active', 'info', '🚀');
+            addEvent('Dashboard v152.0 ready', '🚀', 'success');
+            addNotification('MoShang Dashboard v152.0', 'Real-time monitoring active', 'info', '🚀');
 
             // v143.0: Log initialization
-            v143Log('info', 'MoShang Dashboard v150.0 initialized', {
+            v143Log('info', 'MoShang Dashboard v152.0 initialized', {
                 userAgent: navigator.userAgent,
                 viewport: { width: window.innerWidth, height: window.innerHeight },
                 supportsViewTransitions: !!document.startViewTransition,
-                keyboardShortcuts: ['r=refresh', 'b=breathing', 't=theme', 'v=viewTransition', '1-5=moods', 'a=autoRefresh', 'n=notifications', 'Ctrl+K=commandPalette']
+                keyboardShortcuts: ['r=refresh', 'b=breathing', 't=theme', 'v=viewTransition', '1-5=moods', 'a=autoRefresh', 'n=notifications', 'p=pomodoro', 'Ctrl+K=commandPalette']
             });
-            console.log('🚀 MoShang Dashboard v150.0 initialized');
+            console.log('🚀 MoShang Dashboard v152.0 initialized');
         }
         
         if (document.readyState === 'loading') {
