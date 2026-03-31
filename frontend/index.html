@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MoShang - OpenClaw Status Dashboard">
     <meta name="theme-color" content="#0a0a0f">
-    <title>MoShang Status v146.0</title>
+    <title>MoShang Status v147.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
-           MoShang Dashboard - Ultra Modern CSS Design v10.0 (2026)
-           v144.0: Enhanced particle systems, interactive hover effects,
-                   CSS container queries, smoother transitions, new mood animations
+           MoShang Dashboard - Ultra Modern CSS Design v11.0 (2026)
+           v147.0: CSS 2026 features (@when, @property, light-dark, color()),
+                   scroll-driven animations, enhanced mood effects,
+                   modern color functions, improved fox status display
         ============================================================ */
         
         @layer base, layout, components, animations, effects;
@@ -49,6 +50,677 @@
                     0 0 12px rgba(0, 245, 255, 0.3),
                     0 0 24px rgba(0, 245, 255, 0.15),
                     inset 0 0 8px rgba(0, 245, 255, 0.1);
+            }
+            
+            /* v147.0: CSS 2026 Features - Modern CSS Enhancements */
+            
+            /* CSS @when - Native conditional rules (replaces @supports for complex conditions) */
+            @when (supports(background: linear-gradient(#fff, #fff))) and (supports (animation-timeline: view())) {
+                .stat-card {
+                    animation: v143-scroll-reveal linear both;
+                    animation-timeline: view();
+                    animation-range: entry 0% cover 30%;
+                }
+            }
+            
+            /* @else support for @when */
+            @when (supports(background: oklch(80% 0.2 180))) {
+                :root {
+                    --neon-mint: oklch(80% 0.15 180);
+                    --neon-coral: oklch(75% 0.18 25);
+                    --neon-violet: oklch(70% 0.2 300);
+                }
+            } @else {
+                :root {
+                    --neon-mint: #00ff88;
+                    --neon-coral: #ff6b6b;
+                    --neon-violet: #a855f7;
+                }
+            }
+            
+            /* v147.0: @property for animatable custom properties with registered syntax */
+            @property --gradient-angle {
+                syntax: '<angle>';
+                initial-value: 0deg;
+                inherits: false;
+            }
+            
+            @property --glow-intensity {
+                syntax: '<number>';
+                initial-value: 0;
+                inherits: true;
+            }
+            
+            @property --mood-hue {
+                syntax: '<number>';
+                initial-value: 180;
+                inherits: true;
+            }
+            
+            /* v147.0: CSS 2026 light-dark() function for automatic theme switching */
+            :root {
+                --surface-light: light-dark(#ffffff, #0d0d14);
+                --surface-mid: light-dark(#f5f5f5, #151520);
+                --text-adaptive: light-dark(#1a1a1a, #ffffff);
+                --border-adaptive: light-dark(#e0e0e0, rgba(255, 255, 255, 0.08));
+            }
+            
+            /* v147.0: CSS 2026 color() function with relative color syntax */
+            :root {
+                /* Using color() for relative color manipulation */
+                --holo-cyan-dim: color(var(--holo-cyan) / 60%);
+                --holo-cyan-bright: color(var(--holo-cyan) + 20%);
+                --glass-cyan: color(var(--holo-cyan) alpha(10%));
+                
+                /* oklch based mood colors for better perceptual uniformity */
+                --mood-idle: oklch(75% 0.15 70);
+                --mood-excited: oklch(70% 0.2 45);
+                --mood-thinking: oklch(65% 0.18 300);
+                --mood-laughing: oklch(80% 0.18 95);
+                --mood-focused: oklch(72% 0.2 220);
+            }
+            
+            /* v147.0: CSS 2026 relative color syntax - oklch manipulation */
+            :root {
+                --mood-lighter: oklch(from var(--mood-primary) calc(l + 0.15) c h);
+                --mood-darker: oklch(from var(--mood-primary) calc(l - 0.15) c h);
+                --mood-more-saturated: oklch(from var(--mood-primary) l calc(c * 1.3) h);
+                --mood-hue-shifted: oklch(from var(--mood-primary) l c calc(h + 30));
+            }
+            
+            /* v147.0: color-mix() with relative colors */
+            :root {
+                --mixed-glow: color-mix(in oklch, var(--mood-primary) 60%, var(--holo-violet) 40%);
+                --accent-blend: color-mix(in srgb, var(--holo-cyan) 70%, var(--holo-magenta) 30%);
+            }
+            
+            /* v147.0: Anchor positioning for tooltips - CSS 2026 */
+            .stat-card[title] {
+                position: relative;
+                anchor-name: --stat-card-anchor;
+            }
+            
+            .stat-card-tooltip {
+                position: absolute;
+                position-anchor: --stat-card-anchor;
+                bottom: anchor(top);
+                left: anchor(center);
+                transform: translateX(-50%);
+                padding: 8px 12px;
+                background: var(--glass-3);
+                border: 1px solid var(--glass-border);
+                border-radius: var(--radius-sm);
+                font-size: 12px;
+                color: var(--text-secondary);
+                white-space: nowrap;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.2s ease;
+                z-index: 100;
+            }
+            
+            .stat-card:hover .stat-card-tooltip {
+                opacity: 1;
+            }
+            
+            /* v147.0: Scroll-driven animations - enhanced with multiple phases */
+            @keyframes v147-scroll-smooth {
+                from { 
+                    opacity: 0; 
+                    transform: translateY(40px) scale(0.95);
+                    filter: blur(4px);
+                }
+                to { 
+                    opacity: 1; 
+                    transform: translateY(0) scale(1);
+                    filter: blur(0);
+                }
+            }
+            
+            @keyframes v147-scroll-fade-slide {
+                from { 
+                    opacity: 0; 
+                    transform: translateX(-30px);
+                }
+                to { 
+                    opacity: 1; 
+                    transform: translateX(0);
+                }
+            }
+            
+            @keyframes v147-scroll-scale-in {
+                from { 
+                    opacity: 0; 
+                    transform: scale(0.8);
+                }
+                to { 
+                    opacity: 1; 
+                    transform: scale(1);
+                }
+            }
+            
+            /* v147.0: Entrance orchestration - staggered delays */
+            .fox-container {
+                animation: v147-scroll-scale-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+                animation-delay: 0.1s;
+                opacity: 0;
+            }
+            
+            .glass-card .avatar-section {
+                > * {
+                    opacity: 0;
+                    animation: v147-scroll-smooth 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+                }
+                
+                > *:nth-child(1) { animation-delay: 0.15s; }
+                > *:nth-child(2) { animation-delay: 0.2s; }
+                > *:nth-child(3) { animation-delay: 0.25s; }
+                > *:nth-child(4) { animation-delay: 0.3s; }
+                > *:nth-child(5) { animation-delay: 0.35s; }
+                > *:nth-child(6) { animation-delay: 0.4s; }
+                > *:nth-child(7) { animation-delay: 0.45s; }
+                > *:nth-child(8) { animation-delay: 0.5s; }
+            }
+            
+            /* v147.0: Morphing gradient border animation */
+            @keyframes v147-gradient-morph {
+                0% { --gradient-angle: 0deg; }
+                100% { --gradient-angle: 360deg; }
+            }
+            
+            .morph-border {
+                position: relative;
+                
+                &::before {
+                    content: '';
+                    position: absolute;
+                    inset: -2px;
+                    background: conic-gradient(
+                        from var(--gradient-angle, 0deg),
+                        var(--holo-cyan),
+                        var(--holo-violet),
+                        var(--holo-magenta),
+                        var(--holo-cyan)
+                    );
+                    border-radius: inherit;
+                    z-index: -1;
+                    animation: v147-gradient-morph 4s linear infinite;
+                }
+            }
+            
+            /* v147.0: Fox mood-reactive glow effects */
+            @keyframes v147-mood-glow-pulse {
+                0%, 100% { 
+                    box-shadow: 
+                        0 0 20px var(--mood-glow),
+                        0 0 40px color(var(--mood-primary) alpha(30%)),
+                        inset 0 0 15px color(var(--mood-primary) alpha(10%));
+                }
+                50% { 
+                    box-shadow: 
+                        0 0 30px var(--mood-glow),
+                        0 0 60px color(var(--mood-primary) alpha(40%)),
+                        inset 0 0 25px color(var(--mood-primary) alpha(15%));
+                }
+            }
+            
+            .fox-container {
+                animation: v147-mood-glow-pulse 3s ease-in-out infinite;
+            }
+            
+            /* v147.0: Status-reactive ambient particles */
+            @keyframes v147-particle-float {
+                0%, 100% { 
+                    transform: translateY(0) translateX(0) scale(1);
+                    opacity: 0.6;
+                }
+                25% { 
+                    transform: translateY(-20px) translateX(10px) scale(1.1);
+                    opacity: 0.8;
+                }
+                50% { 
+                    transform: translateY(-30px) translateX(-5px) scale(0.9);
+                    opacity: 0.4;
+                }
+                75% { 
+                    transform: translateY(-15px) translateX(-10px) scale(1.05);
+                    opacity: 0.7;
+                }
+            }
+            
+            .particle {
+                animation: v147-particle-float var(--particle-duration, 5s) ease-in-out infinite;
+            }
+            
+            /* v147.0: Energy ring status-reactive animation */
+            @keyframes v147-energy-pulse {
+                0%, 100% { 
+                    transform: scale(1);
+                    opacity: 0.3;
+                }
+                50% { 
+                    transform: scale(1.15);
+                    opacity: 0.6;
+                }
+            }
+            
+            .energy-ring {
+                animation: v147-energy-pulse 2s ease-in-out infinite;
+                
+                &:nth-child(1) { animation-delay: 0s; }
+                &:nth-child(2) { animation-delay: 0.3s; }
+                &:nth-child(3) { animation-delay: 0.6s; }
+            }
+            
+            /* v147.0: Neural wave enhanced with parallax */
+            @keyframes v147-neural-wave {
+                0%, 100% { 
+                    transform: scale(1) rotate(0deg);
+                    opacity: 0.4;
+                }
+                50% { 
+                    transform: scale(1.3) rotate(180deg);
+                    opacity: 0.1;
+                }
+            }
+            
+            .neural-wave {
+                animation: v147-neural-wave 4s ease-in-out infinite;
+                
+                &:nth-child(1) { animation-delay: 0s; }
+                &:nth-child(2) { animation-delay: 0.5s; }
+                &:nth-child(3) { animation-delay: 1s; }
+            }
+            
+            /* v147.0: Holo aura shimmer effect */
+            @keyframes v147-holo-shimmer {
+                0% { 
+                    background-position: -200% center;
+                    filter: hue-rotate(0deg) brightness(1);
+                }
+                50% { 
+                    filter: hue-rotate(15deg) brightness(1.1);
+                }
+                100% { 
+                    background-position: 200% center;
+                    filter: hue-rotate(0deg) brightness(1);
+                }
+            }
+            
+            .holo-aura {
+                background: linear-gradient(
+                    90deg,
+                    transparent 0%,
+                    var(--mood-glow) 25%,
+                    color(var(--mood-primary) alpha(50%)) 50%,
+                    var(--mood-glow) 75%,
+                    transparent 100%
+                );
+                background-size: 200% 100%;
+                animation: v147-holo-shimmer 3s ease-in-out infinite;
+            }
+            
+            /* v147.0: Breathing widget enhanced */
+            @keyframes v147-breathing-expand {
+                0%, 100% { 
+                    transform: scale(1);
+                    border-color: var(--holo-cyan);
+                    box-shadow: 0 0 20px var(--mood-glow);
+                }
+                50% { 
+                    transform: scale(1.25);
+                    border-color: var(--holo-magenta);
+                    box-shadow: 0 0 40px var(--mood-glow);
+                }
+            }
+            
+            .breathing-circle.active {
+                animation: v147-breathing-expand 4s ease-in-out infinite;
+            }
+            
+            /* v147.0: AI status badge enhanced animation */
+            @keyframes v147-ai-glow {
+                0%, 100% { 
+                    box-shadow: 0 0 8px rgba(139, 92, 246, 0.4);
+                    border-color: rgba(139, 92, 246, 0.4);
+                }
+                50% { 
+                    box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+                    border-color: rgba(139, 92, 246, 0.6);
+                }
+            }
+            
+            .ai-status-badge {
+                animation: v147-ai-glow 2s ease-in-out infinite;
+            }
+            
+            /* v147.0: Activity heatmap cell enhanced */
+            .heatmap-cell {
+                transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                            box-shadow 0.3s ease,
+                            background-color 0.3s ease;
+                
+                &:hover {
+                    transform: scale(1.5) translateY(-3px);
+                    box-shadow: 0 8px 20px var(--mood-glow);
+                    z-index: 10;
+                }
+            }
+            
+            /* v147.0: Mood button enhanced with spring effect */
+            .mood-btn {
+                transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+                            box-shadow 0.2s ease,
+                            background-color 0.2s ease;
+                
+                &:hover {
+                    transform: scale(1.2) translateY(-2px);
+                    box-shadow: 0 8px 20px var(--mood-primary);
+                }
+                
+                &:active {
+                    transform: scale(0.95);
+                }
+            }
+            
+            /* v147.0: Mode button enhanced */
+            .mode-btn {
+                transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+                
+                &:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 15px var(--mood-primary);
+                }
+                
+                &.active {
+                    background: var(--mood-primary);
+                    color: var(--bg-primary);
+                    box-shadow: 0 0 20px var(--mood-glow);
+                }
+            }
+            
+            /* v147.0: Quick action enhanced */
+            .quick-action-btn {
+                transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+                
+                &:hover {
+                    transform: translateY(-3px) scale(1.05);
+                    box-shadow: 0 8px 25px var(--mood-glow);
+                }
+                
+                &:active {
+                    transform: translateY(0) scale(0.95);
+                }
+            }
+            
+            /* v147.0: Stat card enhanced glass effect */
+            .stat-card {
+                background: linear-gradient(
+                    135deg,
+                    var(--glass-2) 0%,
+                    var(--glass-1) 50%,
+                    var(--glass-2) 100%
+                );
+                backdrop-filter: blur(20px) saturate(150%);
+                -webkit-backdrop-filter: blur(20px) saturate(150%);
+                border: 1px solid var(--glass-border);
+                
+                &:hover {
+                    border-color: var(--glass-border-bright);
+                    box-shadow: 
+                        0 12px 40px rgba(0, 0, 0, 0.4),
+                        0 0 30px var(--mood-glow);
+                }
+            }
+            
+            /* v147.0: Glass card enhanced */
+            .glass-card {
+                background: linear-gradient(
+                    145deg,
+                    var(--glass-2) 0%,
+                    var(--glass-1) 100%
+                );
+                backdrop-filter: blur(25px) saturate(180%);
+                -webkit-backdrop-filter: blur(25px) saturate(180%);
+                border: 1px solid var(--glass-border);
+                
+                &::after {
+                    background: linear-gradient(
+                        90deg,
+                        transparent,
+                        var(--mood-primary) 50%,
+                        transparent
+                    );
+                }
+            }
+            
+            /* v147.0: Scroll progress bar */
+            @keyframes v147-scroll-progress {
+                from { transform: scaleX(0); }
+                to { transform: scaleX(1); }
+            }
+            
+            .scroll-progress {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background: linear-gradient(90deg, var(--holo-cyan), var(--holo-violet), var(--holo-magenta));
+                transform-origin: left;
+                z-index: 1000;
+                animation: v147-scroll-progress linear;
+                animation-timeline: scroll();
+            }
+            
+            /* v147.0: Glow orbs enhanced movement */
+            .glow-orb {
+                filter: blur(40px) brightness(1.4);
+                mix-blend-mode: screen;
+                animation: v143-orb-float 8s ease-in-out infinite;
+            }
+            
+            /* v147.0: Toast enhanced animation */
+            @keyframes v147-toast-enter {
+                0% { 
+                    opacity: 0;
+                    transform: translateX(100%) scale(0.9) rotate(-3deg);
+                }
+                60% { 
+                    transform: translateX(-5%) scale(1.02) rotate(1deg);
+                }
+                100% { 
+                    opacity: 1;
+                    transform: translateX(0) scale(1) rotate(0deg);
+                }
+            }
+            
+            .toast {
+                animation: v147-toast-enter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            }
+            
+            /* v147.0: Mini stat enhanced hover */
+            .mini-stat {
+                transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+                
+                &:hover {
+                    transform: scale(1.15) translateY(-3px);
+                    
+                    .mini-stat-value {
+                        text-shadow: 0 0 10px var(--mood-primary);
+                    }
+                }
+            }
+            
+            /* v147.0: Reputation badge enhanced */
+            .reputation-badge {
+                transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+                animation: v147-scroll-scale-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+                
+                &:hover {
+                    transform: scale(1.1);
+                    box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+                }
+            }
+            
+            /* v147.0: Sparkline enhanced */
+            .sparkline-bar {
+                transition: all 0.2s ease;
+                
+                &:hover {
+                    filter: brightness(1.4) drop-shadow(0 0 6px var(--holo-cyan));
+                }
+            }
+            
+            /* v147.0: Progress ring enhanced glow */
+            @keyframes v147-ring-glow {
+                0% { 
+                    stroke-dashoffset: 0;
+                    filter: drop-shadow(0 0 3px var(--holo-cyan)) brightness(1);
+                }
+                50% { 
+                    filter: drop-shadow(0 0 12px var(--holo-cyan)) brightness(1.2);
+                }
+                100% { 
+                    stroke-dashoffset: -188.5;
+                    filter: drop-shadow(0 0 3px var(--holo-cyan)) brightness(1);
+                }
+            }
+            
+            .progress-ring-fill {
+                animation: v147-ring-glow 2s ease-in-out infinite;
+            }
+            
+            /* v147.0: Neural grid enhanced with parallax */
+            .neural-grid {
+                animation-duration: 6s;
+                opacity: 0.3;
+            }
+            
+            body.status-working .neural-grid { 
+                animation-duration: 2.5s;
+                opacity: 0.5;
+            }
+            body.status-sleeping .neural-grid { 
+                animation-duration: 10s;
+                opacity: 0.2;
+            }
+            body.status-excited .neural-grid { 
+                animation-duration: 1.5s;
+                opacity: 0.6;
+            }
+            body.status-thinking .neural-grid { 
+                animation-duration: 4s;
+                opacity: 0.4;
+            }
+            
+            /* v147.0: Entrance animation for new elements */
+            @keyframes v147-pop-in {
+                0% { 
+                    opacity: 0;
+                    transform: scale(0.5);
+                }
+                70% { 
+                    transform: scale(1.1);
+                }
+                100% { 
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+            
+            .new-item {
+                animation: v147-pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            }
+            
+            /* v147.0: Fox expression enhanced bounce */
+            @keyframes v147-expression-bounce {
+                0%, 100% { 
+                    transform: translateY(0) scale(1) rotate(0deg); 
+                }
+                25% { 
+                    transform: translateY(-6px) scale(1.15) rotate(-4deg); 
+                }
+                50% { 
+                    transform: translateY(-3px) scale(1.08) rotate(3deg); 
+                }
+                75% { 
+                    transform: translateY(-5px) scale(1.12) rotate(-2deg); 
+                }
+            }
+            
+            .fox-expression {
+                animation: v147-expression-bounce 2.5s ease-in-out infinite;
+            }
+            
+            /* v147.0: Mood-reactive particle colors */
+            body.mood-idle .particle { 
+                --particle-duration: 5s;
+                box-shadow: 0 0 6px var(--mood-primary);
+            }
+            body.mood-excited .particle { 
+                --particle-duration: 2.5s;
+                box-shadow: 0 0 10px var(--mood-primary);
+            }
+            body.mood-thinking .particle { 
+                --particle-duration: 7s;
+                box-shadow: 0 0 4px var(--mood-primary);
+            }
+            body.mood-laughing .particle { 
+                --particle-duration: 3s;
+                box-shadow: 0 0 8px var(--mood-primary);
+            }
+            body.mood-focused .particle { 
+                --particle-duration: 4s;
+                box-shadow: 0 0 7px var(--mood-primary);
+            }
+            
+            /* v147.0: Status badge enhanced glow */
+            .status-badge[data-status="online"] {
+                animation: v147-mood-glow-pulse 2s ease-in-out infinite;
+            }
+            
+            /* v147.0: Quick stats enhanced */
+            .quick-stat {
+                transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+                
+                &:hover {
+                    transform: translateY(-3px);
+                    
+                    .quick-stat-value {
+                        color: var(--mood-primary);
+                        text-shadow: 0 0 12px var(--mood-glow);
+                    }
+                }
+            }
+            
+            /* v147.0: View Transitions API enhancements */
+            @supports (view-transition-name: none) {
+                ::view-transition-old(root) {
+                    animation: 0.3s ease-out both fade-out;
+                }
+                ::view-transition-new(root) {
+                    animation: 0.3s ease-out both fade-in;
+                }
+            }
+            
+            @keyframes fade-out {
+                from { opacity: 1; transform: scale(1); }
+                to { opacity: 0; transform: scale(0.95); }
+            }
+            
+            @keyframes fade-in {
+                from { opacity: 0; transform: scale(1.05); }
+                to { opacity: 1; transform: scale(1); }
+            }
+            
+            /* v147.0: Focus-visible enhanced */
+            *:focus-visible {
+                outline: 3px solid var(--holo-cyan);
+                outline-offset: 4px;
+                box-shadow: 
+                    0 0 20px rgba(0, 245, 255, 0.4),
+                    0 0 40px rgba(0, 245, 255, 0.2);
             }
             
             /* v143.0: Color Level 5 - oklch native support */
@@ -2857,10 +3529,10 @@
     
     <script>
         /* ============================================================
-           MoShang Dashboard - JavaScript v146.0
-           v146.0: Theme smooth transitions, enhanced accessibility,
-                   forced-colors support, footer health badges,
-                   mini stat hover effects, neural grid speed adjustment
+           MoShang Dashboard - JavaScript v147.0
+           v147.0: CSS 2026 features, enhanced mood animations,
+                   modern color functions, scroll-driven effects,
+                   improved fox status display
         ============================================================ */
         
         const state = {
