@@ -5,16 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MoShang - OpenClaw Status Dashboard">
     <meta name="theme-color" content="#0a0a0f">
-    <title>MoShang Status v164.0</title>
+    <title>MoShang Status v163.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
-           MoShang Dashboard - Ultra Modern CSS Design v14.0 (2026)
-           v164.0: CSS 2026 Enhanced - color-mix() v2, :has() Advanced, Container Queries v2,
-                   Fox Expression Engine v2, Glassmorphism v4, Particle System v3,
-                   Neural Grid v3, View Transitions v2, Spatial Audio Visualization v2,
-                   Accessibility Enhancements, Performance Optimization
+           MoShang Dashboard - Ultra Modern CSS Design v13.0 (2026)
+           v163.0: NEW - Data Source Health Indicators, Agent Health Dashboard Widget,
+                   Enhanced Fox Sparkles v3, Better Error States, Status Flow Animations
+           v162.0: CSS 2026 advanced features - v162 @property system, spatial UI v2,
+                   fluid typography with clamp(), motion blur effects, glitch text v3,
+                   aurora gradient v2, cursor trail v2, notification stack v2,
+                   activity heatmap v2, fox sparkle v162, web animations API enhanced
+           v161.0: CSS 2026 advanced features - spatial UI, color-mix() theming,
+                   interactive spatial depth cards, enhanced radar chart,
+                   notification stack system, liquid morphing buttons,
+                   cursor trail effects, web animations API integration
         ============================================================ */
 
         @layer base, layout, components, animations, effects;
@@ -1142,43 +1148,6 @@
                 animation: v158-press-feedback 0.3s ease;
             }
 
-            /* v164.0: CSS Container Queries for responsive components */
-            @container card-container (width < 300px) {
-                .stat-card {
-                    padding: 12px;
-                }
-                .stat-value {
-                    font-size: 20px;
-                }
-            }
-
-            @container card-container (300px <= width < 500px) {
-                .stat-card {
-                    padding: 16px;
-                }
-            }
-
-            /* v164.0: Enhanced :has() for interactive parent styling */
-            .glass-card:has(.fox-container:hover) {
-                box-shadow: 0 0 30px rgba(0, 245, 255, 0.15),
-                            0 0 60px rgba(0, 245, 255, 0.08);
-            }
-
-            .dashboard-grid:has(.stat-card:hover) {
-                gap: 20px;
-            }
-
-            /* v164.0: Enhanced color-mix() for dynamic theming */
-            .stat-card {
-                --card-bg: color-mix(in srgb, var(--glass-bg) 80%, transparent);
-                --card-border: color-mix(in srgb, var(--glass-border) 60%, var(--mood-primary));
-            }
-
-            .mode-btn:checked {
-                background: color-mix(in srgb, var(--mood-primary) 30%, var(--glass-bg));
-                border-color: var(--mood-primary);
-            }
-
             /* v158.0: Enhanced emoji reaction button animations */
             .emoji-reaction-btn {
                 transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -1315,7 +1284,6 @@
             }
 
             /* v158.0: Enhanced reduced motion support */
-            /* v164.0: Improved reduced motion with better UX */
             @media (prefers-reduced-motion: reduce) {
                 *,
                 *::before,
@@ -1328,34 +1296,8 @@
 
                 .particle,
                 .ambient-blob,
-                .glow-orb,
-                .cursor-trail,
-                .neural-grid {
+                .glow-orb {
                     display: none;
-                }
-
-                /* v164.0: Static indicators for reduced motion */
-                .holo-aura {
-                    animation: none !important;
-                    opacity: 0.3;
-                }
-
-                .fox-container {
-                    transform: none !important;
-                }
-            }
-
-            /* v164.0: Enhanced high contrast mode */
-            @media (prefers-contrast: more) {
-                :root {
-                    --glass-border: rgba(255, 255, 255, 0.4);
-                    --glass-border-bright: rgba(255, 255, 255, 0.6);
-                    --text-dim: rgba(255, 255, 255, 0.7);
-                }
-
-                .glass-card,
-                .stat-card {
-                    border-width: 2px;
                 }
             }
 
@@ -2185,26 +2127,9 @@
             }
 
             /* v147.0: Neural grid enhanced with parallax */
-            /* v164.0: Neural grid v3 - enhanced with color-mix reactive glow */
             .neural-grid {
                 animation-duration: 6s;
                 opacity: 0.3;
-                --grid-glow: color-mix(in srgb, var(--mood-primary) 30%, transparent);
-            }
-
-            .neural-grid::before {
-                content: '';
-                position: absolute;
-                inset: 0;
-                background: 
-                    radial-gradient(circle at 20% 30%, var(--grid-glow) 0%, transparent 50%),
-                    radial-gradient(circle at 80% 70%, color-mix(in srgb, var(--mood-secondary) 20%, transparent) 0%, transparent 50%);
-                animation: neural-grid-pulse 6s ease-in-out infinite;
-            }
-
-            @keyframes neural-grid-pulse {
-                0%, 100% { opacity: 0.3; }
-                50% { opacity: 0.5; }
             }
 
             body.status-working .neural-grid {
@@ -3932,8 +3857,7 @@
 
             .glass-card:hover {
                 border-color: var(--glass-border-bright);
-                box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4),
-                            0 0 20px color-mix(in srgb, var(--mood-primary) 20%, transparent);
+                box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
             }
 
             .glass-card::before {
@@ -3942,23 +3866,6 @@
                 inset: 0;
                 background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 50%);
                 pointer-events: none;
-            }
-
-            /* v164.0: Enhanced glassmorphism v4 with diffusion blur */
-            .glass-card::after {
-                content: '';
-                position: absolute;
-                inset: -1px;
-                border-radius: inherit;
-                backdrop-filter: blur(32px) saturate(180%);
-                -webkit-backdrop-filter: blur(32px) saturate(180%);
-                z-index: -1;
-                opacity: 0;
-                transition: opacity 0.4s ease;
-            }
-
-            .glass-card:hover::after {
-                opacity: 0.5;
             }
 
             .glass-divider {
@@ -4076,7 +3983,6 @@
                 100% { transform: scale(1.8); opacity: 0; }
             }
 
-            /* v164.0: Particle System v3 - enhanced with color-mix and varied shapes */
             .particle-container {
                 position: absolute;
                 inset: 0;
@@ -4094,24 +4000,10 @@
                 animation: particle-float 4s ease-in-out infinite;
             }
 
-            /* v164.0: Enhanced particle glow with color-mix */
-            body.status-working .particle { 
-                box-shadow: 0 0 6px var(--mood-primary),
-                            0 0 12px color-mix(in srgb, var(--mood-primary) 50%, var(--mood-secondary));
-            }
-            body.status-sleeping .particle { 
-                box-shadow: 0 0 4px var(--mood-primary);
-                animation-duration: 6s; 
-            }
-            body.status-idle .particle { 
-                box-shadow: 0 0 5px var(--mood-primary); 
-                animation-duration: 5s; 
-            }
-            body.status-excited .particle { 
-                box-shadow: 0 0 8px var(--mood-primary),
-                            0 0 16px color-mix(in srgb, var(--mood-primary) 60%, transparent);
-                animation-duration: 3s; 
-            }
+            body.status-working .particle { box-shadow: 0 0 6px var(--mood-primary); }
+            body.status-sleeping .particle { box-shadow: 0 0 4px var(--mood-primary); animation-duration: 6s; }
+            body.status-idle .particle { box-shadow: 0 0 5px var(--mood-primary); animation-duration: 5s; }
+            body.status-excited .particle { box-shadow: 0 0 8px var(--mood-primary); animation-duration: 3s; }
 
             .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
             .particle:nth-child(2) { left: 30%; animation-delay: 0.8s; }
@@ -6530,26 +6422,6 @@
 
         .fox-container:hover .fox-eye-glow {
             opacity: 0.6;
-        }
-
-        /* v164.0: Enhanced fox container hover with spatial depth */
-        .fox-container:hover {
-            transform: scale(1.02);
-        }
-
-        .fox-container:hover .holo-aura {
-            opacity: 0.8;
-            animation: aura-pulse-fast 1.5s ease-in-out infinite;
-        }
-
-        @keyframes aura-pulse-fast {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.15); opacity: 0.5; }
-        }
-
-        /* v164.0: Enhanced fox container with color-mix reactive glow */
-        .fox-container {
-            --fox-glow-color: color-mix(in srgb, var(--mood-primary) 50%, var(--mood-secondary));
         }
 
         /* v157.0: Working status enhanced glow effect */
@@ -9048,7 +8920,7 @@
 
         <footer class="dashboard-footer">
             <div class="footer-info">
-                <span>MoShang</span> <span class="footer-version">Status Dashboard v164.0</span> • Last updated: <span id="lastUpdated">--</span>
+                <span>MoShang</span> <span class="footer-version">Status Dashboard v161.0</span> • Last updated: <span id="lastUpdated">--</span>
                 <span id="dataSourceTag" style="margin-left: 8px; padding: 2px 8px; background: rgba(92, 219, 149, 0.15); border-radius: 4px; font-size: 10px; color: var(--status-online);"></span>
                 <span id="gitCommitTag" style="margin-left: 6px; padding: 2px 8px; background: rgba(139, 92, 246, 0.15); border-radius: 4px; font-size: 10px; color: var(--holo-violet);" title="Git Commit"></span>
             </div>
@@ -9083,10 +8955,9 @@
 
     <script>
         /* ============================================================
-           MoShang Dashboard - JavaScript v164.0
-           v164.0: CSS 2026 Enhanced, Fox Expression Engine v2, Particle System v3,
-                   Neural Grid v3, Enhanced :has() Selectors, Performance Optimization,
-                   Accessibility Improvements, Container Queries Support
+           MoShang Dashboard - JavaScript v161.0
+           v161.0: CSS 2026 advanced features, spatial UI, radar chart,
+                   notification stack, liquid morphing, cursor trail
         ============================================================ */
 
         const state = {
@@ -9159,9 +9030,6 @@
         const foxCtx = foxCanvas.getContext('2d');
         let foxFrame = 0;
         let foxMood = 'idle';
-        let lastMood = 'idle';
-        let moodPulseRadius = 0;
-        let moodPulseAlpha = 0;
 
         const foxExpressions = {
             idle: '😺', excited: '🎉', thinking: '🤔', laughing: '😂', focused: '🎯', working: '⚡', sleeping: '💤', learning: '🧠'
@@ -9420,30 +9288,6 @@
             foxCtx.beginPath();
             foxCtx.ellipse(cx + 28, cy - 15 + bounce, 8, 5, 0, 0, Math.PI * 2);
             foxCtx.fill();
-
-            // v165.0: Mood reactive pulse ring - expands when mood changes
-            if (typeof moodPulseRadius !== 'undefined' && moodPulseRadius > 0) {
-                foxCtx.strokeStyle = colors.accent + Math.floor(moodPulseAlpha * 255).toString(16).padStart(2, '0');
-                foxCtx.lineWidth = 2;
-                foxCtx.beginPath();
-                foxCtx.arc(cx, cy, moodPulseRadius, 0, Math.PI * 2);
-                foxCtx.stroke();
-            }
-
-            // v165.0: Status glow aura - intensity based on activity level
-            const activityGlow = (state.activity || 50) / 100;
-            if (activityGlow > 0.5) {
-                const auraSize = 65 + Math.sin(foxFrame * 0.05) * 3;
-                const auraGrad = foxCtx.createRadialGradient(cx, cy, 50, cx, cy, auraSize);
-                auraGrad.addColorStop(0, colors.glow);
-                auraGrad.addColorStop(1, 'transparent');
-                foxCtx.fillStyle = auraGrad;
-                foxCtx.globalAlpha = activityGlow * 0.3;
-                foxCtx.beginPath();
-                foxCtx.arc(cx, cy, auraSize, 0, Math.PI * 2);
-                foxCtx.fill();
-                foxCtx.globalAlpha = 1;
-            }
 
             foxFrame++;
             requestAnimationFrame(drawFox);
@@ -9935,39 +9779,8 @@
 
             // Mood
             foxMood = state.status;
-
-            // v165.0: Trigger mood pulse animation on mood change
-            if (lastMood !== foxMood) {
-                moodPulseRadius = 50;
-                moodPulseAlpha = 1;
-                lastMood = foxMood;
-                triggerFoxSparkleBurst();
-            }
-
-            // v165.0: Decay mood pulse
-            if (moodPulseRadius > 0) {
-                moodPulseRadius += 2;
-                moodPulseAlpha -= 0.03;
-                if (moodPulseAlpha <= 0) {
-                    moodPulseRadius = 0;
-                    moodPulseAlpha = 0;
-                }
-            }
             const moodText = $('moodText');
-            if (moodText) {
-                // v165.0: AI Status Context Engine - generate contextual status messages
-                const statusMessages = {
-                    sleeping: ['Zzz... 正在休眠充电 ⚡', '休眠中... 恢复能量ing 😴', 'Sleep Mode: Energy Restoring'],
-                    idle: ['等待指令中 🎯', 'Idle: Ready for input', '待机中... 随时待命 ✨'],
-                    working: [`处理中... ${state.currentTask || '任务'} ⚙️`, 'Working: Processing task 💪', '工作中... 加油！🔥'],
-                    excited: ['超级兴奋！🎉', 'Excited: High energy! ⚡', '好开心呀～ ✨🎊'],
-                    thinking: ['思考中... 🤔', 'Thinking: Processing 🧠', 'Thinking Mode... 🤔💭'],
-                    laughing: ['笑死我了 😂', 'Laughing: Fun mode 🤣', '太有趣了哈哈哈 😂'],
-                    focused: ['专注模式 🎯', 'Focused: Deep work mode 🎯', '集中注意力中... ⚡']
-                };
-                const msgs = statusMessages[foxMood] || statusMessages.idle;
-                moodText.textContent = msgs[Math.floor(foxFrame * 0.01) % msgs.length];
-            }
+            if (moodText) moodText.textContent = capitalize(state.status) + ' Mode';
             updateNeuralGrid();
 
             // v157.0: Set body class for status-based CSS effects
@@ -12064,22 +11877,6 @@
             }
         }
 
-        // v165.0: Burst sparkles on mood change
-        function triggerFoxSparkleBurst() {
-            const foxContainer = $('foxContainer');
-            if (!foxContainer) return;
-            let sparkleContainer = foxContainer.querySelector('.fox-sparkle-container');
-            if (!sparkleContainer) {
-                sparkleContainer = document.createElement('div');
-                sparkleContainer.className = 'fox-sparkle-container';
-                foxContainer.appendChild(sparkleContainer);
-            }
-            // Burst of 12 sparkles
-            for (let i = 0; i < 12; i++) {
-                setTimeout(() => createFoxSparkles(sparkleContainer), i * 30);
-            }
-        }
-
         // ========== V162.0 JAVASCRIPT FEATURES ==========
 
         // v162.0: Enhanced spatial card effect with mouse tracking
@@ -12343,8 +12140,8 @@
 
             // v150.0: Initialize ambient blobs and event stream
             updateAmbientBlobsStatus();
-            addEvent('Dashboard v164.0 ready', '🚀', 'success');
-            addNotification('MoShang Dashboard v164.0', 'Real-time monitoring active', 'info', '🚀');
+            addEvent('Dashboard v161.0 ready', '🚀', 'success');
+            addNotification('MoShang Dashboard v161.0', 'Real-time monitoring active', 'info', '🚀');
 
             // v160.0: Initialize intersection observer for scroll animations
             initScrollObserver();
@@ -12388,10 +12185,10 @@
                 viewport: { width: window.innerWidth, height: window.innerHeight },
                 supportsViewTransitions: !!document.startViewTransition,
                 keyboardShortcuts: ['r=refresh', 'b=breathing', 't=theme', 'v=viewTransition', '1-5=moods', 'a=autoRefresh', 'n=notifications', 'p=pomodoro', 'Ctrl+K=commandPalette'],
-                version: 'v164.0',
-                features: ['fluid-typography', 'motion-blur', 'glitch-v3', 'aurora-v2', 'cursor-trail-v2', 'heatmap-v2', 'agent-health', 'data-source-health', 'fox-sparkle-v3', 'container-queries-v2', 'has-v2', 'color-mix-v2']
+                version: 'v163.0',
+                features: ['fluid-typography', 'motion-blur', 'glitch-v3', 'aurora-v2', 'cursor-trail-v2', 'heatmap-v2', 'agent-health', 'data-source-health', 'fox-sparkle-v3']
             });
-            console.log('🚀 MoShang Dashboard v164.0 initialized');
+            console.log('🚀 MoShang Dashboard v163.0 initialized');
         }
 
         if (document.readyState === 'loading') {
