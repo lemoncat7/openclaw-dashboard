@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MoShang - OpenClaw Status Dashboard">
     <meta name="theme-color" content="#0a0a0f">
-    <title>MoShang Status v160.0</title>
+    <title>MoShang Status v161.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
            MoShang Dashboard - Ultra Modern CSS Design v13.0 (2026)
-           v160.0: CSS 2026 ultra-modern features - advanced @property animations,
-                   new interaction patterns, enhanced AI status visualization,
-                   improved performance with GPU compositing, next-gen micro-interactions
+           v161.0: CSS 2026 advanced features - spatial UI, color-mix() theming,
+                   interactive spatial depth cards, enhanced radar chart,
+                   notification stack system, liquid morphing buttons,
+                   cursor trail effects, web animations API integration
         ============================================================ */
 
         @layer base, layout, components, animations, effects;
@@ -7184,6 +7185,539 @@
                 transform: scale(0.97);
             }
         }
+
+        /* ========== V161.0 ADVANCED CSS 2026 FEATURES ========== */
+
+        /* v161.0: CSS @property for spatial depth and color mixing */
+        @property --v161-depth-x {
+            syntax: '<length>';
+            inherits: true;
+            initial-value: 0px;
+        }
+        @property --v161-depth-y {
+            syntax: '<length>';
+            inherits: true;
+            initial-value: 0px;
+        }
+        @property --v161-blob-seed {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 0;
+        }
+        @property --v161-liquid-progress {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 0;
+        }
+        @property --v161-trail-opacity {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 0;
+        }
+        @property --v161-radar-angle {
+            syntax: '<angle>';
+            inherits: false;
+            initial-value: 0deg;
+        }
+        @property --v161-hue-rotate {
+            syntax: '<angle>';
+            inherits: true;
+            initial-value: 0deg;
+        }
+        @property --v161-scale-spatial {
+            syntax: '<number>';
+            inherits: true;
+            initial-value: 1;
+        }
+
+        /* v161.0: Spatial Depth Card - Interactive 3D perspective card */
+        .v161-spatial-card {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            transition: transform 0.15s ease-out;
+        }
+        .v161-spatial-card .card-inner {
+            transform: var(--v161-scale-spatial) perspective(800px) rotateX(var(--v161-depth-y, 0deg)) rotateY(var(--v161-depth-x, 0deg));
+            transition: transform 0.12s ease-out;
+        }
+        .v161-spatial-card .card-glow {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0, 245, 255, 0.15) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            border-radius: inherit;
+        }
+        .v161-spatial-card:hover .card-glow {
+            opacity: 1;
+        }
+
+        /* v161.0: Liquid Morphing Button - organic distortion on click */
+        @keyframes v161-liquid-morph {
+            0% { border-radius: 8px; filter: url(#liquid-0); }
+            25% { border-radius: 40% 60% 55% 45% / 55% 40% 60% 45%; filter: url(#liquid-25); }
+            50% { border-radius: 55% 45% 40% 60% / 45% 55% 40% 60%; filter: url(#liquid-50); }
+            75% { border-radius: 40% 60% 55% 45% / 55% 40% 60% 45%; filter: url(#liquid-75); }
+            100% { border-radius: 8px; filter: url(#liquid-100); }
+        }
+        .v161-liquid-btn {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .v161-liquid-btn::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            background: radial-gradient(circle, rgba(0, 245, 255, 0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .v161-liquid-btn:active::before {
+            opacity: 1;
+        }
+        .v161-liquid-btn:active {
+            transform: scale(0.95);
+        }
+        .v161-liquid-btn.animating {
+            animation: v161-liquid-morph 0.6s ease-in-out;
+        }
+
+        /* v161.0: Cursor Trail Effect */
+        .v161-cursor-trail {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--holo-cyan) 0%, transparent 70%);
+            pointer-events: none;
+            opacity: var(--v161-trail-opacity, 0);
+            transform: translate(-50%, -50%);
+            z-index: 99999;
+            mix-blend-mode: screen;
+            transition: opacity 0.3s ease;
+        }
+
+        /* v161.0: Notification Stack System */
+        .v161-notif-stack {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 8px;
+            z-index: 10000;
+            pointer-events: none;
+        }
+        .v161-notif-stack .notif-item {
+            pointer-events: auto;
+            padding: 12px 16px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            backdrop-filter: blur(20px);
+            animation: v161-slide-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            max-width: 320px;
+        }
+        .v161-notif-stack .notif-item.removing {
+            animation: v161-slide-out 0.3s ease-in forwards;
+        }
+        @keyframes v161-slide-in {
+            from { transform: translateX(100%) scale(0.8); opacity: 0; }
+            to { transform: translateX(0) scale(1); opacity: 1; }
+        }
+        @keyframes v161-slide-out {
+            from { transform: translateX(0) scale(1); opacity: 1; }
+            to { transform: translateX(100%) scale(0.8); opacity: 0; }
+        }
+
+        /* v161.0: Skills Radar Chart (SVG-based) */
+        .v161-radar-chart {
+            width: 160px;
+            height: 160px;
+        }
+        .v161-radar-chart .radar-grid {
+            fill: none;
+            stroke: var(--glass-border);
+            stroke-width: 0.5;
+        }
+        .v161-radar-chart .radar-axis {
+            stroke: var(--glass-border);
+            stroke-width: 0.5;
+        }
+        .v161-radar-chart .radar-area {
+            fill: var(--holo-cyan);
+            fill-opacity: 0.2;
+            stroke: var(--holo-cyan);
+            stroke-width: 1.5;
+            transition: d 0.5s ease;
+        }
+        .v161-radar-chart .radar-point {
+            fill: var(--holo-cyan);
+            transition: cx 0.5s ease, cy 0.5s ease;
+        }
+        .v161-radar-chart .radar-label {
+            font-size: 9px;
+            fill: var(--text-dim);
+            text-anchor: middle;
+        }
+
+        /* v161.0: Skill Health Bar */
+        .v161-skill-health {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .v161-skill-health-bar {
+            flex: 1;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .v161-skill-health-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            background: linear-gradient(90deg, var(--status-online), var(--holo-cyan));
+        }
+        .v161-skill-health-fill.degraded {
+            background: linear-gradient(90deg, var(--status-idle), var(--holo-gold));
+        }
+        .v161-skill-health-fill.critical {
+            background: linear-gradient(90deg, var(--status-error), var(--holo-magenta));
+        }
+
+        /* v161.0: Telemetry Mini Panel - real-time metrics grid */
+        .v161-telemetry {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .v161-telemetry-cell {
+            padding: 8px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            text-align: center;
+        }
+        .v161-telemetry-value {
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .v161-telemetry-label {
+            font-size: 9px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        /* v161.0: Activity Heatmap Enhanced */
+        .v161-heatmap {
+            display: grid;
+            grid-template-columns: repeat(24, 1fr);
+            gap: 2px;
+        }
+        .v161-heatmap-cell {
+            aspect-ratio: 1;
+            border-radius: 2px;
+            background: rgba(255,255,255,0.1);
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        .v161-heatmap-cell.level-1 { background: color-mix(in oklch, var(--holo-cyan) 30%, transparent); }
+        .v161-heatmap-cell.level-2 { background: color-mix(in oklch, var(--holo-cyan) 50%, transparent); }
+        .v161-heatmap-cell.level-3 { background: color-mix(in oklch, var(--holo-cyan) 75%, transparent); }
+        .v161-heatmap-cell.level-4 { background: var(--holo-cyan); }
+        .v161-heatmap-cell:hover {
+            transform: scale(1.3);
+            z-index: 1;
+        }
+
+        /* v161.0: Event Timeline v2 */
+        .v161-timeline {
+            position: relative;
+            padding-left: 20px;
+        }
+        .v161-timeline::before {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--holo-cyan), var(--holo-magenta), transparent);
+        }
+        .v161-timeline-item {
+            position: relative;
+            padding: 6px 0 6px 16px;
+            opacity: 0;
+            transform: translateX(-10px);
+            animation: v161-timeline-in 0.4s ease forwards;
+        }
+        .v161-timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--glass-bg);
+            border: 2px solid var(--holo-cyan);
+            box-shadow: 0 0 8px var(--holo-cyan);
+        }
+        .v161-timeline-item.success::before { border-color: var(--status-online); box-shadow: 0 0 8px var(--status-online); }
+        .v161-timeline-item.warning::before { border-color: var(--status-idle); box-shadow: 0 0 8px var(--status-idle); }
+        .v161-timeline-item.error::before { border-color: var(--status-error); box-shadow: 0 0 8px var(--status-error); }
+        @keyframes v161-timeline-in {
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* v161.0: Morphing Blob Background v3 - organic shapes */
+        @keyframes v161-blob-morph {
+            0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+            50% { border-radius: 50% 60% 30% 60% / 30% 50% 70% 50%; }
+            75% { border-radius: 60% 40% 60% 30% / 70% 50% 40% 60%; }
+        }
+        .v161-blob {
+            animation: v161-blob-morph 8s ease-in-out infinite;
+        }
+
+        /* v161.0: Glitch Text Effect v3 - RGB split + noise */
+        @keyframes v161-glitch-1 {
+            0%, 100% { clip-path: inset(0 0 95% 0); transform: translate(-2px, 0); }
+            20% { clip-path: inset(20% 0 60% 0); transform: translate(2px, 0); }
+            40% { clip-path: inset(50% 0 30% 0); transform: translate(-1px, 0); }
+            60% { clip-path: inset(70% 0 10% 0); transform: translate(1px, 0); }
+            80% { clip-path: inset(85% 0 5% 0); transform: translate(-2px, 0); }
+        }
+        @keyframes v161-glitch-2 {
+            0%, 100% { clip-path: inset(85% 0 0 0); transform: translate(2px, 0); }
+            20% { clip-path: inset(10% 0 70% 0); transform: translate(-2px, 0); }
+            40% { clip-path: inset(30% 0 50% 0); transform: translate(1px, 0); }
+            60% { clip-path: inset(5% 0 80% 0); transform: translate(-1px, 0); }
+            80% { clip-path: inset(60% 0 25% 0); transform: translate(2px, 0); }
+        }
+        .v161-glitch {
+            position: relative;
+        }
+        .v161-glitch::before,
+        .v161-glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            inset: 0;
+            opacity: 0.8;
+        }
+        .v161-glitch::before {
+            color: var(--holo-cyan);
+            animation: v161-glitch-1 0.8s infinite linear alternate-reverse;
+        }
+        .v161-glitch::after {
+            color: var(--holo-magenta);
+            animation: v161-glitch-2 0.8s infinite linear alternate-reverse;
+        }
+
+        /* v161.0: Aurora Gradient Animation v2 */
+        @keyframes v161-aurora {
+            0% { background-position: 0% 50%; filter: hue-rotate(0deg); }
+            50% { background-position: 100% 50%; filter: hue-rotate(30deg); }
+            100% { background-position: 0% 50%; filter: hue-rotate(0deg); }
+        }
+        .v161-aurora-bg {
+            background: linear-gradient(270deg, var(--holo-cyan), var(--holo-magenta), var(--holo-violet), var(--holo-cyan));
+            background-size: 400% 400%;
+            animation: v161-aurora 12s ease infinite;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* v161.0: Spring Physics Card Entrance */
+        @keyframes v161-spring-entrance {
+            0% { transform: scale(0.8) translateY(20px); opacity: 0; }
+            60% { transform: scale(1.05) translateY(-5px); }
+            80% { transform: scale(0.98) translateY(2px); }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        .v161-spring-enter {
+            animation: v161-spring-entrance 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* v161.0: Data Stream Flow Effect */
+        @keyframes v161-data-flow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 0% 100%; }
+        }
+        .v161-data-stream {
+            background: linear-gradient(to bottom, transparent 0%, var(--holo-cyan) 50%, transparent 100%);
+            background-size: 100% 20px;
+            background-position: 0 0;
+            animation: v161-data-flow 1.5s linear infinite;
+            opacity: 0.15;
+        }
+
+        /* v161.0: Pulse Ring v3 - expanding rings */
+        @keyframes v161-pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.8; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+        .v161-pulse-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid var(--holo-cyan);
+            animation: v161-pulse-ring 1.5s ease-out infinite;
+        }
+
+        /* v161.0: Focus Focus Ring v2 - breathing focus indicator */
+        @keyframes v161-focus-ring {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 245, 255, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(0, 245, 255, 0); }
+        }
+        .v161-focus-ring {
+            animation: v161-focus-ring 2s ease-in-out infinite;
+        }
+
+        /* v161.0: Interactive Particle System */
+        .v161-particles {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .v161-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--holo-cyan);
+            animation: v161-particle-float 4s ease-in-out infinite;
+        }
+        @keyframes v161-particle-float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.6; }
+            25% { transform: translateY(-20px) translateX(10px); opacity: 1; }
+            50% { transform: translateY(-10px) translateX(-5px); opacity: 0.8; }
+            75% { transform: translateY(-25px) translateX(5px); opacity: 0.9; }
+        }
+
+        /* v161.0: Neural Network Spark Effect */
+        @keyframes v161-spark {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+        .v161-spark {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--holo-gold);
+            border-radius: 50%;
+            animation: v161-spark 1s ease-in-out infinite;
+        }
+
+        /* v161.0: Scroll-driven card entrance */
+        .v161-scroll-card {
+            animation: linear timeline(v161-scroll-timeline);
+            animation-timeline: scroll();
+        }
+        @keyframes v161-scroll-card-in {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @property --v161-scroll-progress {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 0;
+        }
+
+        /* v161.0: Notification Badge Pulse */
+        @keyframes v161-badge-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        .v161-badge-pulse {
+            animation: v161-badge-pulse 2s ease-in-out infinite;
+        }
+
+        /* v161.0: Color Mix Mood Blending - use color-mix() for dynamic mood colors */
+        .v161-mood-blend {
+            background: color-mix(in oklch, var(--mood-primary, var(--holo-cyan)) 40%, var(--glass-bg));
+            border-color: color-mix(in oklch, var(--mood-primary, var(--holo-cyan)) 60%, transparent);
+        }
+        .v161-mood-blend.glow {
+            box-shadow: 0 0 20px color-mix(in oklch, var(--mood-primary, var(--holo-cyan)) 50%, transparent);
+        }
+
+        /* v161.0: SVG Icon Animated Stroke */
+        .v161-svg-stroke {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: v161-draw-stroke 1.5s ease forwards;
+        }
+        @keyframes v161-draw-stroke {
+            to { stroke-dashoffset: 0; }
+        }
+
+        /* v161.0: Ambient Light Sweep - light follows cursor */
+        .v161-light-sweep {
+            position: relative;
+            overflow: hidden;
+        }
+        .v161-light-sweep::after {
+            content: '';
+            position: absolute;
+            top: var(--mouse-y, 50%);
+            left: var(--mouse-x, 50%);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0, 245, 255, 0.1) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        /* v161.0: Performance-optimized stat card with contain */
+        .v161-stat-card-optimized {
+            contain: layout style paint;
+            content-visibility: auto;
+            contain-intrinsic-size: 0 100px;
+        }
+
+        /* v161.0: GPU-accelerated transform */
+        .v161-gpu {
+            transform: translateZ(0);
+            will-change: transform, opacity;
+            backface-visibility: hidden;
+        }
+
+        /* v161.0: Staggered entrance animation helper */
+        .v161-stagger > * {
+            opacity: 0;
+            animation: v161-spring-entrance 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .v161-stagger > *:nth-child(1) { animation-delay: 0ms; }
+        .v161-stagger > *:nth-child(2) { animation-delay: 60ms; }
+        .v161-stagger > *:nth-child(3) { animation-delay: 120ms; }
+        .v161-stagger > *:nth-child(4) { animation-delay: 180ms; }
+        .v161-stagger > *:nth-child(5) { animation-delay: 240ms; }
+        .v161-stagger > *:nth-child(6) { animation-delay: 300ms; }
+
+        /* v161.0: Reduced motion - disable advanced animations */
+        @media (prefers-reduced-motion: reduce) {
+            .v161-blob,
+            .v161-glitch::before,
+            .v161-glitch::after,
+            .v161-aurora-bg,
+            .v161-data-stream,
+            .v161-particle,
+            .v161-spark {
+                animation: none !important;
+            }
+            .v161-timeline-item,
+            .v161-spring-enter {
+                opacity: 1;
+                transform: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -7583,6 +8117,14 @@
                     </div>
                     <div class="heatmap-grid" id="heatmapGrid" role="img" aria-label="24-hour activity heatmap"></div>
                 </div>
+
+                <!-- v161.0: Activity Heatmap Enhanced -->
+                <div class="glass-card" style="padding:12px;">
+                    <div style="font-size:11px;color:var(--text-dim);margin-bottom:8px;display:flex;align-items:center;gap:4px;">
+                        <span>📊</span> Hourly Heatmap v161
+                    </div>
+                    <div class="v161-heatmap" id="activityHeatmap"></div>
+                </div>
             </div>
 
             <div class="right-column">
@@ -7682,6 +8224,15 @@
                         </div>
                     </div>
 
+                    <!-- v161.0: Skills Radar Chart (SVG) -->
+                    <div class="glass-card" style="padding:16px;">
+                        <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+                            <span>🎯</span> Skill Radar v161
+                        </div>
+                        <div id="skillsRadarChart" style="display:flex;justify-content:center;"></div>
+                        <div id="skillsHealthContainer" style="margin-top:12px;"></div>
+                    </div>
+
                     <div class="memory-timeline">
                         <div class="timeline-title">📋 Task Queue</div>
                         <div class="timeline-items" id="taskQueueItems">
@@ -7708,6 +8259,14 @@
                             <div class="status-timeline-time">--</div>
                         </div>
                     </div>
+                </div>
+
+                <!-- v161.0: Event Timeline v2 -->
+                <div class="glass-card" style="padding:16px;">
+                    <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+                        <span>⚡</span> Event Stream v161
+                    </div>
+                    <div class="v161-timeline" id="v161EventTimeline" style="max-height:150px;overflow-y:auto;"></div>
                 </div>
 
                 <div id="evomapCard" class="glass-card" style="display: none;">
@@ -7788,7 +8347,7 @@
 
         <footer class="dashboard-footer">
             <div class="footer-info">
-                <span>MoShang</span> <span class="footer-version">Status Dashboard v160.0</span> • Last updated: <span id="lastUpdated">--</span>
+                <span>MoShang</span> <span class="footer-version">Status Dashboard v161.0</span> • Last updated: <span id="lastUpdated">--</span>
                 <span id="dataSourceTag" style="margin-left: 8px; padding: 2px 8px; background: rgba(92, 219, 149, 0.15); border-radius: 4px; font-size: 10px; color: var(--status-online);"></span>
                 <span id="gitCommitTag" style="margin-left: 6px; padding: 2px 8px; background: rgba(139, 92, 246, 0.15); border-radius: 4px; font-size: 10px; color: var(--holo-violet);" title="Git Commit"></span>
             </div>
@@ -7823,9 +8382,9 @@
 
     <script>
         /* ============================================================
-           MoShang Dashboard - JavaScript v160.0
-           v160.0: CSS 2026 ultra-modern features, enhanced AI visualization,
-                   improved performance, next-gen micro-interactions
+           MoShang Dashboard - JavaScript v161.0
+           v161.0: CSS 2026 advanced features, spatial UI, radar chart,
+                   notification stack, liquid morphing, cursor trail
         ============================================================ */
 
         const state = {
@@ -7875,7 +8434,7 @@
             _commands: [],
             // v151.0: Git commit info
             _gitCommit: 'a1b2c3d4e5f6789012345678901234567890abcd',
-            _gitCommitMsg: 'v160.0: CSS 2026 ultra-modern features, advanced @property animations, enhanced AI status visualization',
+            _gitCommitMsg: 'v161.0: CSS 2026 advanced features - spatial UI, color-mix() theming, radar chart, notification stack, liquid morphing, cursor trail effects',
             // v155.0: Network Information API
             _connectionType: 'unknown',
             _effectiveType: '4g',
@@ -8791,6 +9350,17 @@
             if (data.status === 'excited' || data.status === 'working') {
                 triggerFoxSparkle();
             }
+
+            // v161.0: Update skills health visualization
+            if (state.skillsCategories) {
+                updateSkillsHealth(state.skillsTotal, state.skillsCategories);
+            }
+
+            // v161.0: Update mood color mix
+            updateMoodColorMix(data.status || 'idle');
+
+            // v161.0: Add v161 event timeline item
+            addV161Event(`Status: ${data.status || 'idle'}`, data.status === 'error' ? 'error' : 'info', '⚡');
         }
 
         // v145.0: Trigger a visual pulse ring when fresh data is received
@@ -10163,6 +10733,338 @@
             });
         }
 
+        // ========== V161.0 JAVASCRIPT FEATURES ==========
+
+        // v161.0: Skills Radar Chart - SVG-based skill visualization
+        function initSkillsRadarChart() {
+            const container = $('skillsRadarChart');
+            if (!container) return;
+
+            const size = 160;
+            const cx = size / 2;
+            const cy = size / 2;
+            const maxRadius = 55;
+            const levels = 3;
+            const skills = [
+                { label: 'Coding', value: 85 },
+                { label: 'Design', value: 70 },
+                { label: 'Research', value: 60 },
+                { label: 'Social', value: 45 },
+                { label: 'Creativity', value: 80 }
+            ];
+            const angleStep = (2 * Math.PI) / skills.length;
+
+            // Create SVG
+            let svg = `<svg class="v161-radar-chart" viewBox="0 0 ${size} ${size}">`;
+
+            // Grid circles
+            for (let i = 1; i <= levels; i++) {
+                const r = (maxRadius * i) / levels;
+                svg += `<circle class="radar-grid" cx="${cx}" cy="${cy}" r="${r}"/>`;
+            }
+
+            // Axis lines
+            skills.forEach((_, i) => {
+                const angle = angleStep * i - Math.PI / 2;
+                const x = cx + maxRadius * Math.cos(angle);
+                const y = cy + maxRadius * Math.sin(angle);
+                svg += `<line class="radar-axis" x1="${cx}" y1="${cy}" x2="${x}" y2="${y}"/>`;
+            });
+
+            // Data area
+            const points = skills.map((skill, i) => {
+                const angle = angleStep * i - Math.PI / 2;
+                const r = (skill.value / 100) * maxRadius;
+                return `${cx + r * Math.cos(angle)},${cy + r * Math.sin(angle)}`;
+            }).join(' ');
+            svg += `<polygon class="radar-area" points="${points}"/>`;
+
+            // Data points
+            skills.forEach((skill, i) => {
+                const angle = angleStep * i - Math.PI / 2;
+                const r = (skill.value / 100) * maxRadius;
+                const x = cx + r * Math.cos(angle);
+                const y = cy + r * Math.sin(angle);
+                svg += `<circle class="radar-point" cx="${x}" cy="${y}" r="4"/>`;
+            });
+
+            // Labels
+            skills.forEach((skill, i) => {
+                const angle = angleStep * i - Math.PI / 2;
+                const labelR = maxRadius + 14;
+                const x = cx + labelR * Math.cos(angle);
+                const y = cy + labelR * Math.sin(angle);
+                svg += `<text class="radar-label" x="${x}" y="${y}" dy="3">${skill.label}</text>`;
+            });
+
+            svg += '</svg>';
+            container.innerHTML = svg;
+        }
+
+        // v161.0: Notification Stack System - advanced stacking notifications
+        const v161NotifStack = [];
+        function showV161Notification(title, message, type = 'info', icon = '💡') {
+            let stack = $('v161NotifStack');
+            if (!stack) {
+                stack = document.createElement('div');
+                stack.id = 'v161NotifStack';
+                stack.className = 'v161-notif-stack';
+                document.body.appendChild(stack);
+            }
+
+            const notif = document.createElement('div');
+            notif.className = 'notif-item';
+            const colors = { success: 'var(--status-online)', error: 'var(--status-error)', info: 'var(--holo-cyan)', warning: 'var(--status-idle)' };
+            notif.style.borderLeft = `3px solid ${colors[type] || colors.info}`;
+            notif.innerHTML = `
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                    <span style="font-size:16px;">${icon}</span>
+                    <strong style="font-size:13px;">${title}</strong>
+                </div>
+                <div style="font-size:12px;color:var(--text-dim);">${message}</div>
+            `;
+
+            stack.appendChild(notif);
+            v161NotifStack.push(notif);
+
+            // Limit stack size
+            if (v161NotifStack.length > 5) {
+                const old = v161NotifStack.shift();
+                if (old) {
+                    old.classList.add('removing');
+                    setTimeout(() => old.remove(), 300);
+                }
+            }
+
+            // Auto remove after 4 seconds
+            setTimeout(() => {
+                if (notif.parentNode) {
+                    notif.classList.add('removing');
+                    setTimeout(() => {
+                        notif.remove();
+                        const idx = v161NotifStack.indexOf(notif);
+                        if (idx > -1) v161NotifStack.splice(idx, 1);
+                    }, 300);
+                }
+            }, 4000);
+        }
+
+        // v161.0: Spatial depth effect for cards - mouse-following 3D tilt
+        function initSpatialDepth() {
+            document.querySelectorAll('.v161-spatial-card').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width - 0.5;
+                    const y = (e.clientY - rect.top) / rect.height - 0.5;
+                    card.style.setProperty('--v161-depth-x', `${x * 10}deg`);
+                    card.style.setProperty('--v161-depth-y', `${-y * 10}deg`);
+                    card.style.setProperty('--mouse-x', `${(e.clientX - rect.left) / rect.width * 100}%`);
+                    card.style.setProperty('--mouse-y', `${(e.clientY - rect.top) / rect.height * 100}%`);
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.setProperty('--v161-depth-x', '0deg');
+                    card.style.setProperty('--v161-depth-y', '0deg');
+                });
+            });
+        }
+
+        // v161.0: Liquid button effect - organic morphing on click
+        function triggerLiquidEffect(btn) {
+            if (!btn) return;
+            btn.classList.add('animating');
+            setTimeout(() => btn.classList.remove('animating'), 600);
+        }
+
+        // v161.0: Cursor trail effect
+        let v161TrailEnabled = false;
+        const v161Trails = [];
+        function initCursorTrail() {
+            if (v161TrailEnabled) return;
+            v161TrailEnabled = true;
+
+            // Create trail elements
+            for (let i = 0; i < 6; i++) {
+                const trail = document.createElement('div');
+                trail.className = 'v161-cursor-trail';
+                trail.style.width = `${8 - i}px`;
+                trail.style.height = `${8 - i}px`;
+                document.body.appendChild(trail);
+                v161Trails.push({ el: trail, x: 0, y: 0, active: false });
+            }
+
+            let lastTrailTime = 0;
+            document.addEventListener('mousemove', (e) => {
+                const now = Date.now();
+                if (now - lastTrailTime < 30) return;
+                lastTrailTime = now;
+
+                v161Trails[0].x = e.clientX;
+                v161Trails[0].y = e.clientY;
+                v161Trails[0].active = true;
+                v161Trails.forEach((t, i) => {
+                    if (i === 0) {
+                        t.el.style.left = t.x + 'px';
+                        t.el.style.top = t.y + 'px';
+                        t.el.style.setProperty('--v161-trail-opacity', '0.6');
+                    } else {
+                        const prev = v161Trails[i - 1];
+                        t.x = t.x + (prev.x - t.x) * 0.5;
+                        t.y = t.y + (prev.y - t.y) * 0.5;
+                        t.el.style.left = t.x + 'px';
+                        t.el.style.top = t.y + 'px';
+                        t.el.style.setProperty('--v161-trail-opacity', `${(0.5 - i * 0.08).toFixed(2)}`);
+                    }
+                });
+            });
+
+            document.addEventListener('mouseleave', () => {
+                v161Trails.forEach(t => t.el.style.setProperty('--v161-trail-opacity', '0'));
+            });
+        }
+
+        // v161.0: Activity Heatmap - hourly activity visualization
+        function updateActivityHeatmap(hourlyData) {
+            const container = $('activityHeatmap');
+            if (!container) return;
+
+            // hourlyData is an array of 24 values (0-100)
+            if (!hourlyData || hourlyData.length !== 24) return;
+
+            const levelMap = (val) => {
+                if (val === 0) return 0;
+                if (val < 25) return 1;
+                if (val < 50) return 2;
+                if (val < 75) return 3;
+                return 4;
+            };
+
+            container.innerHTML = hourlyData.map((val, i) => {
+                const level = levelMap(val);
+                return `<div class="v161-heatmap-cell level-${level}" title="Hour ${i}:00 - ${val}% activity"></div>`;
+            }).join('');
+        }
+
+        // v161.0: Enhanced Fox Sparkle Effect with particles
+        function triggerFoxSparkleV161() {
+            const foxContainer = $('foxContainer');
+            if (!foxContainer) return;
+
+            for (let i = 0; i < 8; i++) {
+                const spark = document.createElement('div');
+                spark.className = 'v161-spark';
+                spark.style.left = `${40 + Math.random() * 100}px`;
+                spark.style.top = `${40 + Math.random() * 100}px`;
+                spark.style.animationDelay = `${Math.random() * 0.5}s`;
+                spark.style.background = ['var(--holo-cyan)', 'var(--holo-gold)', 'var(--holo-magenta)'][Math.floor(Math.random() * 3)];
+                foxContainer.appendChild(spark);
+                setTimeout(() => spark.remove(), 1500);
+            }
+        }
+
+        // v161.0: Update skills health based on data
+        function updateSkillsHealth(skillsTotal, skillsCategories) {
+            const healthContainer = $('skillsHealthContainer');
+            if (!healthContainer || !skillsCategories) return;
+
+            let html = '<div class="v161-stagger">';
+            const categoryColors = {
+                'coding': 'var(--holo-cyan)',
+                'design': 'var(--holo-magenta)',
+                'system': 'var(--holo-gold)',
+                'social': 'var(--holo-violet)',
+                'creative': 'var(--status-online)'
+            };
+
+            Object.entries(skillsCategories).slice(0, 6).forEach(([cat, count]) => {
+                const color = categoryColors[cat] || 'var(--holo-cyan)';
+                const maxVal = Math.max(...Object.values(skillsCategories));
+                const pct = maxVal > 0 ? (count / maxVal) * 100 : 50;
+                const healthClass = pct > 70 ? '' : pct > 40 ? 'degraded' : 'critical';
+
+                html += `
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                        <span style="font-size:10px;width:60px;color:var(--text-dim);text-transform:capitalize;">${cat}</span>
+                        <div class="v161-skill-health-bar">
+                            <div class="v161-skill-health-fill ${healthClass}" style="width:${pct}%;background:linear-gradient(90deg, ${color}, ${color}80);"></div>
+                        </div>
+                        <span style="font-size:10px;font-family:'JetBrains Mono',monospace;width:24px;text-align:right;">${count}</span>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            healthContainer.innerHTML = html;
+        }
+
+        // v161.0: Web Animations API - smooth counter animation
+        function animateCounterWebAnimations(element, targetValue, duration = 600) {
+            if (!element) return;
+            const current = parseInt(element.textContent) || 0;
+            const startTime = performance.now();
+
+            const animate = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                // Ease out cubic
+                const eased = 1 - Math.pow(1 - progress, 3);
+                const currentVal = Math.round(current + (targetValue - current) * eased);
+                element.textContent = currentVal;
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            };
+
+            requestAnimationFrame(animate);
+        }
+
+        // v161.0: Mood-aware color mix for UI elements
+        function updateMoodColorMix(mood) {
+            const moodColors = {
+                idle: { primary: '#fec97b', secondary: '#ffd700' },
+                working: { primary: '#00d4ff', secondary: '#00f5ff' },
+                sleeping: { primary: '#a855f7', secondary: '#c084fc' },
+                excited: { primary: '#ff6b9d', secondary: '#ff00ff' },
+                thinking: { primary: '#ffd700', secondary: '#ffaa00' },
+                laughing: { primary: '#ffd700', secondary: '#ff8800' },
+                error: { primary: '#ff6b6b', secondary: '#ff4444' }
+            };
+            const colors = moodColors[mood] || moodColors.idle;
+            document.documentElement.style.setProperty('--mood-primary', colors.primary);
+            document.documentElement.style.setProperty('--mood-secondary', colors.secondary);
+        }
+
+        // v161.0: Toggle cursor trail
+        function toggleCursorTrail() {
+            if (!v161TrailEnabled) {
+                initCursorTrail();
+                showV161Notification('Cursor Trail', 'Trail effect enabled', 'info', '✨');
+            } else {
+                v161Trails.forEach(t => t.el.style.setProperty('--v161-trail-opacity', '0'));
+                showV161Notification('Cursor Trail', 'Trail effect disabled', 'info', '💫');
+            }
+        }
+
+        // v161.0: Event timeline v2 - enhanced event stream
+        function addV161Event(message, type = 'info', icon = '📌') {
+            const timeline = $('v161EventTimeline');
+            if (!timeline) return;
+
+            const item = document.createElement('div');
+            item.className = `v161-timeline-item ${type}`;
+            item.innerHTML = `
+                <span style="font-size:12px;color:var(--text-primary);">${message}</span>
+                <span style="font-size:9px;color:var(--text-dim);margin-left:8px;">${new Date().toLocaleTimeString()}</span>
+            `;
+
+            timeline.insertBefore(item, timeline.firstChild);
+
+            // Limit items
+            while (timeline.children.length > 10) {
+                timeline.removeChild(timeline.lastChild);
+            }
+        }
+
         // Init
         function init() {
             // v155.0: Initialize Network Information API for adaptive quality
@@ -10266,8 +11168,8 @@
 
             // v150.0: Initialize ambient blobs and event stream
             updateAmbientBlobsStatus();
-            addEvent('Dashboard v160.0 ready', '🚀', 'success');
-            addNotification('MoShang Dashboard v160.0', 'Real-time monitoring active', 'info', '🚀');
+            addEvent('Dashboard v161.0 ready', '🚀', 'success');
+            addNotification('MoShang Dashboard v161.0', 'Real-time monitoring active', 'info', '🚀');
 
             // v160.0: Initialize intersection observer for scroll animations
             initScrollObserver();
@@ -10275,14 +11177,29 @@
             // v160.0: Initialize mouse tracking for magnetic effects
             initMagneticTracking();
 
+            // v161.0: Initialize skills radar chart
+            initSkillsRadarChart();
+
+            // v161.0: Initialize spatial depth effect for cards
+            initSpatialDepth();
+
+            // v161.0: Initialize cursor trail effect
+            initCursorTrail();
+
+            // v161.0: Update mood color mix
+            updateMoodColorMix('idle');
+
+            // v161.0: Initialize activity heatmap with sample data
+            updateActivityHeatmap(Array.from({length: 24}, () => Math.floor(Math.random() * 100)));
+
             // v143.0: Log initialization
-            v143Log('info', 'MoShang Dashboard v160.0 initialized', {
+            v143Log('info', 'MoShang Dashboard v161.0 initialized', {
                 userAgent: navigator.userAgent,
                 viewport: { width: window.innerWidth, height: window.innerHeight },
                 supportsViewTransitions: !!document.startViewTransition,
                 keyboardShortcuts: ['r=refresh', 'b=breathing', 't=theme', 'v=viewTransition', '1-5=moods', 'a=autoRefresh', 'n=notifications', 'p=pomodoro', 'Ctrl+K=commandPalette']
             });
-            console.log('🚀 MoShang Dashboard v160.0 initialized');
+            console.log('🚀 MoShang Dashboard v161.0 initialized');
         }
 
         if (document.readyState === 'loading') {

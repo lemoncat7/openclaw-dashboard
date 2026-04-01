@@ -9,6 +9,26 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+### v161.0 (2026-04-01)
+- **v161.0: CSS 2026 Advanced Features**: 新增spatial UI、color-mix()动态配色、liquid morphing按钮、cursor trail光标轨迹、notification stack通知栈、event timeline v2事件时间线
+- **v161.0: CSS @property v161 Variables**: 新增--v161-depth-x/--v161-depth-y/--v161-blob-seed/--v161-liquid-progress/--v161-trail-opacity/--v161-radar-angle等可动画CSS变量
+- **v161.0: Skills Radar Chart (SVG)**: 全新SVG技能雷达图，5维度可视化展示Coding/Design/Research/Social/Creativity
+- **v161.0: Skills Health Bar**: 技能分类健康度可视化，支持coding/design/system/social/creative分类
+- **v161.0: Spatial Depth Card**: 交互式3D透视卡片，鼠标跟随倾斜 + 发光追踪效果
+- **v161.0: Liquid Morph Button**: 有机变形按钮，点击时产生液体般morphing动画效果
+- **v161.0: Cursor Trail Effect**: 鼠标光标拖尾效果，6层渐变透明球体跟随
+- **v161.0: Notification Stack**: 堆叠通知系统，支持自动消失、滑动进入/退出、颜色编码
+- **v161.0: Activity Heatmap v161**: 24小时活动热力图，4级颜色深度显示活动强度
+- **v161.0: Event Timeline v2**: 增强型事件时间线，带发光节点和滑动动画
+- **v161.0: Mood Color Mix**: 使用CSS color-mix()实现心情动态配色，--mood-primary/--mood-secondary变量
+- **v161.0: Glitch Text v3**: RGB分离+噪点故障效果，::before/::after双层叠加
+- **v161.0: Aurora Gradient v2**: 渐变动画配合hue-rotate色彩旋转，12秒循环
+- **v161.0: Web Animations API**: 使用requestAnimationFrame实现平滑数字动画
+- **v161.0: Fox Sparkle v161**: 增强粒子特效，8个彩色火花随机位置爆发
+- **v161.0: Reduced Motion Support**: @media (prefers-reduced-motion: reduce)禁用高级动画
+- **v161.0: GPU Acceleration**: v161-gpu类使用translateZ(0)和will-change优化渲染性能
+- **v161.0: Stagger Animation Helper**: v161-stagger容器自动为子元素添加交错动画延迟
+
 ### v160.0 (2026-04-01)
 - **v160.0: CSS 2026 Ultra-Modern Features**: 全新CSS动画系统，包含20+个现代动画类（shimmer/pulse/aurora/status-glow/spring-in/data-wave/neural-pulse/morph-blob/glitch/breathing/magnetic/flip-in/ripple/stagger/focus-ring/scroll-reveal/particle-float等）
 - **v160.0: CSS @property v160 Variables**: 新增--v160-shimmer-angle/--v160-pulse-hue/--v160-morph-s等可动画CSS变量
