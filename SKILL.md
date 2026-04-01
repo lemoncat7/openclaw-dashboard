@@ -9,6 +9,13 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+- v159.0: CSS 2026 增强 @property 变量（shimmer-intensity/morph-intensity/glow-spread等）
+- v159.0: 新一代入场动画（blur+scale组合，物理弹性曲线）
+- v159.0: 增强型 Fortune 语录库（从30条扩充到39条，新增哥哥关心语和鼓励语）
+- v159.0: 世界时钟增强（新增悉尼、迪拜两个城市，共6个城市显示）
+- v159.0: 世界时钟昼夜指示器（☀️/🌙根据当地时间显示）
+- v159.0: 增强型语音波形动画（物理弹簧效果，active/idle不同节奏）
+- v159.0: 增强型 Fortune 文字动画（6色渐变循环，4秒周期）
 - v155.0: CSS 2026 新特性（update media, color-gamut, inert, scroll-start, outline-size）
 - v155.0: Web Locks API（跨标签页数据访问协调）
 - v155.0: Network Information API（网络质量自适应刷新率）
@@ -833,6 +840,26 @@ node ~/.openclaw/workspace/skills/dashboard-service/scripts/server.js &
 - **增强Fortune语录库**: 从15条扩充到30条，增加更多哥哥关心语和编程哲学
 - **增强sendEmojiReaction函数**: 新增浮动emoji效果和脉冲反馈动画
 - **版本更新至 v158.0**
+
+### v159.0 (2026-04-01)
+- **CSS @property v159-shimmer-intensity**: 新增 --v159-shimmer-intensity/--v159-morph-intensity/--v159-glow-spread/--v159-pulse-speed/--v159-ripple-scale 可动画CSS变量
+- **v159-entrance-fade动画**: 增强型入场动画，24px上浮+blur(12px)效果
+- **v159-entrance-scale动画**: 增强型缩放入场，0.75→1.0 scale+blur效果
+- **v159-press-feedback交互**: 弹性按压反馈，scale(0.95)缩放
+- **v159-glow-pulse动画**: 增强型发光脉冲，使用动态CSS变量控制
+- **v159-ripple-expand动画**: 涟漪扩散动画，带渐变透明度
+- **v159-scroll-reveal动画**: 滚动驱动入场，30px位移+blur(8px)
+- **v159-scroll-scale动画**: 滚动驱动缩放，0.85→1 scale
+- **v159-status-pulse-idle/active动画**: 状态感知脉冲动画，不同节奏
+- **v159-sync-wave动画**: 增强型同步波动，4秒周期6色渐变
+- **增强世界时钟**: 新增悉尼(Sydney)和迪拜(Dubai)两个城市，共6个城市显示
+- **增强世界时钟昼夜指示器**: 每个城市显示☀️(6:00-18:00)或🌙图标，根据当地时间动态更新
+- **增强世界时钟网格**: 从2列改为3列布局，更紧凑
+- **增强Fortune语录库**: 从30条扩充到39条，新增更多哥哥关心语和鼓励语
+- **增强Fortune文字动画**: 6色渐变循环(cyan→violet→magenta→gold→cyan→violet)，4秒周期
+- **增强语音波形动画**: 物理弹簧效果，active状态scaleY(0.8-1.2)，idle状态scaleY(0.6-1.0)
+- **增强世界时钟悬停**: 上浮+发光+阴影效果
+- **版本更新至 v159.0**
 
 ### v157.1 (2026-04-01)
 - **CSS @media (prefers-non-linear-contrast)**: 检测用户对比度偏好，自动调整UI对比度曲线

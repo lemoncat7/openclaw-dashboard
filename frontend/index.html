@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MoShang - OpenClaw Status Dashboard">
     <meta name="theme-color" content="#0a0a0f">
-    <title>MoShang Status v158.0</title>
+    <title>MoShang Status v159.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -908,7 +908,137 @@
                 inherits: true;
             }
 
-            /* v158.0: Enhanced @starting-style for modern entrance animations */
+            /* v159.0: CSS 2026 Next-Gen @property definitions for ultra-modern animations */
+            @property --v159-shimmer-intensity {
+                syntax: '<number>';
+                initial-value: 1;
+                inherits: true;
+            }
+
+            @property --v159-morph-intensity {
+                syntax: '<number>';
+                initial-value: 0.5;
+                inherits: false;
+            }
+
+            @property --v159-glow-spread {
+                syntax: '<length>';
+                initial-value: 15px;
+                inherits: true;
+            }
+
+            @property --v159-pulse-speed {
+                syntax: '<time>';
+                initial-value: 2s;
+                inherits: true;
+            }
+
+            @property --v159-ripple-scale {
+                syntax: '<number>';
+                initial-value: 1;
+                inherits: false;
+            }
+
+            /* v159.0: Ultra-modern entrance animations with blur and scale */
+            @keyframes v159-entrance-fade {
+                from {
+                    opacity: 0;
+                    transform: translateY(24px) scale(0.92);
+                    filter: blur(12px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                    filter: blur(0);
+                }
+            }
+
+            @keyframes v159-entrance-scale {
+                from {
+                    opacity: 0;
+                    transform: scale(0.75);
+                    filter: blur(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                    filter: blur(0);
+                }
+            }
+
+            @keyframes v159-press-feedback {
+                0% { transform: scale(1); }
+                50% { transform: scale(0.95); }
+                100% { transform: scale(1); }
+            }
+
+            @keyframes v159-glow-pulse {
+                0%, 100% {
+                    box-shadow: 0 0 var(--v159-glow-spread) var(--mood-primary),
+                                0 0 calc(var(--v159-glow-spread) * 2) var(--mood-primary);
+                    filter: brightness(1);
+                }
+                50% {
+                    box-shadow: 0 0 calc(var(--v159-glow-spread) * 1.5) var(--mood-primary),
+                                0 0 calc(var(--v159-glow-spread) * 3) var(--mood-primary);
+                    filter: brightness(1.2);
+                }
+            }
+
+            @keyframes v159-ripple-expand {
+                0% {
+                    transform: translate(-50%, -50%) scale(0);
+                    opacity: 0.6;
+                }
+                100% {
+                    transform: translate(-50%, -50%) scale(4);
+                    opacity: 0;
+                }
+            }
+
+            @keyframes v159-scroll-reveal {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                    filter: blur(8px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                    filter: blur(0);
+                }
+            }
+
+            @keyframes v159-scroll-scale {
+                from {
+                    opacity: 0;
+                    transform: scale(0.85);
+                    filter: blur(6px);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                    filter: blur(0);
+                }
+            }
+
+            @keyframes v159-status-pulse-idle {
+                0%, 100% { opacity: 0.6; transform: scale(1); }
+                50% { opacity: 1; transform: scale(1.05); }
+            }
+
+            @keyframes v159-status-pulse-active {
+                0%, 100% { opacity: 0.8; transform: scale(1); }
+                50% { opacity: 1; transform: scale(1.1); }
+            }
+
+            @keyframes v159-sync-wave {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+            }
+
+            /* v159.0: Enhanced @starting-style for modern entrance animations */
             @keyframes v158-entrance-fade {
                 from {
                     opacity: 0;
@@ -1069,6 +1199,69 @@
                 transform: translateY(-2px);
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2),
                             0 0 10px var(--holo-cyan);
+            }
+
+            /* v159.0: Enhanced world clock with day/night indicators */
+            .world-clock-item .world-clock-daynight {
+                transition: all 0.3s ease;
+            }
+
+            .world-clock-item:has(.world-clock-daynight)::after {
+                content: '';
+                position: absolute;
+                top: 2px;
+                right: 2px;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background: var(--holo-cyan);
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .world-clock-item.active::after {
+                opacity: 0.5;
+            }
+
+            /* v159.0: Enhanced fortune text animation */
+            .fortune-text {
+                background: linear-gradient(
+                    90deg,
+                    var(--holo-cyan) 0%,
+                    var(--holo-violet) 20%,
+                    var(--holo-magenta) 40%,
+                    var(--holo-gold) 60%,
+                    var(--holo-cyan) 80%,
+                    var(--holo-violet) 100%
+                );
+                background-size: 200% 100%;
+                animation: v159-sync-wave 4s linear infinite;
+                -webkit-background-clip: text;
+                background-clip: text;
+            }
+
+            @keyframes v159-sync-wave {
+                0% { background-position: 0% 50%; }
+                100% { background-position: 200% 50%; }
+            }
+
+            /* v159.0: Enhanced voice wave with physics-based animation */
+            .voice-wave-bar.active {
+                animation: v159-status-pulse-active 0.4s ease-in-out infinite;
+            }
+
+            .voice-wave-bar.idle {
+                animation: v159-status-pulse-idle 2.5s ease-in-out infinite;
+            }
+
+            @keyframes v159-status-pulse-idle {
+                0%, 100% { transform: scaleY(0.6); opacity: 0.5; }
+                50% { transform: scaleY(1); opacity: 1; }
+            }
+
+            @keyframes v159-status-pulse-active {
+                0%, 100% { transform: scaleY(0.8); opacity: 0.8; }
+                50% { transform: scaleY(1.2); opacity: 1; }
             }
 
             /* v158.0: Enhanced glass card effects */
@@ -4207,7 +4400,7 @@
                 border-radius: var(--radius-lg);
             }
 
-            /* v153.0: World Clock Widget */
+            /* v153.0: World Clock Widget (Enhanced in v159.0 with day/night indicators) */
             .world-clock-widget {
                 display: flex;
                 flex-direction: column;
@@ -4230,8 +4423,8 @@
 
             .world-clock-grid {
                 display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 8px;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
                 width: 100%;
             }
 
@@ -4240,16 +4433,19 @@
                 flex-direction: column;
                 align-items: center;
                 gap: 2px;
-                padding: 8px 6px;
+                padding: 8px 4px;
                 background: var(--glass-1);
                 border: 1px solid var(--glass-border);
                 border-radius: var(--radius-md);
                 transition: all 0.3s ease;
+                position: relative;
             }
 
             .world-clock-item:hover {
                 border-color: var(--holo-cyan);
                 background: var(--glass-2);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             }
 
             .world-clock-item.active {
@@ -4257,22 +4453,30 @@
                 box-shadow: 0 0 12px rgba(0, 245, 255, 0.2);
             }
 
+            .world-clock-daynight {
+                font-size: 12px;
+                position: absolute;
+                top: 4px;
+                right: 4px;
+                transition: all 0.3s ease;
+            }
+
             .world-clock-city {
-                font-size: 10px;
+                font-size: 9px;
                 color: var(--text-muted);
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
             }
 
             .world-clock-time {
-                font-size: 16px;
+                font-size: 14px;
                 font-weight: 700;
                 font-family: var(--font-mono);
                 color: var(--text-primary);
             }
 
             .world-clock-delta {
-                font-size: 9px;
+                font-size: 8px;
                 color: var(--text-dim);
             }
 
@@ -6660,29 +6864,45 @@
                     </div>
                 </div>
 
-                <!-- v153.0: World Clock Widget -->
+                <!-- v153.0: World Clock Widget (Enhanced in v159.0 with more cities and day/night indicators) -->
                 <div class="world-clock-widget" id="worldClockWidget">
                     <div class="world-clock-title">🌍 World Clock</div>
                     <div class="world-clock-grid" id="worldClockGrid">
                         <div class="world-clock-item active" data-city="beijing">
+                            <div class="world-clock-daynight" id="daynightBeijing">☀️</div>
                             <div class="world-clock-city">北京</div>
                             <div class="world-clock-time" id="clockBeijing">--:--</div>
                             <div class="world-clock-delta">UTC+8</div>
                         </div>
                         <div class="world-clock-item" data-city="tokyo">
+                            <div class="world-clock-daynight" id="daynightTokyo">☀️</div>
                             <div class="world-clock-city">东京</div>
                             <div class="world-clock-time" id="clockTokyo">--:--</div>
                             <div class="world-clock-delta">UTC+9</div>
                         </div>
                         <div class="world-clock-item" data-city="newyork">
+                            <div class="world-clock-daynight" id="daynightNewYork">☀️</div>
                             <div class="world-clock-city">纽约</div>
                             <div class="world-clock-time" id="clockNewYork">--:--</div>
                             <div class="world-clock-delta">UTC-5</div>
                         </div>
                         <div class="world-clock-item" data-city="london">
+                            <div class="world-clock-daynight" id="daynightLondon">☀️</div>
                             <div class="world-clock-city">伦敦</div>
                             <div class="world-clock-time" id="clockLondon">--:--</div>
                             <div class="world-clock-delta">UTC+0</div>
+                        </div>
+                        <div class="world-clock-item" data-city="sydney">
+                            <div class="world-clock-daynight" id="daynightSydney">☀️</div>
+                            <div class="world-clock-city">悉尼</div>
+                            <div class="world-clock-time" id="clockSydney">--:--</div>
+                            <div class="world-clock-delta">UTC+11</div>
+                        </div>
+                        <div class="world-clock-item" data-city="dubai">
+                            <div class="world-clock-daynight" id="daynightDubai">☀️</div>
+                            <div class="world-clock-city">迪拜</div>
+                            <div class="world-clock-time" id="clockDubai">--:--</div>
+                            <div class="world-clock-delta">UTC+4</div>
                         </div>
                     </div>
                 </div>
@@ -8270,20 +8490,36 @@
             return '🌤️';
         }
 
-        // v153.0: World Clock
+        // v153.0: World Clock (Enhanced in v159.0 with Sydney, Dubai, and day/night indicators)
         function updateWorldClock() {
             const now = new Date();
             const times = {
                 beijing: formatTimeZone(now, 'Asia/Shanghai'),
                 tokyo: formatTimeZone(now, 'Asia/Tokyo'),
                 newyork: formatTimeZone(now, 'America/New_York'),
-                london: formatTimeZone(now, 'Europe/London')
+                london: formatTimeZone(now, 'Europe/London'),
+                sydney: formatTimeZone(now, 'Australia/Sydney'),
+                dubai: formatTimeZone(now, 'Asia/Dubai')
             };
 
             $('clockBeijing').textContent = times.beijing;
             $('clockTokyo').textContent = times.tokyo;
             $('clockNewYork').textContent = times.newyork;
             $('clockLondon').textContent = times.london;
+            $('clockSydney').textContent = times.sydney;
+            $('clockDubai').textContent = times.dubai;
+
+            // v159.0: Update day/night indicators for all cities
+            const cities = ['beijing', 'tokyo', 'newyork', 'london', 'sydney', 'dubai'];
+            const timezones = ['Asia/Shanghai', 'Asia/Tokyo', 'America/New_York', 'Europe/London', 'Australia/Sydney', 'Asia/Dubai'];
+            
+            cities.forEach((city, i) => {
+                const hour = parseInt(now.toLocaleTimeString('en-US', { timeZone: timezones[i], hour: 'numeric', hour12: false }));
+                const daynightEl = $('daynight' + city.charAt(0).toUpperCase() + city.slice(1));
+                if (daynightEl) {
+                    daynightEl.textContent = (hour >= 6 && hour < 18) ? '☀️' : '🌙';
+                }
+            });
 
             // Highlight the active city (current hour in that timezone)
             const activeCity = now.toLocaleTimeString('en-US', { timeZone: 'Asia/Shanghai', hour: 'numeric', hour12: false });
@@ -8293,6 +8529,7 @@
             if (hour >= 8 && hour <= 22) {
                 const active = document.querySelector('.world-clock-item[data-city="beijing"]');
                 if (active) active.classList.add('active');
+            }
             }
         }
 
@@ -8370,7 +8607,16 @@
             '"相信自己,相信代码,相信光 ✨"',
             '"哥哥今天也要元气满满哦~ 💪"',
             '"Debug like nobody\'s watching 🔍"',
-            '"愿你的人生没有无限循环 ♾️"'
+            '"愿你的人生没有无限循环 ♾️"',
+            '"代码跑通的那一刻,世界都亮了 🌟"',
+            '"哥哥的代码,小殇来守护 🛡️"',
+            '"Every line of code brings us closer 💫"',
+            '"今天的疲惫是明天的勋章 🏅"',
+            '"小殇相信哥哥,代码一定跑通! 💪"',
+            '"闭上眼睛,答案就在眼前 🔮"',
+            '"一只努力的狐狸,运气不会太差 🍀"',
+            '"哥哥写代码的样子,最帅了~ ✨"',
+            '"愿每一次编译都一路绿灯 🚦"'
         ];
 
         function refreshFortune() {

@@ -147,3 +147,10 @@ Node.js v24.14.0
 📊 看板: http://localhost:19000/
 🏢 Star Office: http://localhost:19000/star
 📡 SSE 端点: http://localhost:19000/api/stream
+[Wed Apr  1 08:44:40 CST 2026] Server stopped
+[Wed Apr  1 08:44:41 CST 2026] Starting Dashboard service...
+[Wed Apr  1 08:44:41 CST 2026] Server started with PID 28217
+🚀 Dashboard 服务已启动: http://localhost:19000
+📊 看板: http://localhost:19000/
+🏢 Star Office: http://localhost:19000/star
+📡 SSE 端点: http://localhost:19000/api/stream
