@@ -9,6 +9,20 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+### v160.0 (2026-04-01)
+- **v160.0: CSS 2026 Ultra-Modern Features**: 全新CSS动画系统，包含20+个现代动画类（shimmer/pulse/aurora/status-glow/spring-in/data-wave/neural-pulse/morph-blob/glitch/breathing/magnetic/flip-in/ripple/stagger/focus-ring/scroll-reveal/particle-float等）
+- **v160.0: CSS @property v160 Variables**: 新增--v160-shimmer-angle/--v160-pulse-hue/--v160-morph-s等可动画CSS变量
+- **v160.0: Intersection Observer API**: 页面元素滚动淡入动画（v160-fade-in类）
+- **v160.0: Magnetic Hover Effect**: 鼠标位置驱动的磁力悬停效果（v160-magnetic类）
+- **v160.0: Mood-Aware Components**: 心情感知UI组件（v160-mood-aware类），自动响应idle/working/sleeping/excited/error状态
+- **v160.0: AI Status Indicators**: AI处理状态指示器（v160-thinking/v160-typing-dots）
+- **v160.0: Connection Quality UI**: 连接质量可视化（v160-conn-bar类，支持excellent/good/fair/poor四级）
+- **v160.0: Enhanced Glass Panel**: 增强型玻璃面板（v160-glass-panel带折射光效）
+- **v160.0: Performance-Optimized Cards**: 性能优化统计卡片（v160-stat-card使用content-visibility和contain）
+- **v160.0: HDR Display Support**: @media (dynamic-range: high) HDR高动态范围显示增强
+- **v160.0: Touch Device Optimization**: 触摸设备交互优化（pointer:coarse检测）
+- **v160.0: Bug Fix**: 修复v159-sync-wave/v159-status-pulse-idle/v159-status-pulse-active重复keyframe定义
+- **v160.0: Version Update**: 升级至v160.0
 - v159.0: CSS 2026 增强 @property 变量（shimmer-intensity/morph-intensity/glow-spread等）
 - v159.0: 新一代入场动画（blur+scale组合，物理弹性曲线）
 - v159.0: 增强型 Fortune 语录库（从30条扩充到39条，新增哥哥关心语和鼓励语）

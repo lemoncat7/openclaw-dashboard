@@ -5,17 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MoShang - OpenClaw Status Dashboard">
     <meta name="theme-color" content="#0a0a0f">
-    <title>MoShang Status v159.0</title>
+    <title>MoShang Status v160.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
            MoShang Dashboard - Ultra Modern CSS Design v13.0 (2026)
-           v158.0: CSS 2026 advanced features - anchor positioning v2,
-                   enhanced math functions, new pseudo-classes (:has(), :is()),
-                   improved scroll-driven animations with view-timeline,
-                   new color manipulation functions, enhanced reduced-motion,
-                   new interaction feedback patterns, status-aware animations
+           v160.0: CSS 2026 ultra-modern features - advanced @property animations,
+                   new interaction patterns, enhanced AI status visualization,
+                   improved performance with GPU compositing, next-gen micro-interactions
         ============================================================ */
 
         @layer base, layout, components, animations, effects;
@@ -1032,12 +1030,6 @@
                 50% { opacity: 1; transform: scale(1.1); }
             }
 
-            @keyframes v159-sync-wave {
-                0% { background-position: 0% 50%; }
-                50% { background-position: 100% 50%; }
-                100% { background-position: 0% 50%; }
-            }
-
             /* v159.0: Enhanced @starting-style for modern entrance animations */
             @keyframes v158-entrance-fade {
                 from {
@@ -1240,11 +1232,6 @@
                 background-clip: text;
             }
 
-            @keyframes v159-sync-wave {
-                0% { background-position: 0% 50%; }
-                100% { background-position: 200% 50%; }
-            }
-
             /* v159.0: Enhanced voice wave with physics-based animation */
             .voice-wave-bar.active {
                 animation: v159-status-pulse-active 0.4s ease-in-out infinite;
@@ -1252,16 +1239,6 @@
 
             .voice-wave-bar.idle {
                 animation: v159-status-pulse-idle 2.5s ease-in-out infinite;
-            }
-
-            @keyframes v159-status-pulse-idle {
-                0%, 100% { transform: scaleY(0.6); opacity: 0.5; }
-                50% { transform: scaleY(1); opacity: 1; }
-            }
-
-            @keyframes v159-status-pulse-active {
-                0%, 100% { transform: scaleY(0.8); opacity: 0.8; }
-                50% { transform: scaleY(1.2); opacity: 1; }
             }
 
             /* v158.0: Enhanced glass card effects */
@@ -6560,6 +6537,653 @@
         .timeline-item[style*="opacity:0.5"] .timeline-icon {
             animation: v151-float 2s ease-in-out infinite;
         }
+
+        /* v160.0: Ultra-modern CSS 2026 Features */
+
+        /* CSS @property v160 advanced animation variables */
+        @property --v160-shimmer-angle {
+            syntax: '<angle>';
+            initial-value: 0deg;
+            inherits: false;
+        }
+
+        @property --v160-pulse-hue {
+            syntax: '<number>';
+            initial-value: 0;
+            inherits: false;
+        }
+
+        @property --v160-morph-s {
+            syntax: '<percentage>';
+            initial-value: 50%;
+            inherits: false;
+        }
+
+        /* v160.0: Shimmer sweep v2 - diagonal light beam animation */
+        @keyframes v160-shimmer-sweep {
+            0% {
+                --v160-shimmer-angle: -45deg;
+                background-position: -100% 0;
+            }
+            100% {
+                --v160-shimmer-angle: 135deg;
+                background-position: 200% 0;
+            }
+        }
+
+        .v160-shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .v160-shimmer::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                105deg,
+                transparent 40%,
+                rgba(255, 255, 255, 0.15) 50%,
+                transparent 60%
+            );
+            background-size: 200% 100%;
+            animation: v160-shimmer-sweep 2.5s ease-in-out infinite;
+        }
+
+        /* v160.0: Pulse ring v2 - enhanced ripple effect */
+        @keyframes v160-pulse-ring {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.8;
+                box-shadow: 0 0 0 0 var(--pulse-color, var(--holo-cyan));
+            }
+            50% {
+                transform: scale(1);
+                opacity: 0.4;
+            }
+            100% {
+                transform: scale(1.4);
+                opacity: 0;
+                box-shadow: 0 0 0 20px transparent;
+            }
+        }
+
+        .v160-pulse-ring {
+            animation: v160-pulse-ring 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+        }
+
+        /* v160.0: Aurora gradient background animation */
+        @keyframes v160-aurora-shift {
+            0%, 100% {
+                background-position: 0% 50%;
+                filter: hue-rotate(0deg);
+            }
+            25% {
+                background-position: 50% 100%;
+                filter: hue-rotate(30deg);
+            }
+            50% {
+                background-position: 100% 50%;
+                filter: hue-rotate(60deg);
+            }
+            75% {
+                background-position: 50% 0%;
+                filter: hue-rotate(30deg);
+            }
+        }
+
+        .v160-aurora-bg {
+            background: linear-gradient(
+                135deg,
+                var(--bg-primary) 0%,
+                color-mix(in srgb, var(--holo-cyan) 15%, var(--bg-primary)) 50%,
+                color-mix(in srgb, var(--holo-magenta) 10%, var(--bg-primary)) 100%
+            );
+            background-size: 200% 200%;
+            animation: v160-aurora-shift 12s ease-in-out infinite;
+        }
+
+        /* v160.0: Status-aware glow animation - enhanced */
+        @keyframes v160-status-glow {
+            0%, 100% {
+                box-shadow:
+                    0 0 20px color-mix(in srgb, var(--status-color) 40%, transparent),
+                    0 0 40px color-mix(in srgb, var(--status-color) 20%, transparent),
+                    inset 0 0 15px color-mix(in srgb, var(--status-color) 10%, transparent);
+            }
+            50% {
+                box-shadow:
+                    0 0 30px color-mix(in srgb, var(--status-color) 60%, transparent),
+                    0 0 60px color-mix(in srgb, var(--status-color) 30%, transparent),
+                    inset 0 0 20px color-mix(in srgb, var(--status-color) 15%, transparent);
+            }
+        }
+
+        .v160-status-glow {
+            animation: v160-status-glow 3s ease-in-out infinite;
+            --status-color: var(--holo-cyan);
+        }
+
+        .v160-status-glow.working { --status-color: var(--holo-mint); }
+        .v160-status-glow.sleeping { --status-color: var(--holo-violet); }
+        .v160-status-glow.excited { --status-color: var(--holo-magenta); }
+        .v160-status-glow.error { --status-color: var(--status-error); }
+
+        /* v160.0: Spring bounce entrance animation */
+        @keyframes v160-spring-in {
+            0% {
+                opacity: 0;
+                transform: scale(0.6) translateY(30px);
+                filter: blur(10px);
+            }
+            40% {
+                opacity: 1;
+                transform: scale(1.08) translateY(-5px);
+                filter: blur(0);
+            }
+            60% {
+                transform: scale(0.96) translateY(2px);
+            }
+            80% {
+                transform: scale(1.02) translateY(-1px);
+            }
+            100% {
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .v160-spring-in {
+            animation: v160-spring-in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* v160.0: Data wave animation for refresh indicators */
+        @keyframes v160-data-wave {
+            0% {
+                background-position: 0% 0%;
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                background-position: 200% 0%;
+                opacity: 0.6;
+            }
+        }
+
+        .v160-data-wave {
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                var(--holo-cyan) 50%,
+                transparent 100%
+            );
+            background-size: 200% 100%;
+            animation: v160-data-wave 1.8s ease-in-out infinite;
+        }
+
+        /* v160.0: Neural pulse v2 - enhanced brain wave effect */
+        @keyframes v160-neural-pulse {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scale(1);
+                filter: blur(0px);
+            }
+            25% {
+                opacity: 0.7;
+                transform: scale(1.05);
+                filter: blur(2px);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+                filter: blur(4px);
+            }
+            75% {
+                opacity: 0.7;
+                transform: scale(1.05);
+                filter: blur(2px);
+            }
+        }
+
+        .v160-neural-pulse {
+            animation: v160-neural-pulse 2.5s ease-in-out infinite;
+        }
+
+        /* v160.0: Morph blob v2 - organic shape animation */
+        @keyframes v160-morph-blob {
+            0%, 100% {
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+                transform: rotate(0deg) scale(1);
+            }
+            25% {
+                border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+                transform: rotate(90deg) scale(1.05);
+            }
+            50% {
+                border-radius: 50% 60% 30% 60% / 30% 60% 70% 40%;
+                transform: rotate(180deg) scale(1.1);
+            }
+            75% {
+                border-radius: 60% 30% 60% 40% / 70% 40% 60% 30%;
+                transform: rotate(270deg) scale(1.05);
+            }
+        }
+
+        .v160-morph-blob {
+            animation: v160-morph-blob 18s ease-in-out infinite;
+        }
+
+        /* v160.0: Glitch text v2 - enhanced glitch effect */
+        @keyframes v160-glitch-1 {
+            0%, 100% { clip-path: inset(0 0 95% 0); transform: translate(-3px, 0); }
+            20% { clip-path: inset(20% 0 60% 0); transform: translate(3px, 0); }
+            40% { clip-path: inset(50% 0 30% 0); transform: translate(-2px, 0); }
+            60% { clip-path: inset(70% 0 10% 0); transform: translate(2px, 0); }
+            80% { clip-path: inset(85% 0 5% 0); transform: translate(-3px, 0); }
+        }
+
+        @keyframes v160-glitch-2 {
+            0%, 100% { clip-path: inset(95% 0 0 0); transform: translate(3px, 0); }
+            20% { clip-path: inset(60% 0 20% 0); transform: translate(-3px, 0); }
+            40% { clip-path: inset(30% 0 50% 0); transform: translate(2px, 0); }
+            60% { clip-path: inset(10% 0 70% 0); transform: translate(-2px, 0); }
+            80% { clip-path: inset(5% 0 85% 0); transform: translate(3px, 0); }
+        }
+
+        .v160-glitch:hover {
+            animation: v160-glitch-1 0.4s steps(2) infinite, v160-glitch-2 0.4s steps(2) infinite 0.05s;
+        }
+
+        /* v160.0: Breathing glow v2 - smooth breath effect */
+        @keyframes v160-breathing {
+            0%, 100% {
+                opacity: 0.5;
+                transform: scale(1);
+                filter: blur(8px);
+            }
+            50% {
+                opacity: 0.9;
+                transform: scale(1.15);
+                filter: blur(12px);
+            }
+        }
+
+        .v160-breathing {
+            animation: v160-breathing 4s ease-in-out infinite;
+        }
+
+        /* v160.0: Interactive magnetic hover effect */
+        .v160-magnetic {
+            transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        box-shadow 0.15s ease;
+        }
+
+        .v160-magnetic:hover {
+            transform: translate(var(--mx, 0px), var(--my, 0px)) scale(1.05);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3),
+                        0 0 20px color-mix(in srgb, var(--holo-cyan) 30%, transparent);
+        }
+
+        /* v160.0: Card flip 3D effect */
+        @keyframes v160-flip-in {
+            0% {
+                transform: rotateY(-90deg) scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: rotateY(0deg) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .v160-flip-in {
+            animation: v160-flip-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+        }
+
+        /* v160.0: Ripple expansion v2 */
+        @keyframes v160-ripple-expand {
+            0% {
+                transform: scale(0);
+                opacity: 0.6;
+            }
+            100% {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        .v160-ripple::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: radial-gradient(circle, var(--ripple-color, var(--holo-cyan)) 0%, transparent 70%);
+            animation: v160-ripple-expand 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            pointer-events: none;
+        }
+
+        /* v160.0: Stagger entrance container */
+        .v160-stagger > * {
+            opacity: 0;
+            animation: v160-spring-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .v160-stagger > *:nth-child(1) { animation-delay: 0ms; }
+        .v160-stagger > *:nth-child(2) { animation-delay: 60ms; }
+        .v160-stagger > *:nth-child(3) { animation-delay: 120ms; }
+        .v160-stagger > *:nth-child(4) { animation-delay: 180ms; }
+        .v160-stagger > *:nth-child(5) { animation-delay: 240ms; }
+        .v160-stagger > *:nth-child(6) { animation-delay: 300ms; }
+        .v160-stagger > *:nth-child(7) { animation-delay: 360ms; }
+        .v160-stagger > *:nth-child(8) { animation-delay: 420ms; }
+
+        /* v160.0: Focus ring animation */
+        @keyframes v160-focus-ring {
+            0%, 100% {
+                box-shadow: 0 0 0 2px var(--holo-cyan),
+                            0 0 15px rgba(0, 245, 255, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 0 3px var(--holo-cyan),
+                            0 0 25px rgba(0, 245, 255, 0.5),
+                            0 0 40px rgba(0, 245, 255, 0.2);
+            }
+        }
+
+        .v160-focus-ring:focus-visible {
+            animation: v160-focus-ring 1.5s ease-in-out infinite;
+        }
+
+        /* v160.0: Scroll-driven reveal animation */
+        @keyframes v160-scroll-reveal {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+                filter: blur(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        .v160-scroll-reveal {
+            animation: v160-scroll-reveal linear both;
+            animation-timeline: view();
+            animation-range: entry 0% cover 40%;
+        }
+
+        /* v160.0: Ambient particle float */
+        @keyframes v160-particle-float {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 0.7;
+            }
+            25% {
+                transform: translate(var(--px1, 10px), var(--py1, -15px)) rotate(90deg);
+                opacity: 1;
+            }
+            50% {
+                transform: translate(var(--px2, -5px), var(--py2, -25px)) rotate(180deg);
+                opacity: 0.8;
+            }
+            75% {
+                transform: translate(var(--px3, 8px), var(--py3, -10px)) rotate(270deg);
+                opacity: 1;
+            }
+        }
+
+        .v160-particle-float {
+            animation: v160-particle-float var(--float-duration, 8s) ease-in-out infinite;
+            animation-delay: var(--float-delay, 0s);
+        }
+
+        /* v160.0: Connection quality indicator */
+        .v160-conn-excellent { --conn-color: var(--status-online); }
+        .v160-conn-good { --conn-color: var(--holo-mint); }
+        .v160-conn-fair { --conn-color: var(--holo-gold); }
+        .v160-conn-poor { --conn-color: var(--status-error); }
+
+        .v160-conn-bar {
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .v160-conn-bar::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: var(--conn-level, 100%);
+            background: var(--conn-color, var(--status-online));
+            border-radius: 2px;
+            transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        background-color 0.3s ease;
+            box-shadow: 0 0 8px var(--conn-color, var(--status-online));
+        }
+
+        /* v160.0: AI status indicator with thinking dots */
+        @keyframes v160-thinking {
+            0%, 100% { content: '🤖'; }
+            33% { content: '🤖💭'; }
+            66% { content: '🤖💭✨'; }
+        }
+
+        .v160-thinking::before {
+            content: '🤖';
+            animation: v160-thinking 1.5s steps(1) infinite;
+        }
+
+        /* v160.0: Mood-aware color transition */
+        .v160-mood-aware {
+            transition: background-color 0.5s ease,
+                        border-color 0.5s ease,
+                        box-shadow 0.5s ease,
+                        color 0.3s ease;
+        }
+
+        .v160-mood-aware.idle {
+                    background-color: color-mix(in srgb, var(--status-idle) 8%, transparent);
+            border-color: color-mix(in srgb, var(--status-idle) 30%, transparent);
+        }
+
+        .v160-mood-aware.working {
+            background-color: color-mix(in srgb, var(--holo-cyan) 8%, transparent);
+            border-color: color-mix(in srgb, var(--holo-cyan) 30%, transparent);
+        }
+
+        .v160-mood-aware.sleeping {
+            background-color: color-mix(in srgb, var(--holo-violet) 8%, transparent);
+            border-color: color-mix(in srgb, var(--holo-violet) 30%, transparent);
+        }
+
+        .v160-mood-aware.excited {
+            background-color: color-mix(in srgb, var(--holo-magenta) 10%, transparent);
+            border-color: color-mix(in srgb, var(--holo-magenta) 35%, transparent);
+        }
+
+        .v160-mood-aware.error {
+            background-color: color-mix(in srgb, var(--status-error) 10%, transparent);
+            border-color: color-mix(in srgb, var(--status-error) 35%, transparent);
+        }
+
+        /* v160.0: Typing indicator with bouncing dots */
+        @keyframes v160-typing-dot {
+            0%, 80%, 100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            40% {
+                transform: translateY(-4px);
+                opacity: 1;
+            }
+        }
+
+        .v160-typing-dots span {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--holo-cyan);
+            margin: 0 2px;
+            animation: v160-typing-dot 1.4s ease-in-out infinite;
+        }
+
+        .v160-typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .v160-typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        /* v160.0: Enhanced glass panel with refraction */
+        .v160-glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px) saturate(180%) contrast(1.1);
+            -webkit-backdrop-filter: blur(20px) saturate(180%) contrast(1.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .v160-glass-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.1) 0%,
+                transparent 50%,
+                rgba(255, 255, 255, 0.05) 100%
+            );
+            pointer-events: none;
+        }
+
+        .v160-glass-panel::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+        }
+
+        /* v160.0: Performance-optimized stat card */
+        .v160-stat-card {
+            content-visibility: auto;
+            contain-intrinsic-size: 0 120px;
+            will-change: transform, opacity;
+            contain: layout style paint;
+        }
+
+        /* v160.0: Smooth number transition */
+        @keyframes v160-num-change {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-8px);
+                opacity: 0;
+            }
+            51% {
+                transform: translateY(8px);
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .v160-num-animate {
+            animation: v160-num-change 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* v160.0: Intersection observer powered fade */
+        .v160-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .v160-fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* v160.0: Enhanced reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            .v160-shimmer::before,
+            .v160-pulse-ring,
+            .v160-aurora-bg,
+            .v160-status-glow,
+            .v160-spring-in,
+            .v160-data-wave,
+            .v160-neural-pulse,
+            .v160-morph-blob,
+            .v160-breathing,
+            .v160-particle-float {
+                animation: none !important;
+            }
+
+            .v160-scroll-reveal {
+                animation: none;
+                opacity: 1;
+            }
+
+            .v160-glitch:hover {
+                animation: none;
+            }
+        }
+
+        /* v160.0: High contrast mode enhancement */
+        @media (prefers-contrast: more) {
+            .v160-glass-panel {
+                border-width: 2px;
+                background: rgba(0, 0, 0, 0.8);
+            }
+
+            .v160-stat-card {
+                border: 2px solid currentColor;
+            }
+        }
+
+        /* v160.0: Dark/Light theme optimization */
+        @media (prefers-color-scheme: light) {
+            .v160-glass-panel {
+                background: rgba(255, 255, 255, 0.6);
+            }
+        }
+
+        /* v160.0: HDR display enhancement */
+        @media (dynamic-range: high) {
+            .v160-status-glow,
+            .v160-pulse-ring {
+                filter: brightness(1.3) saturate(1.2);
+            }
+        }
+
+        /* v160.0: Touch device optimization */
+        @media (pointer: coarse) {
+            .v160-magnetic:hover {
+                transform: none;
+            }
+
+            .v160-magnetic:active {
+                transform: scale(0.97);
+            }
+        }
     </style>
 </head>
 <body>
@@ -7164,7 +7788,7 @@
 
         <footer class="dashboard-footer">
             <div class="footer-info">
-                <span>MoShang</span> <span class="footer-version">Status Dashboard v158.0</span> • Last updated: <span id="lastUpdated">--</span>
+                <span>MoShang</span> <span class="footer-version">Status Dashboard v160.0</span> • Last updated: <span id="lastUpdated">--</span>
                 <span id="dataSourceTag" style="margin-left: 8px; padding: 2px 8px; background: rgba(92, 219, 149, 0.15); border-radius: 4px; font-size: 10px; color: var(--status-online);"></span>
                 <span id="gitCommitTag" style="margin-left: 6px; padding: 2px 8px; background: rgba(139, 92, 246, 0.15); border-radius: 4px; font-size: 10px; color: var(--holo-violet);" title="Git Commit"></span>
             </div>
@@ -7199,9 +7823,9 @@
 
     <script>
         /* ============================================================
-           MoShang Dashboard - JavaScript v158.0
-           v158.0: CSS 2026 advanced features, enhanced interactions,
-                   new status-aware animations, improved performance
+           MoShang Dashboard - JavaScript v160.0
+           v160.0: CSS 2026 ultra-modern features, enhanced AI visualization,
+                   improved performance, next-gen micro-interactions
         ============================================================ */
 
         const state = {
@@ -7251,7 +7875,7 @@
             _commands: [],
             // v151.0: Git commit info
             _gitCommit: 'a1b2c3d4e5f6789012345678901234567890abcd',
-            _gitCommitMsg: 'v158.0: CSS 2026 advanced features - anchor positioning v2, enhanced math functions, new pseudo-classes, improved scroll-driven animations',
+            _gitCommitMsg: 'v160.0: CSS 2026 ultra-modern features, advanced @property animations, enhanced AI status visualization',
             // v155.0: Network Information API
             _connectionType: 'unknown',
             _effectiveType: '4g',
@@ -9419,6 +10043,126 @@
             }
         }
 
+        // v160.0: Intersection Observer for scroll-driven animations
+        function initScrollObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            document.querySelectorAll('.v160-fade-in').forEach(el => observer.observe(el));
+        }
+
+        // v160.0: Magnetic hover effect mouse tracking
+        function initMagneticTracking() {
+            document.querySelectorAll('.v160-magnetic').forEach(el => {
+                el.addEventListener('mousemove', (e) => {
+                    const rect = el.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    el.style.setProperty('--mx', `${x * 0.2}px`);
+                    el.style.setProperty('--my', `${y * 0.2}px`);
+                });
+
+                el.addEventListener('mouseleave', () => {
+                    el.style.setProperty('--mx', '0px');
+                    el.style.setProperty('--my', '0px');
+                });
+            });
+        }
+
+        // v160.0: Trigger ripple effect on element
+        function triggerRipple(element, event, color) {
+            const ripple = document.createElement('span');
+            ripple.className = 'v160-ripple';
+            if (color) ripple.style.setProperty('--ripple-color', color);
+
+            const rect = element.getBoundingClientRect();
+            const x = event ? (event.clientX - rect.left) : rect.width / 2;
+            const y = event ? (event.clientY - rect.top) : rect.height / 2;
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+
+            element.style.position = 'relative';
+            element.style.overflow = 'hidden';
+            element.appendChild(ripple);
+
+            setTimeout(() => ripple.remove(), 800);
+        }
+
+        // v160.0: Enhanced number animation with morphing effect
+        function animateNumberMorph(element, newValue) {
+            if (!element) return;
+
+            element.classList.add('v160-num-animate');
+
+            setTimeout(() => {
+                element.textContent = newValue;
+                element.classList.remove('v160-num-animate');
+            }, 200);
+        }
+
+        // v160.0: Show thinking indicator for AI processing
+        function showThinkingIndicator(show) {
+            const indicator = $('aiThinkingIndicator');
+            if (!indicator) return;
+
+            if (show) {
+                indicator.style.display = 'flex';
+                indicator.innerHTML = '<span class="v160-typing-dots"><span></span><span></span><span></span></span>';
+            } else {
+                indicator.style.display = 'none';
+            }
+        }
+
+        // v160.0: Update connection quality UI
+        function updateConnectionQualityUI(level, percentage) {
+            const bars = document.querySelectorAll('.v160-conn-bar');
+            bars.forEach(bar => {
+                bar.style.setProperty('--conn-level', percentage + '%');
+                bar.className = 'v160-conn-bar v160-conn-' + level;
+            });
+        }
+
+        // v160.0: Trigger stat card highlight animation
+        function highlightStatCard(cardId) {
+            const card = document.querySelector(`[data-stat="${cardId}"]`);
+            if (card) {
+                card.classList.add('v160-spring-in');
+                setTimeout(() => card.classList.remove('v160-spring-in'), 700);
+            }
+        }
+
+        // v160.0: Enhanced notification with mood awareness
+        function showMoodNotification(mood, title, message) {
+            const moodColors = {
+                idle: 'var(--status-idle)',
+                working: 'var(--holo-cyan)',
+                sleeping: 'var(--holo-violet)',
+                excited: 'var(--holo-magenta)',
+                thinking: 'var(--holo-gold)',
+                laughing: 'var(--holo-gold)',
+                error: 'var(--status-error)'
+            };
+
+            const color = moodColors[mood] || 'var(--holo-cyan)';
+            addNotification(title, message, 'status', '🤖', color);
+        }
+
+        // v160.0: Update mood-aware elements
+        function updateMoodAwareElements(mood) {
+            document.querySelectorAll('.v160-mood-aware').forEach(el => {
+                el.className = el.className.replace(/\b(idle|working|sleeping|excited|error|thinking|laughing)\b/g, '').trim();
+                el.classList.add('v160-mood-aware', mood);
+            });
+        }
+
         // Init
         function init() {
             // v155.0: Initialize Network Information API for adaptive quality
@@ -9522,17 +10266,23 @@
 
             // v150.0: Initialize ambient blobs and event stream
             updateAmbientBlobsStatus();
-            addEvent('Dashboard v152.0 ready', '🚀', 'success');
-            addNotification('MoShang Dashboard v152.0', 'Real-time monitoring active', 'info', '🚀');
+            addEvent('Dashboard v160.0 ready', '🚀', 'success');
+            addNotification('MoShang Dashboard v160.0', 'Real-time monitoring active', 'info', '🚀');
+
+            // v160.0: Initialize intersection observer for scroll animations
+            initScrollObserver();
+
+            // v160.0: Initialize mouse tracking for magnetic effects
+            initMagneticTracking();
 
             // v143.0: Log initialization
-            v143Log('info', 'MoShang Dashboard v152.0 initialized', {
+            v143Log('info', 'MoShang Dashboard v160.0 initialized', {
                 userAgent: navigator.userAgent,
                 viewport: { width: window.innerWidth, height: window.innerHeight },
                 supportsViewTransitions: !!document.startViewTransition,
                 keyboardShortcuts: ['r=refresh', 'b=breathing', 't=theme', 'v=viewTransition', '1-5=moods', 'a=autoRefresh', 'n=notifications', 'p=pomodoro', 'Ctrl+K=commandPalette']
             });
-            console.log('🚀 MoShang Dashboard v152.0 initialized');
+            console.log('🚀 MoShang Dashboard v160.0 initialized');
         }
 
         if (document.readyState === 'loading') {
