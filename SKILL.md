@@ -9,6 +9,21 @@ description: 莫殇的像素状态看板服务，同时代理 Star Office UI
 
 ## 功能
 
+### v162.0 (2026-04-01)
+- **v162.0: CSS @property v162 Variables**: 新增--v162-float-y/--v162-ripple-size/--v162-glow-intensity/--v162-blur-amount/--v162-hue-shift等可动画CSS变量
+- **v162.0: Fluid Typography**: 使用clamp()实现响应式字体缩放，v162-fluid-title/v162-fluid-body/v162-fluid-small类
+- **v162.0: Motion Blur Effect**: 文字运动模糊效果，v162-motion-blur类实现方向感知模糊入场动画
+- **v162.0: Glitch Text v3**: 增强型故障效果，RGB分离+skew形变+噪点叠加，::before/::after双层异步动画
+- **v162.0: Aurora Gradient v2**: 增强极光渐变，12秒5色循环+hue-rotate动态色相旋转
+- **v162.0: Cursor Trail v2**: 改进光标拖尾，screen混合模式+可变透明度+v162-gpu加速
+- **v162.0: Notification Stack v2**: 增强通知栈，slide-in弹性缩放入场+removing状态过渡
+- **v162.0: Activity Heatmap v2**: 增强热力图，6列网格+悬停放大发光+4级颜色深度
+- **v162.0: Fox Sparkle v162**: 增强粒子爆发，方向感知位置计算+5色随机+更短动画周期
+- **v162.0: Spatial Card v2**: 增强3D透视卡片，preserve-3d透视+动态光晕追踪
+- **v162.0: GPU Acceleration Helper**: v162-gpu类统一GPU加速，v162-cv-auto类content-visibility优化
+- **v162.0: Enhanced Web Animations**: 计数器颜色反馈，高变化量时根据幅度显示不同颜色(high/mid/low)
+- **v162.0: Print Styles Enhanced**: 打印样式隐藏v162特效元素，确保清洁输出
+
 ### v161.0 (2026-04-01)
 - **v161.0: CSS 2026 Advanced Features**: 新增spatial UI、color-mix()动态配色、liquid morphing按钮、cursor trail光标轨迹、notification stack通知栈、event timeline v2事件时间线
 - **v161.0: CSS @property v161 Variables**: 新增--v161-depth-x/--v161-depth-y/--v161-blob-seed/--v161-liquid-progress/--v161-trail-opacity/--v161-radar-angle等可动画CSS变量

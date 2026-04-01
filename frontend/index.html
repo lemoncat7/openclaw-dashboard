@@ -5,12 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MoShang - OpenClaw Status Dashboard">
     <meta name="theme-color" content="#0a0a0f">
-    <title>MoShang Status v161.0</title>
+    <title>MoShang Status v163.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
            MoShang Dashboard - Ultra Modern CSS Design v13.0 (2026)
+           v163.0: NEW - Data Source Health Indicators, Agent Health Dashboard Widget,
+                   Enhanced Fox Sparkles v3, Better Error States, Status Flow Animations
+           v162.0: CSS 2026 advanced features - v162 @property system, spatial UI v2,
+                   fluid typography with clamp(), motion blur effects, glitch text v3,
+                   aurora gradient v2, cursor trail v2, notification stack v2,
+                   activity heatmap v2, fox sparkle v162, web animations API enhanced
            v161.0: CSS 2026 advanced features - spatial UI, color-mix() theming,
                    interactive spatial depth cards, enhanced radar chart,
                    notification stack system, liquid morphing buttons,
@@ -4630,7 +4636,293 @@
                 transform: rotate(180deg);
             }
 
-            /* v153.0: Achievement Toast */
+            /* v163.0: Agent Health Dashboard Widget */
+            .agent-health-widget {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+                padding: 16px;
+                background: linear-gradient(135deg, rgba(0, 245, 255, 0.06), rgba(139, 92, 246, 0.06));
+                border: 1px solid rgba(0, 245, 255, 0.15);
+                border-radius: var(--radius-lg);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .agent-health-widget::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: radial-gradient(ellipse at center, rgba(0, 245, 255, 0.08) 0%, transparent 70%);
+                pointer-events: none;
+            }
+
+            .health-title {
+                font-size: 11px;
+                font-weight: 600;
+                color: var(--text-primary);
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .health-title-icon {
+                font-size: 14px;
+            }
+
+            .health-gauge-container {
+                position: relative;
+                width: 80px;
+                height: 80px;
+            }
+
+            .health-gauge-svg {
+                transform: rotate(-90deg);
+                width: 80px;
+                height: 80px;
+            }
+
+            .health-gauge-bg {
+                fill: none;
+                stroke: var(--glass-border);
+                stroke-width: 6;
+            }
+
+            .health-gauge-fill {
+                fill: none;
+                stroke-width: 6;
+                stroke-linecap: round;
+                transition: stroke-dashoffset 0.8s ease-out, stroke 0.3s ease;
+            }
+
+            .health-gauge-fill.healthy { stroke: var(--status-online); }
+            .health-gauge-fill.warning { stroke: var(--status-idle); }
+            .health-gauge-fill.critical { stroke: var(--status-error); }
+
+            .health-gauge-value {
+                position: absolute;
+                inset: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .health-gauge-percent {
+                font-size: 18px;
+                font-weight: 700;
+                font-family: var(--font-mono);
+                color: var(--text-primary);
+            }
+
+            .health-gauge-label {
+                font-size: 8px;
+                color: var(--text-muted);
+                text-transform: uppercase;
+            }
+
+            .health-metrics {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+                width: 100%;
+            }
+
+            .health-metric {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 2px;
+                padding: 6px 4px;
+                background: var(--glass-1);
+                border: 1px solid var(--glass-border);
+                border-radius: var(--radius-sm);
+            }
+
+            .health-metric-icon {
+                font-size: 12px;
+            }
+
+            .health-metric-value {
+                font-size: 11px;
+                font-weight: 600;
+                font-family: var(--font-mono);
+                color: var(--text-primary);
+            }
+
+            .health-metric-label {
+                font-size: 7px;
+                color: var(--text-dim);
+                text-transform: uppercase;
+            }
+
+            /* v163.0: Data Source Health Indicators */
+            .data-source-panel {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                padding: 12px;
+                background: var(--glass-1);
+                border: 1px solid var(--glass-border);
+                border-radius: var(--radius-md);
+            }
+
+            .data-source-title {
+                font-size: 10px;
+                font-weight: 600;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-bottom: 2px;
+            }
+
+            .data-source-item {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 4px 0;
+                font-size: 11px;
+            }
+
+            .data-source-dot {
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                flex-shrink: 0;
+            }
+
+            .data-source-dot.online { background: var(--status-online); box-shadow: 0 0 6px var(--status-online); }
+            .data-source-dot.warning { background: var(--status-idle); box-shadow: 0 0 6px var(--status-idle); }
+            .data-source-dot.offline { background: var(--status-error); box-shadow: 0 0 6px var(--status-error); }
+
+            .data-source-name {
+                flex: 1;
+                color: var(--text-secondary);
+                font-family: var(--font-mono);
+                font-size: 10px;
+            }
+
+            .data-source-age {
+                color: var(--text-dim);
+                font-size: 9px;
+                font-family: var(--font-mono);
+            }
+
+            /* v163.0: Enhanced Fox Sparkle Effect */
+            .fox-sparkle-container {
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                overflow: hidden;
+            }
+
+            .fox-sparkle {
+                position: absolute;
+                width: 4px;
+                height: 4px;
+                border-radius: 50%;
+                background: var(--holo-cyan);
+                box-shadow: 0 0 6px var(--holo-cyan), 0 0 12px var(--holo-cyan);
+            }
+
+            .fox-sparkle.magenta {
+                background: var(--holo-magenta);
+                box-shadow: 0 0 6px var(--holo-magenta), 0 0 12px var(--holo-magenta);
+            }
+
+            .fox-sparkle.violet {
+                background: var(--holo-violet);
+                box-shadow: 0 0 6px var(--holo-violet), 0 0 12px var(--holo-violet);
+            }
+
+            .fox-sparkle.gold {
+                background: var(--holo-gold);
+                box-shadow: 0 0 6px var(--holo-gold), 0 0 12px var(--holo-gold);
+            }
+
+            @keyframes sparkle-burst {
+                0% {
+                    transform: translate(0, 0) scale(1);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translate(var(--sparkle-dx), var(--sparkle-dy)) scale(0);
+                    opacity: 0;
+                }
+            }
+
+            /* v163.0: Status Flow Animation */
+            @keyframes status-flow {
+                0% {
+                    background-position: 0% 50%;
+                    filter: hue-rotate(0deg);
+                }
+                50% {
+                    background-position: 100% 50%;
+                }
+                100% {
+                    background-position: 0% 50%;
+                    filter: hue-rotate(360deg);
+                }
+            }
+
+            .status-flow-active {
+                background: linear-gradient(90deg, var(--holo-cyan), var(--holo-magenta), var(--holo-violet), var(--holo-cyan));
+                background-size: 300% 100%;
+                animation: status-flow 3s linear infinite;
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+            }
+
+            /* v163.0: Error State Enhancement */
+            .error-state {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                padding: 12px;
+                background: rgba(255, 107, 107, 0.08);
+                border: 1px solid rgba(255, 107, 107, 0.2);
+                border-radius: var(--radius-md);
+            }
+
+            .error-state-icon {
+                font-size: 24px;
+                animation: error-pulse 2s ease-in-out infinite;
+            }
+
+            @keyframes error-pulse {
+                0%, 100% { opacity: 0.6; transform: scale(1); }
+                50% { opacity: 1; transform: scale(1.1); }
+            }
+
+            .error-state-text {
+                font-size: 11px;
+                color: var(--status-error);
+                text-align: center;
+            }
+
+            .error-state-retry {
+                padding: 4px 12px;
+                background: rgba(255, 107, 107, 0.15);
+                border: 1px solid rgba(255, 107, 107, 0.3);
+                border-radius: var(--radius-full);
+                color: var(--status-error);
+                font-size: 10px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+
+            .error-state-retry:hover {
+                background: rgba(255, 107, 107, 0.25);
+                transform: scale(1.05);
+            }
+
+            /* v163.0: Achievement Toast */
             .achievement-toast {
                 background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(139, 92, 246, 0.15));
                 border: 1px solid rgba(255, 215, 0, 0.4);
@@ -7700,6 +7992,287 @@
         .v161-stagger > *:nth-child(4) { animation-delay: 180ms; }
         .v161-stagger > *:nth-child(5) { animation-delay: 240ms; }
         .v161-stagger > *:nth-child(6) { animation-delay: 300ms; }
+
+        /* ========== V162.0 CSS 2026 ADVANCED FEATURES ========== */
+
+        /* v162.0: CSS @property for enhanced animations */
+        @property --v162-float-y {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 0;
+        }
+        @property --v162-ripple-size {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 0;
+        }
+        @property --v162-glow-intensity {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 0.5;
+        }
+        @property --v162-blur-amount {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 0;
+        }
+        @property --v162-hue-shift {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 0;
+        }
+
+        /* v162.0: Fluid Typography with clamp() - responsive text scaling */
+        .v162-fluid-title {
+            font-size: clamp(1.5rem, 4vw + 1rem, 3rem);
+            line-height: 1.2;
+            text-wrap: balance;
+        }
+        .v162-fluid-body {
+            font-size: clamp(0.875rem, 1.5vw + 0.5rem, 1.125rem);
+            line-height: 1.6;
+        }
+        .v162-fluid-small {
+            font-size: clamp(0.625rem, 1vw + 0.25rem, 0.875rem);
+        }
+
+        /* v162.0: Motion Blur Effect - text motion blur on direction */
+        .v162-motion-blur {
+            animation: v162-motion-blur-anim 0.4s ease-out forwards;
+        }
+        @keyframes v162-motion-blur-anim {
+            0% {
+                filter: blur(0);
+                transform: translateX(-10px);
+                opacity: 0;
+            }
+            50% {
+                filter: blur(4px);
+                opacity: 0.8;
+            }
+            100% {
+                filter: blur(0);
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* v162.0: Glitch Text v3 - enhanced RGB separation with noise */
+        .v162-glitch {
+            position: relative;
+            animation: v162-glitch-skew 1s infinite linear alternate-reverse;
+        }
+        .v162-glitch::before,
+        .v162-glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            animation: v162-glitch-ansi-1 0.3s infinite;
+        }
+        .v162-glitch::before {
+            color: var(--holo-cyan);
+            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+            animation: v162-glitch-ansi-1 0.2s infinite;
+        }
+        .v162-glitch::after {
+            color: var(--holo-magenta);
+            clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+            animation: v162-glitch-ansi-2 0.3s infinite;
+        }
+        @keyframes v162-glitch-skew {
+            0% { transform: skew(0deg); }
+            20% { transform: skew(0deg); }
+            21% { transform: skew(2deg); }
+            40% { transform: skew(0deg); }
+            41% { transform: skew(-1deg); }
+            100% { transform: skew(0deg); }
+        }
+        @keyframes v162-glitch-ansi-1 {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 1px); }
+            40% { transform: translate(2px, -1px); }
+            60% { transform: translate(-1px, 2px); }
+            80% { transform: translate(1px, -2px); }
+        }
+        @keyframes v162-glitch-ansi-2 {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(2px, -1px); }
+            40% { transform: translate(-2px, 1px); }
+            60% { transform: translate(1px, -2px); }
+            80% { transform: translate(-1px, 2px); }
+        }
+
+        /* v162.0: Aurora Gradient v2 - enhanced with hue rotation */
+        .v162-aurora {
+            background: linear-gradient(
+                135deg,
+                var(--holo-cyan) 0%,
+                var(--holo-violet) 25%,
+                var(--holo-magenta) 50%,
+                var(--holo-gold) 75%,
+                var(--holo-cyan) 100%
+            );
+            background-size: 400% 400%;
+            animation: v162-aurora-shift 12s ease infinite;
+            filter: hue-rotate(var(--v162-hue-shift, 0deg));
+        }
+        @keyframes v162-aurora-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* v162.0: Cursor Trail v2 - smoother with variable opacity */
+        .v162-cursor-trail {
+            position: fixed;
+            pointer-events: none;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--holo-cyan) 0%, transparent 70%);
+            opacity: var(--v162-trail-opacity, 0);
+            transform: translate(-50%, -50%);
+            transition: opacity 0.15s ease;
+            mix-blend-mode: screen;
+            z-index: 9999;
+        }
+        .v162-trail-active {
+            opacity: var(--v162-trail-opacity, 0.6);
+        }
+
+        /* v162.0: Notification Stack v2 - enhanced with slide animations */
+        .v162-notif-stack {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 360px;
+        }
+        .v162-notif-item {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            animation: v162-notif-slide-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+        .v162-notif-item.removing {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        @keyframes v162-notif-slide-in {
+            from {
+                transform: translateX(100%) scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* v162.0: Activity Heatmap v2 - enhanced with tooltip and levels */
+        .v162-heatmap {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 3px;
+            padding: 8px;
+        }
+        .v162-heatmap-cell {
+            aspect-ratio: 1;
+            border-radius: 3px;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .v162-heatmap-cell:hover {
+            transform: scale(1.3);
+            box-shadow: 0 0 10px var(--holo-cyan);
+            z-index: 1;
+        }
+        .v162-heatmap-cell.level-0 { background: var(--glass-border); }
+        .v162-heatmap-cell.level-1 { background: color-mix(in oklch, var(--holo-cyan) 30%, var(--glass-bg)); }
+        .v162-heatmap-cell.level-2 { background: color-mix(in oklch, var(--holo-cyan) 50%, var(--glass-bg)); }
+        .v162-heatmap-cell.level-3 { background: color-mix(in oklch, var(--holo-cyan) 70%, var(--glass-bg)); }
+        .v162-heatmap-cell.level-4 { background: var(--holo-cyan); box-shadow: 0 0 8px var(--holo-cyan); }
+
+        /* v162.0: Fox Sparkle v162 - enhanced with colored particles */
+        .v162-spark {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: v162-spark-burst 1s ease-out forwards;
+            pointer-events: none;
+        }
+        @keyframes v162-spark-burst {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(
+                    calc((var(--spark-x, 0) - 50) * 2px),
+                    calc((var(--spark-y, 0) - 50) * -2px)
+                ) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* v162.0: Web Animations API enhanced counter */
+        .v162-counter {
+            display: inline-block;
+            font-variant-numeric: tabular-nums;
+            font-feature-settings: "tnum";
+        }
+
+        /* v162.0: Spatial Card v2 - enhanced 3D perspective */
+        .v162-spatial-card {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            transition: transform 0.15s ease;
+        }
+        .v162-spatial-card:hover {
+            transform: rotateX(var(--v162-tilt-x, 0deg)) rotateY(var(--v162-tilt-y, 0deg));
+        }
+        .v162-spatial-card .card-glow {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                var(--holo-cyan) 0%,
+                transparent 60%
+            );
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        /* v162.0: GPU acceleration helper class */
+        .v162-gpu {
+            transform: translateZ(0);
+            will-change: transform, opacity;
+            backface-visibility: hidden;
+        }
+
+        /* v162.0: Content visibility optimization */
+        .v162-cv-auto {
+            content-visibility: auto;
+            contain-intrinsic-size: 0 100px;
+        }
+
+        /* v162.0: Print styles - hide animations */
+        @media print {
+            .v162-glitch::before,
+            .v162-glitch::after,
+            .v162-aurora,
+            .v162-cursor-trail,
+            .v162-spark {
+                display: none;
+            }
+        }
 
         /* v161.0: Reduced motion - disable advanced animations */
         @media (prefers-reduced-motion: reduce) {
@@ -11065,6 +11638,405 @@
             }
         }
 
+        // ========== V163.0 JAVASCRIPT FEATURES ==========
+
+        // v163.0: Agent Health Dashboard
+        let agentHealthInterval = null;
+        function initAgentHealth() {
+            // Create health widget if it doesn't exist
+            let healthWidget = $('agentHealthWidget');
+            if (!healthWidget) {
+                // Find a good place to insert - after fox container
+                const foxContainer = $('foxContainer');
+                if (foxContainer) {
+                    const widget = document.createElement('div');
+                    widget.className = 'glass-card';
+                    widget.style.cssText = 'margin-top: 16px;';
+                    widget.innerHTML = `
+                        <div class="agent-health-widget" id="agentHealthWidget">
+                            <div class="health-title">
+                                <span class="health-title-icon">💚</span>
+                                <span>Agent Health</span>
+                            </div>
+                            <div class="health-gauge-container">
+                                <svg class="health-gauge-svg" viewBox="0 0 36 36">
+                                    <circle class="health-gauge-bg" cx="18" cy="18" r="15.9"/>
+                                    <circle class="health-gauge-fill healthy" cx="18" cy="18" r="15.9"
+                                        stroke-dasharray="100" stroke-dashoffset="100" id="healthGaugeFill"/>
+                                </svg>
+                                <div class="health-gauge-value">
+                                    <span class="health-gauge-percent" id="healthGaugePercent">--</span>
+                                    <span class="health-gauge-label">Health</span>
+                                </div>
+                            </div>
+                            <div class="health-metrics">
+                                <div class="health-metric">
+                                    <span class="health-metric-icon">🧠</span>
+                                    <span class="health-metric-value" id="healthMemory">--</span>
+                                    <span class="health-metric-label">Memory</span>
+                                </div>
+                                <div class="health-metric">
+                                    <span class="health-metric-icon">⚡</span>
+                                    <span class="health-metric-value" id="healthCpu">--</span>
+                                    <span class="health-metric-label">CPU</span>
+                                </div>
+                                <div class="health-metric">
+                                    <span class="health-metric-icon">📊</span>
+                                    <span class="health-metric-value" id="healthData">--</span>
+                                    <span class="health-metric-label">Data</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    foxContainer.parentElement.parentElement.insertBefore(widget, foxContainer.parentElement.nextSibling);
+                }
+            }
+
+            // Start health monitoring
+            updateAgentHealth();
+            if (!agentHealthInterval) {
+                agentHealthInterval = setInterval(updateAgentHealth, 5000);
+            }
+        }
+
+        function updateAgentHealth() {
+            // Fetch health data
+            fetch('/api/health')
+                .then(r => r.json())
+                .then(data => {
+                    // Calculate health score
+                    let score = 100;
+                    const checks = data.checks || {};
+                    const metrics = data.metrics || {};
+                    const freshness = data.dataFreshness || {};
+
+                    // Deduct for issues
+                    if (!checks.memory_ok) score -= 20;
+                    if (!checks.cpu_ok) score -= 15;
+                    if (!checks.disk_ok) score -= 10;
+                    if (!checks.state_file) score -= 15;
+                    if (!checks.data_fresh) score -= 20;
+                    if (!checks.frontend) score -= 20;
+
+                    score = Math.max(0, Math.min(100, score));
+
+                    // Update gauge
+                    const gauge = $('healthGaugeFill');
+                    const percent = $('healthGaugePercent');
+                    if (gauge && percent) {
+                        const offset = 100 - score;
+                        gauge.style.strokeDashoffset = offset;
+                        gauge.className = 'health-gauge-fill ' + (score >= 80 ? 'healthy' : score >= 50 ? 'warning' : 'critical');
+                        percent.textContent = score + '%';
+                    }
+
+                    // Update individual metrics
+                    const memEl = $('healthMemory');
+                    const cpuEl = $('healthCpu');
+                    const dataEl = $('healthData');
+
+                    if (memEl) memEl.textContent = (metrics.memoryPercent || 0) + '%';
+                    if (cpuEl) cpuEl.textContent = (metrics.cpuPercent || 0) + '%';
+                    if (dataEl) {
+                        const freshnessScore = freshness.score || 'unknown';
+                        dataEl.textContent = freshnessScore === 'fresh' ? '✓' : freshnessScore === 'normal' ? '~' : '✗';
+                    }
+                })
+                .catch(() => {
+                    const gauge = $('healthGaugeFill');
+                    const percent = $('healthGaugePercent');
+                    if (gauge && percent) {
+                        gauge.style.strokeDashoffset = 100;
+                        gauge.className = 'health-gauge-fill critical';
+                        percent.textContent = '?';
+                    }
+                });
+        }
+
+        // v163.0: Data Source Health Indicators
+        function initDataSourceHealth() {
+            let sourcePanel = $('dataSourcePanel');
+            if (!sourcePanel) {
+                // Create panel in the stats area
+                const statsArea = document.querySelector('.stats-row');
+                if (statsArea) {
+                    const panel = document.createElement('div');
+                    panel.className = 'data-source-panel';
+                    panel.id = 'dataSourcePanel';
+                    panel.style.cssText = 'grid-column: 1 / -1; margin-top: 8px;';
+                    panel.innerHTML = `
+                        <div class="data-source-title">📡 Data Sources</div>
+                        <div id="dataSourceItems"></div>
+                    `;
+                    statsArea.parentElement.appendChild(panel);
+                }
+            }
+
+            // Update sources periodically
+            updateDataSourceHealth();
+            setInterval(updateDataSourceHealth, 10000);
+        }
+
+        function updateDataSourceHealth() {
+            fetch('/api/reliability')
+                .then(r => r.json())
+                .then(data => {
+                    const container = $('dataSourceItems');
+                    if (!container) return;
+
+                    const sources = data.sources || {};
+                    let html = '';
+
+                    // Check primary sources
+                    const primaryFiles = {
+                        'state.json': 'State',
+                        'tasks_map.json': 'Tasks',
+                        'heartbeat-state.json': 'Heartbeat'
+                    };
+
+                    for (const [filename, label] of Object.entries(primaryFiles)) {
+                        let found = false;
+                        let age = null;
+
+                        for (const category of Object.values(sources)) {
+                            if (category[filename]) {
+                                found = category[filename].exists;
+                                age = category[filename].age;
+                                break;
+                            }
+                        }
+
+                        const status = found ? (age !== null && age < 300 ? 'online' : 'warning') : 'offline';
+                        const ageStr = age !== null ? (age < 60 ? Math.floor(age) + 's' : Math.floor(age/60) + 'm') : '--';
+
+                        html += `
+                            <div class="data-source-item">
+                                <span class="data-source-dot ${status}"></span>
+                                <span class="data-source-name">${label}</span>
+                                <span class="data-source-age">${ageStr}</span>
+                            </div>
+                        `;
+                    }
+
+                    container.innerHTML = html;
+                })
+                .catch(() => {});
+        }
+
+        // v163.0: Enhanced Fox Sparkles
+        let sparkleInterval = null;
+        function initFoxSparkles() {
+            const foxContainer = $('foxContainer');
+            if (!foxContainer) return;
+
+            // Add sparkle container if not exists
+            let sparkleContainer = foxContainer.querySelector('.fox-sparkle-container');
+            if (!sparkleContainer) {
+                sparkleContainer = document.createElement('div');
+                sparkleContainer.className = 'fox-sparkle-container';
+                foxContainer.appendChild(sparkleContainer);
+            }
+
+            // Create sparkles periodically
+            createFoxSparkles(sparkleContainer);
+            if (!sparkleInterval) {
+                sparkleInterval = setInterval(() => createFoxSparkles(sparkleContainer), 2000);
+            }
+        }
+
+        function createFoxSparkles(container) {
+            if (!container) return;
+
+            const colors = ['', 'magenta', 'violet', 'gold'];
+            const numSparkles = Math.floor(Math.random() * 4) + 2;
+
+            for (let i = 0; i < numSparkles; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'fox-sparkle ' + colors[Math.floor(Math.random() * colors.length)];
+
+                // Random position around the fox
+                const angle = Math.random() * Math.PI * 2;
+                const radius = 60 + Math.random() * 40;
+                const x = 90 + Math.cos(angle) * radius;
+                const y = 90 + Math.sin(angle) * radius;
+
+                sparkle.style.left = x + 'px';
+                sparkle.style.top = y + 'px';
+
+                // Random burst direction
+                const dx = (Math.random() - 0.5) * 80;
+                const dy = (Math.random() - 0.5) * 80 - 30;
+                sparkle.style.setProperty('--sparkle-dx', dx + 'px');
+                sparkle.style.setProperty('--sparkle-dy', dy + 'px');
+                sparkle.style.animation = 'sparkle-burst 0.8s ease-out forwards';
+
+                container.appendChild(sparkle);
+
+                // Remove after animation
+                setTimeout(() => sparkle.remove(), 800);
+            }
+        }
+
+        // ========== V162.0 JAVASCRIPT FEATURES ==========
+
+        // v162.0: Enhanced spatial card effect with mouse tracking
+        const v162SpatialCards = [];
+        function initV162SpatialCards() {
+            document.querySelectorAll('.v162-spatial-card').forEach(card => {
+                v162SpatialCards.push(card);
+
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width;
+                    const y = (e.clientY - rect.top) / rect.height;
+
+                    // Update CSS custom properties for tilt
+                    card.style.setProperty('--v162-tilt-x', `${(y - 0.5) * -12}deg`);
+                    card.style.setProperty('--v162-tilt-y', `${(x - 0.5) * 12}deg`);
+                    card.style.setProperty('--mouse-x', `${x * 100}%`);
+                    card.style.setProperty('--mouse-y', `${y * 100}%`);
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.setProperty('--v162-tilt-x', '0deg');
+                    card.style.setProperty('--v162-tilt-y', '0deg');
+                });
+            });
+        }
+
+        // v162.0: Enhanced notification system v2
+        const v162NotifStack = [];
+        function initV162Notifications() {
+            // Create notification stack container if not exists
+            let stack = $('v162NotifStack');
+            if (!stack) {
+                stack = document.createElement('div');
+                stack.id = 'v162NotifStack';
+                stack.className = 'v162-notif-stack';
+                document.body.appendChild(stack);
+            }
+        }
+
+        function showV162Notification(title, message, type = 'info', icon = '💡') {
+            const stack = $('v162NotifStack');
+            if (!stack) return;
+
+            const colors = {
+                success: 'var(--status-online)',
+                error: 'var(--status-error)',
+                info: 'var(--holo-cyan)',
+                warning: 'var(--status-idle)'
+            };
+
+            const notif = document.createElement('div');
+            notif.className = 'v162-notif-item';
+            notif.style.borderLeft = `3px solid ${colors[type] || colors.info}`;
+            notif.innerHTML = `
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                    <span style="font-size:16px;">${icon}</span>
+                    <strong style="font-size:13px;">${title}</strong>
+                </div>
+                <div style="font-size:12px;color:var(--text-dim);">${message}</div>
+            `;
+
+            stack.appendChild(notif);
+            v162NotifStack.push(notif);
+
+            // Limit stack size
+            if (v162NotifStack.length > 5) {
+                const old = v162NotifStack.shift();
+                if (old) {
+                    old.classList.add('removing');
+                    setTimeout(() => old.remove(), 300);
+                }
+            }
+
+            // Auto remove after 4 seconds
+            setTimeout(() => {
+                if (notif.parentNode) {
+                    notif.classList.add('removing');
+                    setTimeout(() => {
+                        notif.remove();
+                        const idx = v162NotifStack.indexOf(notif);
+                        if (idx > -1) v162NotifStack.splice(idx, 1);
+                    }, 300);
+                }
+            }, 4000);
+        }
+
+        // v162.0: Trigger enhanced fox sparkle with direction-aware particles
+        function triggerFoxSparkleV162() {
+            const foxContainer = $('foxContainer');
+            if (!foxContainer) return;
+
+            for (let i = 0; i < 10; i++) {
+                const spark = document.createElement('div');
+                spark.className = 'v162-spark';
+
+                // Random direction-aware position
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 50 + Math.random() * 50;
+                const x = 50 + Math.cos(angle) * distance;
+                const y = 50 + Math.sin(angle) * distance;
+
+                spark.style.left = `${x}px`;
+                spark.style.top = `${y}px`;
+                spark.style.setProperty('--spark-x', `${x}`);
+                spark.style.setProperty('--spark-y', `${y}`);
+                spark.style.animationDelay = `${Math.random() * 0.3}s`;
+                spark.style.background = [
+                    'var(--holo-cyan)',
+                    'var(--holo-gold)',
+                    'var(--holo-magenta)',
+                    'var(--holo-violet)',
+                    'var(--status-online)'
+                ][Math.floor(Math.random() * 5)];
+
+                foxContainer.appendChild(spark);
+                setTimeout(() => spark.remove(), 1200);
+            }
+        }
+
+        // v162.0: Web Animations API - enhanced counter with morphing
+        function animateCounterV162(element, targetValue, duration = 600) {
+            if (!element) return;
+
+            const current = parseInt(element.textContent) || 0;
+            const startTime = performance.now();
+            const colorMap = {
+                high: 'var(--status-error)',
+                mid: 'var(--status-idle)',
+                low: 'var(--status-online)'
+            };
+
+            const animate = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                // Ease out expo
+                const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+                const currentVal = Math.round(current + (targetValue - current) * eased);
+                element.textContent = currentVal;
+
+                // Color feedback for large changes
+                if (progress < 1 && Math.abs(targetValue - current) > 10) {
+                    const pct = Math.abs(targetValue - current) / 100;
+                    if (pct > 0.5) {
+                        element.style.color = colorMap.high;
+                    } else if (pct > 0.2) {
+                        element.style.color = colorMap.mid;
+                    }
+                }
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    element.style.color = '';
+                }
+            };
+
+            requestAnimationFrame(animate);
+        }
+
         // Init
         function init() {
             // v155.0: Initialize Network Information API for adaptive quality
@@ -11192,14 +12164,31 @@
             // v161.0: Initialize activity heatmap with sample data
             updateActivityHeatmap(Array.from({length: 24}, () => Math.floor(Math.random() * 100)));
 
-            // v143.0: Log initialization
-            v143Log('info', 'MoShang Dashboard v161.0 initialized', {
+            // v162.0: Initialize enhanced spatial card effects
+            initV162SpatialCards();
+
+            // v163.0: Initialize Agent Health Dashboard
+            initAgentHealth();
+
+            // v163.0: Initialize Data Source Health Indicators
+            initDataSourceHealth();
+
+            // v163.0: Initialize enhanced fox sparkles
+            initFoxSparkles();
+
+            // v162.0: Initialize enhanced notification system
+            initV162Notifications();
+
+            // v163.0: Log initialization
+            v143Log('info', 'MoShang Dashboard v163.0 initialized', {
                 userAgent: navigator.userAgent,
                 viewport: { width: window.innerWidth, height: window.innerHeight },
                 supportsViewTransitions: !!document.startViewTransition,
-                keyboardShortcuts: ['r=refresh', 'b=breathing', 't=theme', 'v=viewTransition', '1-5=moods', 'a=autoRefresh', 'n=notifications', 'p=pomodoro', 'Ctrl+K=commandPalette']
+                keyboardShortcuts: ['r=refresh', 'b=breathing', 't=theme', 'v=viewTransition', '1-5=moods', 'a=autoRefresh', 'n=notifications', 'p=pomodoro', 'Ctrl+K=commandPalette'],
+                version: 'v163.0',
+                features: ['fluid-typography', 'motion-blur', 'glitch-v3', 'aurora-v2', 'cursor-trail-v2', 'heatmap-v2', 'agent-health', 'data-source-health', 'fox-sparkle-v3']
             });
-            console.log('🚀 MoShang Dashboard v161.0 initialized');
+            console.log('🚀 MoShang Dashboard v163.0 initialized');
         }
 
         if (document.readyState === 'loading') {
