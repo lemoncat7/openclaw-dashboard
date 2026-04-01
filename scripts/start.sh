@@ -73,7 +73,7 @@ case "${1:-start}" in
     restart)
         stop_server
         sleep 1
-        start
+        start_server
         ;;
     status)
         if [ -f "$PID_FILE" ]; then

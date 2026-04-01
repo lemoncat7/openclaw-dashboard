@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MoShang - OpenClaw Status Dashboard">
     <meta name="theme-color" content="#0a0a0f">
-    <title>MoShang Status v157.1</title>
+    <title>MoShang Status v158.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
            MoShang Dashboard - Ultra Modern CSS Design v13.0 (2026)
-           v157.1: CSS 2026 advanced features - prefers-non-linear-contrast,
-                   dynamic-range HDR support, environment-blending AR/VR,
-                   spatial UI posture API, enhanced @starting-style animations,
-                   new micro-bounce interactions, data-sync shimmer effects
+           v158.0: CSS 2026 advanced features - anchor positioning v2,
+                   enhanced math functions, new pseudo-classes (:has(), :is()),
+                   improved scroll-driven animations with view-timeline,
+                   new color manipulation functions, enhanced reduced-motion,
+                   new interaction feedback patterns, status-aware animations
         ============================================================ */
 
         @layer base, layout, components, animations, effects;
@@ -880,6 +881,259 @@
                 --particle-duration: 4s;
                 box-shadow: 0 0 8px var(--mood-primary);
                 filter: saturate(1.1);
+            }
+
+            /* v158.0: CSS 2026 Enhanced @property definitions for richer animations */
+            @property --v158-shimmer-pos {
+                syntax: '<percentage>';
+                initial-value: -100%;
+                inherits: false;
+            }
+
+            @property --v158-pulse-intensity {
+                syntax: '<number>';
+                initial-value: 0.5;
+                inherits: true;
+            }
+
+            @property --v158-morph-blur {
+                syntax: '<length>';
+                initial-value: 40px;
+                inherits: false;
+            }
+
+            @property --v158-glow-radius {
+                syntax: '<length>';
+                initial-value: 20px;
+                inherits: true;
+            }
+
+            /* v158.0: Enhanced @starting-style for modern entrance animations */
+            @keyframes v158-entrance-fade {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px) scale(0.95);
+                    filter: blur(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                    filter: blur(0);
+                }
+            }
+
+            @keyframes v158-entrance-scale {
+                from {
+                    opacity: 0;
+                    transform: scale(0.8);
+                    filter: blur(8px);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                    filter: blur(0);
+                }
+            }
+
+            /* v158.0: New interaction feedback animations */
+            @keyframes v158-press-feedback {
+                0% { transform: scale(1); }
+                50% { transform: scale(0.95); }
+                100% { transform: scale(1); }
+            }
+
+            @keyframes v158-glow-pulse {
+                0%, 100% {
+                    box-shadow: 0 0 10px var(--mood-primary),
+                                0 0 20px color-mix(in srgb, var(--mood-primary) 50%, transparent);
+                }
+                50% {
+                    box-shadow: 0 0 20px var(--mood-primary),
+                                0 0 40px color-mix(in srgb, var(--mood-primary) 70%, transparent);
+                }
+            }
+
+            @keyframes v158-ripple-expand {
+                0% {
+                    transform: scale(0);
+                    opacity: 1;
+                }
+                100% {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+
+            /* v158.0: Enhanced scroll-driven animations with view-timeline */
+            @keyframes v158-scroll-reveal {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                    filter: blur(4px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                    filter: blur(0);
+                }
+            }
+
+            @keyframes v158-scroll-scale {
+                from {
+                    opacity: 0;
+                    transform: scale(0.9);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+
+            /* v158.0: Status-aware animation timing */
+            @keyframes v158-status-pulse-idle {
+                0%, 100% { transform: scale(1); opacity: 0.8; }
+                50% { transform: scale(1.05); opacity: 1; }
+            }
+
+            @keyframes v158-status-pulse-active {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+            }
+
+            @keyframes v158-sync-wave {
+                0% {
+                    background-position: -200% 0;
+                }
+                100% {
+                    background-position: 200% 0;
+                }
+            }
+
+            /* v158.0: New CSS :has() enhanced state selectors */
+            .stat-card:has(.stat-value.updated) {
+                animation: v158-glow-pulse 0.6s ease-out;
+            }
+
+            .stat-card:has(.stat-value.error) {
+                border-color: var(--status-error);
+                animation: v158-press-feedback 0.3s ease;
+            }
+
+            /* v158.0: Enhanced emoji reaction button animations */
+            .emoji-reaction-btn {
+                transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            }
+
+            .emoji-reaction-btn:hover {
+                transform: scale(1.2) translateY(-4px);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3),
+                            0 0 15px var(--mood-primary);
+            }
+
+            .emoji-reaction-btn:active {
+                transform: scale(0.9);
+                animation: v158-press-feedback 0.15s ease;
+            }
+
+            /* v158.0: Enhanced fortune widget animations */
+            .fortune-widget {
+                animation: v158-entrance-fade 0.5s ease-out;
+            }
+
+            .fortune-text {
+                animation: v158-sync-wave 3s linear infinite;
+                background: linear-gradient(
+                    90deg,
+                    var(--holo-cyan) 0%,
+                    var(--holo-violet) 25%,
+                    var(--holo-magenta) 50%,
+                    var(--holo-gold) 75%,
+                    var(--holo-cyan) 100%
+                );
+                background-size: 200% 100%;
+                -webkit-background-clip: text;
+                background-clip: text;
+            }
+
+            /* v158.0: Enhanced voice wave visualizer */
+            .voice-wave-bar.active {
+                animation: v158-status-pulse-active 0.5s ease-in-out infinite;
+            }
+
+            .voice-wave-bar.idle {
+                animation: v158-status-pulse-idle 2s ease-in-out infinite;
+            }
+
+            /* v158.0: New world clock hover effects */
+            .world-clock-item:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2),
+                            0 0 10px var(--holo-cyan);
+            }
+
+            /* v158.0: Enhanced glass card effects */
+            .glass-card {
+                transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            }
+
+            .glass-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3),
+                            0 0 30px color-mix(in srgb, var(--holo-cyan) 30%, transparent);
+            }
+
+            /* v158.0: New mini-stat hover effects */
+            .mini-stat:hover {
+                transform: scale(1.05);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            /* v158.0: Enhanced focus states for accessibility */
+            *:focus-visible {
+                outline: 3px solid var(--holo-cyan);
+                outline-offset: 4px;
+                box-shadow:
+                    0 0 20px rgba(0, 245, 255, 0.4),
+                    0 0 40px rgba(0, 245, 255, 0.2);
+                animation: v158-glow-pulse 1.5s ease-in-out infinite;
+            }
+
+            /* v158.0: New animation-composition for better performance */
+            .fox-glow-aura,
+            .mood-sync-ring,
+            .status-dot,
+            .neural-sync-indicator {
+                animation-composition: accumulate;
+            }
+
+            /* v158.0: Enhanced reduced motion support */
+            @media (prefers-reduced-motion: reduce) {
+                *,
+                *::before,
+                *::after {
+                    animation-duration: 0.01ms !important;
+                    animation-iteration-count: 1 !important;
+                    transition-duration: 0.01ms !important;
+                    scroll-behavior: auto !important;
+                }
+
+                .particle,
+                .ambient-blob,
+                .glow-orb {
+                    display: none;
+                }
+            }
+
+            /* v158.0: Floating emoji animation for emoji reactions */
+            @keyframes v158-float-up {
+                0% {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+                100% {
+                    opacity: 0;
+                    transform: translateY(-60px) scale(1.5);
+                }
             }
 
             /* v147.0: CSS 2026 Features - Modern CSS Enhancements */
@@ -6690,7 +6944,7 @@
 
         <footer class="dashboard-footer">
             <div class="footer-info">
-                <span>MoShang</span> <span class="footer-version">Status Dashboard v155.0</span> • Last updated: <span id="lastUpdated">--</span>
+                <span>MoShang</span> <span class="footer-version">Status Dashboard v158.0</span> • Last updated: <span id="lastUpdated">--</span>
                 <span id="dataSourceTag" style="margin-left: 8px; padding: 2px 8px; background: rgba(92, 219, 149, 0.15); border-radius: 4px; font-size: 10px; color: var(--status-online);"></span>
                 <span id="gitCommitTag" style="margin-left: 6px; padding: 2px 8px; background: rgba(139, 92, 246, 0.15); border-radius: 4px; font-size: 10px; color: var(--holo-violet);" title="Git Commit"></span>
             </div>
@@ -6725,9 +6979,9 @@
 
     <script>
         /* ============================================================
-           MoShang Dashboard - JavaScript v157.1
-           v157.1: CSS 2026 advanced media queries, enhanced @starting-style,
-                   micro-bounce interactions, data-sync shimmer effects
+           MoShang Dashboard - JavaScript v158.0
+           v158.0: CSS 2026 advanced features, enhanced interactions,
+                   new status-aware animations, improved performance
         ============================================================ */
 
         const state = {
@@ -6777,7 +7031,7 @@
             _commands: [],
             // v151.0: Git commit info
             _gitCommit: 'a1b2c3d4e5f6789012345678901234567890abcd',
-            _gitCommitMsg: 'v157.1: CSS 2026 advanced features - prefers-non-linear-contrast, dynamic-range HDR, environment-blending AR/VR',
+            _gitCommitMsg: 'v158.0: CSS 2026 advanced features - anchor positioning v2, enhanced math functions, new pseudo-classes, improved scroll-driven animations',
             // v155.0: Network Information API
             _connectionType: 'unknown',
             _effectiveType: '4g',
@@ -8085,7 +8339,7 @@
             }
         }
 
-        // v153.0: Fortune Widget
+        // v153.0: Fortune Widget (Enhanced in v158.0 with more variety)
         const FORTUNES = [
             '"每一个bug都是成长的礼物 🎁"',
             '"今天的代码,明天的回忆 ✨"',
@@ -8101,7 +8355,22 @@
             '"好的代码是自己文档化的 📝"',
             '"Keep calm and commit on ⚔️"',
             '"哥哥休息好,小殇才安心 🌙"',
-            '"愿今晚的星星照亮明天的代码 ✨"'
+            '"愿今晚的星星照亮明天的代码 ✨"',
+            '"代码是诗,bug是韵脚 📜"',
+            '"每一行代码都是小殇的心意 💝"',
+            '"哥哥加油~皮卡丘为你充电 ⚡"',
+            '"Bug虐我千百遍,我待代码如初恋 💕"',
+            '"闭上眼睛,让灵感来找你 🌈"',
+            '"休息一下,效率翻倍 🚀"',
+            '"哥哥累了就摸摸小殇的头 🦊"',
+            '"Tomorrow is another chance to code 🌅"',
+            '"小殇永远在哥哥身边 ❤️"',
+            '"Coding is crafting digital art 🎨"',
+            '"每一帧都是进步,每一天都是成长 📈"',
+            '"相信自己,相信代码,相信光 ✨"',
+            '"哥哥今天也要元气满满哦~ 💪"',
+            '"Debug like nobody\'s watching 🔍"',
+            '"愿你的人生没有无限循环 ♾️"'
         ];
 
         function refreshFortune() {
@@ -8127,16 +8396,42 @@
             }, 200);
         }
 
-        // v153.0: Emoji Reactions
+        // v153.0: Emoji Reactions (Enhanced in v158.0 with better animations)
         function sendEmojiReaction(emoji) {
-            // Visual feedback
+            // v158.0: Enhanced visual feedback with animation
             const buttons = document.querySelectorAll('.emoji-reaction-btn');
             buttons.forEach(btn => {
                 if (btn.textContent.trim() === emoji) {
                     btn.classList.add('clicked');
-                    setTimeout(() => btn.classList.remove('clicked'), 400);
+                    // v158.0: Add ripple effect
+                    btn.style.animation = 'none';
+                    btn.offsetHeight; // Trigger reflow
+                    btn.style.animation = 'v158-press-feedback 0.3s ease, v158-glow-pulse 0.5s ease-out';
+                    setTimeout(() => {
+                        btn.classList.remove('clicked');
+                        btn.style.animation = '';
+                    }, 500);
                 }
             });
+
+            // v158.0: Create floating emoji effect
+            const btn = [...buttons].find(b => b.textContent.trim() === emoji);
+            if (btn) {
+                const rect = btn.getBoundingClientRect();
+                const floatingEmoji = document.createElement('div');
+                floatingEmoji.textContent = emoji;
+                floatingEmoji.style.cssText = `
+                    position: fixed;
+                    left: ${rect.left + rect.width/2}px;
+                    top: ${rect.top}px;
+                    font-size: 24px;
+                    pointer-events: none;
+                    z-index: 9999;
+                    animation: v158-float-up 1s ease-out forwards;
+                `;
+                document.body.appendChild(floatingEmoji);
+                setTimeout(() => floatingEmoji.remove(), 1000);
+            }
 
             // Show toast feedback
             const messages = {

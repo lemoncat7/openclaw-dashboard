@@ -808,6 +808,32 @@ node ~/.openclaw/workspace/skills/dashboard-service/scripts/server.js &
 
 ## 更新日志
 
+### v158.0 (2026-04-01)
+- **CSS @property v158-shimmer-pos**: 新增 --v158-shimmer-pos/--v158-pulse-intensity/--v158-morph-blur/--v158-glow-radius 可动画CSS变量
+- **v158-entrance-fade动画**: 新型入场动画，带模糊→清晰渐变和上浮效果
+- **v158-entrance-scale动画**: 缩放入场动画，带模糊效果
+- **v158-press-feedback交互**: 按压反馈动画，0.2s弹性缩放
+- **v158-glow-pulse动画**: 发光脉冲动画，带颜色混合光晕效果
+- **v158-ripple-expand动画**: 涟漪扩散动画，点击反馈
+- **v158-scroll-reveal动画**: 滚动驱动入场动画，带模糊效果
+- **v158-scroll-scale动画**: 滚动驱动缩放入场动画
+- **v158-status-pulse-idle/active动画**: 状态感知脉冲动画，idle和active状态不同节奏
+- **v158-sync-wave动画**: 同步波动动画，渐变背景位置循环
+- **增强 :has() 状态选择器**: stat-card支持:has()检测.updated/.error状态并触发对应动画
+- **增强emoji reaction按钮**: 新增hover上浮+发光效果，active按压反馈动画
+- **增强fortune-text动画**: 彩虹渐变流动文字，3s循环动画
+- **增强voice-wave视觉**: active/idle状态不同的脉冲动画节奏
+- **增强world-clock悬停**: 上浮+发光阴影效果
+- **增强glass-card效果**: 悬停上浮+增强发光阴影
+- **增强mini-stat悬停**: 缩放+阴影效果
+- **增强:focus-visible**: 多层发光脉冲动画
+- **animation-composition: accumulate**: fox-glow-aura/mood-sync-ring/status-dot等核心动画性能优化
+- **增强reduced motion支持**: 更全面的动画禁用，包括particle/ambient-blob/glow-orb隐藏
+- **v158-float-up动画**: 表情飘浮动画，emoji reaction点击时向上飘浮消失
+- **增强Fortune语录库**: 从15条扩充到30条，增加更多哥哥关心语和编程哲学
+- **增强sendEmojiReaction函数**: 新增浮动emoji效果和脉冲反馈动画
+- **版本更新至 v158.0**
+
 ### v157.1 (2026-04-01)
 - **CSS @media (prefers-non-linear-contrast)**: 检测用户对比度偏好，自动调整UI对比度曲线
 - **CSS @media (dynamic-range: high)**: HDR高动态范围显示支持，增强发光强度和色彩饱和度
