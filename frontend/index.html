@@ -5,461 +5,264 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mo Shang Dashboard</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
-    
-    :root {
-      --primary: #ff9f43;
-      --primary-rgb: 255, 159, 67;
-      --secondary: #ffeaa7;
-      --accent: #fff;
-      --bg-dark: #0a0a14;
-      --bg-card: rgba(255, 255, 255, 0.03);
-      --border-color: rgba(255, 255, 255, 0.08);
-      --text-muted: rgba(255, 255, 255, 0.5);
-      --text-dim: rgba(255, 255, 255, 0.35);
-      --glow-color: #ff9f43;
-      --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      --spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+    :root { --primary: #ff9f43; --primary-rgb: 255, 159, 67; --primary-light: #ffb86c; --secondary: #ffeaa7; --accent: #fff; --bg-dark: #0a0a14; --bg-card: rgba(255, 255, 255, 0.03); --border-color: rgba(255, 255, 255, 0.08); --border-hover: rgba(255, 255, 255, 0.15); --text-muted: rgba(255, 255, 255, 0.5); --text-dim: rgba(255, 255, 255, 0.35); --glow-color: #ff9f43; --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1); --transition-smooth: 0.35s cubic-bezier(0.4, 0, 0.2, 1); --spring: cubic-bezier(0.175, 0.885, 0.32, 1.275); --bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55); }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
     html { scroll-behavior: smooth; }
-    
-    body { 
-      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif; 
-      background: var(--bg-dark); 
-      color: #fff; 
-      min-height: 100vh; 
-      overflow-x: hidden;
-      line-height: 1.6;
-    }
-    
-    /* 动态背景渐变 */
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: 
-        radial-gradient(ellipse at 20% 20%, rgba(var(--primary-rgb), 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(155, 89, 182, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 50%, rgba(52, 152, 219, 0.04) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-      animation: bgPulse 8s ease-in-out infinite alternate;
-    }
-    
-    @keyframes bgPulse {
-      0% { opacity: 0.6; transform: scale(1); }
-      100% { opacity: 1; transform: scale(1.1); }
-    }
-    
+    body { font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg-dark); color: #fff; min-height: 100vh; overflow-x: hidden; line-height: 1.6; }
+    .bg-mesh { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+    .bg-mesh::before, .bg-mesh::after, .mesh-layer { content: ''; position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5; animation: meshFloat 20s ease-in-out infinite; }
+    .bg-mesh::before { width: 600px; height: 600px; background: radial-gradient(circle, rgba(var(--primary-rgb), 0.3) 0%, transparent 70%); top: -200px; left: -200px; }
+    .bg-mesh::after { width: 500px; height: 500px; background: radial-gradient(circle, rgba(155, 89, 182, 0.25) 0%, transparent 70%); bottom: -150px; right: -150px; animation-delay: -7s; }
+    .mesh-layer { width: 400px; height: 400px; background: radial-gradient(circle, rgba(52, 152, 219, 0.2) 0%, transparent 70%); top: 50%; left: 60%; animation-delay: -14s; }
+    @keyframes meshFloat { 0%, 100% { transform: translate(0, 0) scale(1); } 25% { transform: translate(30px, -30px) scale(1.1); } 50% { transform: translate(-20px, 20px) scale(0.95); } 75% { transform: translate(20px, 30px) scale(1.05); } }
     #particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
-    
-    #scroll-progress {
-      position: fixed;
-      top: 0; left: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--primary), #e74c3c, var(--primary));
-      background-size: 200% 100%;
-      animation: gradientFlow 2s linear infinite;
-      z-index: 1000;
-      transition: width 0.1s;
-    }
-    
-    @keyframes gradientFlow {
-      0% { background-position: 0% 0%; }
-      100% { background-position: 200% 0%; }
-    }
-    
-    .container { max-width: 1000px; margin: 0 auto; padding: 24px; position: relative; z-index: 10; }
-    
-    .glass-card { 
-      background: var(--bg-card); 
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid var(--border-color);
-      border-radius: 24px;
-      position: relative;
-      overflow: hidden;
-      transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
-    }
-    
-    .glass-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    }
-    
-    .glass-card:hover {
-      transform: translateY(-4px) scale(1.01);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 60px rgba(var(--primary-rgb), 0.1);
-    }
-    
-    .card-3d {
-      transform-style: preserve-3d;
-      perspective: 1000px;
-    }
-    
-    .status-card { 
-      padding: 32px; 
-      margin-bottom: 24px; 
-      display: flex; 
-      align-items: center; 
-      gap: 28px; 
-    }
-    
-    .fox-canvas-wrapper { 
-      position: relative; 
-      width: 110px; 
-      height: 110px; 
-      flex-shrink: 0;
-    }
-    
-    #foxCanvas { 
-      width: 110px; 
-      height: 110px; 
-      border-radius: 50%; 
-      background: transparent;
-      position: relative;
-      z-index: 2;
-      filter: drop-shadow(0 0 20px rgba(var(--primary-rgb), 0.4));
-      transition: filter var(--transition-smooth);
-    }
-    
-    .fox-glow { 
-      position: absolute; 
-      top: 50%; 
-      left: 50%; 
-      transform: translate(-50%, -50%); 
-      width: 90px; 
-      height: 90px; 
-      border-radius: 50%; 
-      filter: blur(25px); 
-      opacity: 0.5; 
-      transition: background var(--transition-smooth);
-      animation: glowPulse 2s ease-in-out infinite;
-    }
-    
-    @keyframes glowPulse {
-      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
-      50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.7; }
-    }
-    
-    .status-info { flex: 1; }
-    .status-info h1 { 
-      font-size: 28px; 
-      font-weight: 700; 
-      margin-bottom: 8px; 
-      background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%); 
-      -webkit-background-clip: text; 
-      -webkit-text-fill-color: transparent;
-      letter-spacing: 1px;
-    }
-    
-    .status-info .subtitle { 
-      color: var(--text-muted); 
-      font-size: 14px; 
-      letter-spacing: 0.5px;
-    }
-    
+    #scroll-progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--primary), #e74c3c, var(--primary)); background-size: 200% 100%; animation: gradientFlow 2s linear infinite; z-index: 1000; width: 0%; }
+    @keyframes gradientFlow { 0% { background-position: 0% 0%; } 100% { background-position: 200% 0%; } }
+    .container { max-width: 1100px; margin: 0 auto; padding: 24px; position: relative; z-index: 10; }
+    .glass-card { background: var(--bg-card); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border: 1px solid var(--border-color); border-radius: 24px; position: relative; overflow: hidden; transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), border-color var(--transition-smooth); }
+    .glass-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); pointer-events: none; }
+    .glass-card:hover { border-color: var(--border-hover); }
+    .glass-card:hover .card-glow { opacity: 0.12; }
+    .card-glow { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at center, rgba(var(--primary-rgb), 0.3), transparent 50%); opacity: 0; transition: opacity var(--transition-smooth); pointer-events: none; }
+    .header-card { padding: 28px 32px; margin-bottom: 20px; display: grid; grid-template-columns: auto 1fr auto; gap: 28px; align-items: center; }
+    @media (max-width: 700px) { .header-card { grid-template-columns: 1fr; text-align: center; gap: 20px; } }
+    .fox-wrapper { position: relative; width: 120px; height: 120px; }
+    .fox-ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(var(--primary-rgb), 0.3); animation: ringPulse 3s ease-in-out infinite; }
+    .fox-ring-inner { position: absolute; inset: 8px; border-radius: 50%; border: 1px solid rgba(var(--primary-rgb), 0.15); animation: ringPulse 3s ease-in-out infinite 0.5s; }
+    @keyframes ringPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.7; } }
+    #foxCanvas { width: 120px; height: 120px; border-radius: 50%; background: transparent; position: relative; z-index: 2; filter: drop-shadow(0 0 25px rgba(var(--primary-rgb), 0.5)); transition: filter var(--transition-smooth), transform var(--transition-smooth); animation: foxFloat 4s ease-in-out infinite; }
+    @keyframes foxFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+    #foxCanvas:hover { filter: drop-shadow(0 0 35px rgba(var(--primary-rgb), 0.7)); transform: scale(1.05); }
+    .fox-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; border-radius: 50%; filter: blur(30px); opacity: 0.6; transition: background var(--transition-smooth); animation: glowPulse 2.5s ease-in-out infinite; z-index: 1; }
+    @keyframes glowPulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; } 50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; } }
+    .status-info h1 { font-size: 30px; font-weight: 700; margin-bottom: 6px; background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.8) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; }
+    .status-info .subtitle { color: var(--text-muted); font-size: 14px; letter-spacing: 0.5px; }
     .status-info .subtitle span { color: var(--primary); font-weight: 500; }
-    
-    .status-badge { 
-      padding: 10px 24px; 
-      border-radius: 30px; 
-      font-size: 14px; 
-      font-weight: 600; 
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      background: linear-gradient(135deg, #2ecc71, #27ae60); 
-      color: #fff; 
-      box-shadow: 0 4px 20px rgba(46, 204, 113, 0.4);
-      position: relative;
-      overflow: hidden;
-      transition: all var(--transition-smooth);
-    }
-    
-    .status-badge::before {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%;
-      width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-      transition: left 0.5s;
-    }
-    
+    .status-meta { display: flex; gap: 16px; margin-top: 10px; font-size: 12px; color: var(--text-dim); }
+    .status-meta .meta-item { display: flex; align-items: center; gap: 5px; }
+    .time-display { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); margin-top: 6px; }
+    .status-badge { padding: 12px 28px; border-radius: 30px; font-size: 14px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; background: linear-gradient(135deg, #2ecc71, #27ae60); color: #fff; box-shadow: 0 4px 20px rgba(46, 204, 113, 0.35); position: relative; overflow: hidden; transition: all var(--transition-smooth); cursor: pointer; display: flex; align-items: center; gap: 8px; }
+    .status-badge::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: left 0.5s; }
     .status-badge:hover::before { left: 100%; }
-    
-    .status-badge.working { background: linear-gradient(135deg, #3498db, #2980b9); box-shadow: 0 4px 20px rgba(52, 152, 219, 0.4); }
-    .status-badge.sleeping { background: linear-gradient(135deg, #636e72, #b2bec3); box-shadow: 0 4px 20px rgba(99, 110, 114, 0.4); }
-    .status-badge.excited { background: linear-gradient(135deg, #e74c3c, #c0392b); box-shadow: 0 4px 20px rgba(231, 76, 60, 0.4); }
-    .status-badge.laughing { background: linear-gradient(135deg, #f39c12, #e67e22); box-shadow: 0 4px 20px rgba(243, 156, 18, 0.4); }
-    .status-badge.thinking { background: linear-gradient(135deg, #9b59b6, #8e44ad); box-shadow: 0 4px 20px rgba(155, 89, 182, 0.4); }
-    
-    @keyframes badgePulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-    
-    .status-badge.idle { animation: badgePulse 2s ease-in-out infinite; }
-    
-    .error-msg { 
-      background: rgba(231, 76, 60, 0.15); 
-      border: 1px solid rgba(231, 76, 60, 0.3); 
-      border-radius: 16px; 
-      padding: 16px 20px; 
-      margin-bottom: 20px; 
-      color: #e74c3c; 
-      font-size: 14px; 
-      display: none;
-      animation: shake 0.5s ease;
-      backdrop-filter: blur(10px);
-    }
-    
-    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-    
-    .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-    
-    @media (max-width: 768px) { 
-      .metrics-grid { grid-template-columns: repeat(2, 1fr); } 
-      .status-card { flex-direction: column; text-align: center; }
-      .status-badge { margin-top: 12px; }
-    }
-    
-    .metric-card { padding: 22px; transition: all var(--transition-smooth); cursor: default; }
-    .metric-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4); }
-    .metric-card .label { color: var(--text-muted); font-size: 12px; margin-bottom: 12px; font-weight: 500; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; }
-    .metric-card .value { font-size: 28px; font-weight: 700; font-family: 'JetBrains Mono', monospace; transition: all var(--transition-fast); }
-    .metric-card .sub { color: var(--text-dim); font-size: 11px; margin-top: 8px; }
-    
-    .metric-bar { height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; margin-top: 14px; overflow: hidden; }
-    .metric-bar-fill { height: 100%; border-radius: 2px; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
-    .metric-bar-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: shimmerBar 2s infinite; }
-    
+    .status-badge.working { background: linear-gradient(135deg, #3498db, #2980b9); box-shadow: 0 4px 20px rgba(52, 152, 219, 0.35); }
+    .status-badge.sleeping { background: linear-gradient(135deg, #636e72, #b2bec3); box-shadow: 0 4px 20px rgba(99, 110, 114, 0.35); }
+    .status-badge.excited { background: linear-gradient(135deg, #e74c3c, #c0392b); box-shadow: 0 4px 20px rgba(231, 76, 60, 0.35); }
+    .status-badge.laughing { background: linear-gradient(135deg, #f39c12, #e67e22); box-shadow: 0 4px 20px rgba(243, 156, 18, 0.35); }
+    .status-badge.thinking { background: linear-gradient(135deg, #9b59b6, #8e44ad); box-shadow: 0 4px 20px rgba(155, 89, 182, 0.35); }
+    @keyframes badgePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    .status-badge.idle { animation: badgePulse 2.5s ease-in-out infinite; }
+    .badge-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.8); animation: dotBlink 1.5s ease-in-out infinite; flex-shrink: 0; }
+    @keyframes dotBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .bento-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+    @media (max-width: 900px) { .bento-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .bento-grid { grid-template-columns: 1fr; } }
+    .metric-card { padding: 22px; transition: all var(--transition-smooth); cursor: default; position: relative; }
+    .metric-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35); }
+    .metric-card .label { color: var(--text-muted); font-size: 12px; margin-bottom: 14px; font-weight: 500; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+    .metric-card .label .icon { font-size: 16px; opacity: 0.8; }
+    .metric-card .value { font-size: 30px; font-weight: 700; font-family: 'JetBrains Mono', monospace; transition: all var(--transition-fast); line-height: 1.1; }
+    .metric-card .sub { color: var(--text-dim); font-size: 11px; margin-top: 10px; font-family: 'JetBrains Mono', monospace; }
+    .metric-bar { height: 5px; background: rgba(255, 255, 255, 0.08); border-radius: 3px; margin-top: 16px; overflow: hidden; position: relative; }
+    .metric-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background var(--transition-smooth); position: relative; overflow: hidden; }
+    .metric-bar-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); animation: shimmerBar 2s infinite; }
     @keyframes shimmerBar { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-    
-    .activity-high { color: #e74c3c; }
-    .activity-medium { color: #f39c12; }
-    .activity-low { color: #2ecc71; }
-    
-    .evomap-panel { padding: 28px; margin-bottom: 24px; }
+    .activity-high { color: #e74c3c; } .activity-medium { color: #f39c12; } .activity-low { color: #2ecc71; }
+    .evomap-panel { padding: 28px; margin-bottom: 20px; }
     .evomap-panel h2 { font-size: 15px; margin-bottom: 22px; color: var(--primary); display: flex; align-items: center; gap: 10px; font-weight: 600; }
+    .evomap-panel h2 .section-icon { font-size: 20px; }
     .evomap-panel h2::before { content: ''; width: 4px; height: 18px; background: var(--primary); border-radius: 2px; }
-    
     .evomap-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
     @media (max-width: 900px) { .evomap-grid { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 500px) { .evomap-grid { grid-template-columns: repeat(2, 1fr); } }
-    
-    .evo-stat { background: rgba(255,255,255,0.03); border-radius: 14px; padding: 16px; transition: all var(--transition-fast); border: 1px solid transparent; }
-    .evo-stat:hover { background: rgba(255,255,255,0.06); border-color: rgba(var(--primary-rgb), 0.3); transform: translateY(-2px); }
-    .evo-stat .label { color: var(--text-muted); font-size: 11px; margin-bottom: 8px; font-weight: 500; }
-    .evo-stat .value { font-size: 20px; font-weight: 700; color: #2ecc71; font-family: 'JetBrains Mono', monospace; }
-    
+    .evo-stat { background: rgba(255,255,255,0.03); border-radius: 16px; padding: 18px 16px; transition: all var(--transition-fast); border: 1px solid transparent; text-align: center; }
+    .evo-stat:hover { background: rgba(255,255,255,0.06); border-color: rgba(var(--primary-rgb), 0.3); transform: translateY(-3px); }
+    .evo-stat .label { color: var(--text-muted); font-size: 11px; margin-bottom: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+    .evo-stat .value { font-size: 22px; font-weight: 700; color: #2ecc71; font-family: 'JetBrains Mono', monospace; }
+    .evo-stat .value.blue { color: #3498db; } .evo-stat .value.purple { color: #9b59b6; } .evo-stat .value.orange { color: #e67e22; }
     .evomap-errors { margin-top: 18px; font-size: 12px; color: var(--text-dim); padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.05); }
-    
+    .skills-panel { padding: 28px; margin-bottom: 20px; }
+    .skills-panel h2 { font-size: 15px; margin-bottom: 18px; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 10px; }
+    .skills-panel h2::before { content: ''; width: 4px; height: 18px; background: linear-gradient(180deg, var(--primary), #e74c3c); border-radius: 2px; }
+    .skills-list { display: flex; flex-wrap: wrap; gap: 10px; }
+    .skill-tag { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 8px 16px; font-size: 12px; color: var(--text-muted); transition: all var(--transition-fast); display: flex; align-items: center; gap: 6px; }
+    .skill-tag:hover { background: rgba(var(--primary-rgb), 0.15); border-color: rgba(var(--primary-rgb), 0.3); color: var(--primary-light); transform: translateY(-2px); }
+    .skill-tag .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
+    .skill-tag.inactive .dot { background: var(--text-dim); }
     .history { padding: 28px; }
     .history h2 { font-size: 15px; margin-bottom: 18px; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 10px; }
-    
-    .history-list { display: flex; flex-direction: column; gap: 10px; max-height: 200px; overflow-y: auto; }
-    .history-list::-webkit-scrollbar { width: 4px; }
-    .history-list::-webkit-scrollbar-track { background: transparent; }
-    .history-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
-    
-    .history-item { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: rgba(255,255,255,0.02); border-radius: 12px; font-size: 13px; transition: all var(--transition-fast); border: 1px solid transparent; }
+    .history h2::before { content: ''; width: 4px; height: 18px; background: #3498db; border-radius: 2px; }
+    .history-list { display: flex; flex-direction: column; gap: 10px; max-height: 220px; overflow-y: auto; }
+    .history-list::-webkit-scrollbar { width: 4px; } .history-list::-webkit-scrollbar-track { background: transparent; } .history-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+    .history-item { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: rgba(255,255,255,0.02); border-radius: 14px; font-size: 13px; transition: all var(--transition-fast); border: 1px solid transparent; animation: slideIn 0.3s var(--spring); }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
     .history-item:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.05); }
-    
-    .history-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; position: relative; }
-    .history-dot::after { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; border-radius: 50%; border: 2px solid currentColor; opacity: 0.3; animation: dotPulse 2s ease-in-out infinite; }
-    
-    @keyframes dotPulse { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.3); opacity: 0; } }
-    
-    .history-dot.working { background: #3498db; color: #3498db; box-shadow: 0 0 12px rgba(52,152,219,0.6); }
-    .history-dot.idle { background: #f39c12; color: #f39c12; box-shadow: 0 0 12px rgba(243,156,18,0.6); }
-    .history-dot.sleeping { background: #95a5a6; color: #95a5a6; box-shadow: 0 0 12px rgba(149,165,166,0.6); }
-    .history-dot.excited { background: #e74c3c; color: #e74c3c; box-shadow: 0 0 12px rgba(231,76,60,0.6); }
-    .history-dot.laughing { background: #f39c12; color: #f39c12; box-shadow: 0 0 12px rgba(243,156,18,0.6); }
-    .history-dot.thinking { background: #9b59b6; color: #9b59b6; box-shadow: 0 0 12px rgba(155,89,182,0.6); }
-    
-    .history-time { margin-left: auto; color: var(--text-dim); font-size: 11px; font-family: 'JetBrains Mono', monospace; }
-    
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-    .loading { animation: pulse 1.5s infinite; }
-    
-    @keyframes countUp { from { opacity: 0; transform: translateY(10px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    .count-animate { animation: countUp 0.4s var(--spring); }
-    
-    @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
-    .fox-breathe { animation: breathe 3s ease-in-out infinite; }
-    
+    .history-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; position: relative; }
+    .history-dot::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; border: 2px solid currentColor; opacity: 0.3; animation: dotPulse 2s ease-in-out infinite; }
+    @keyframes dotPulse { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.4); opacity: 0; } }
+    .history-dot.working { background: #3498db; color: #3498db; box-shadow: 0 0 15px rgba(52,152,219,0.5); }
+    .history-dot.idle { background: #f39c12; color: #f39c12; box-shadow: 0 0 15px rgba(243,156,18,0.5); }
+    .history-dot.sleeping { background: #95a5a6; color: #95a5a6; box-shadow: 0 0 15px rgba(149,165,166,0.5); }
+    .history-dot.excited { background: #e74c3c; color: #e74c3c; box-shadow: 0 0 15px rgba(231,76,60,0.5); }
+    .history-dot.laughing { background: #f39c12; color: #f39c12; box-shadow: 0 0 15px rgba(243,156,18,0.5); }
+    .history-dot.thinking { background: #9b59b6; color: #9b59b6; box-shadow: 0 0 15px rgba(155,89,182,0.5); }
+    .history-text { flex: 1; } .history-text .state-name { font-weight: 500; } .history-text .state-time { color: var(--text-dim); font-size: 11px; margin-top: 2px; }
+    .history-time { color: var(--text-dim); font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+    .quick-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+    @media (max-width: 600px) { .quick-actions { grid-template-columns: 1fr; } }
+    .action-btn { background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 16px; padding: 18px; cursor: pointer; transition: all var(--transition-smooth); text-align: center; color: var(--text-muted); font-size: 13px; font-weight: 500; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .action-btn:hover { background: rgba(var(--primary-rgb), 0.1); border-color: rgba(var(--primary-rgb), 0.3); transform: translateY(-3px); color: var(--primary-light); }
+    .action-btn .action-icon { font-size: 24px; transition: transform var(--transition-smooth); }
+    .action-btn:hover .action-icon { transform: scale(1.2); }
+    .error-msg { background: rgba(231, 76, 60, 0.12); border: 1px solid rgba(231, 76, 60, 0.25); border-radius: 16px; padding: 16px 20px; margin-bottom: 20px; color: #e74c3c; font-size: 13px; display: none; animation: shake 0.5s ease; backdrop-filter: blur(10px); }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } } .loading { animation: pulse 1.5s infinite; }
+    @keyframes countUp { from { opacity: 0; transform: translateY(12px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } } .count-animate { animation: countUp 0.4s var(--spring); }
+    .data-updated { animation: dataFlash 0.6s ease; }
+    @keyframes dataFlash { 0%, 100% { background: var(--bg-card); } 50% { background: rgba(46, 204, 113, 0.08); } }
+    .fade-in { animation: fadeIn 0.5s ease; } @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     .tooltip { position: relative; }
-    .tooltip::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px); padding: 8px 12px; background: rgba(0,0,0,0.9); color: #fff; font-size: 11px; border-radius: 8px; white-space: nowrap; opacity: 0; pointer-events: none; transition: all var(--transition-fast); backdrop-filter: blur(10px); z-index: 100; }
+    .tooltip::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%) translateY(6px); padding: 10px 14px; background: rgba(0,0,0,0.92); color: #fff; font-size: 11px; border-radius: 10px; white-space: nowrap; opacity: 0; pointer-events: none; transition: all var(--transition-fast); backdrop-filter: blur(10px); z-index: 100; border: 1px solid rgba(255,255,255,0.1); }
     .tooltip:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
-    
     .skeleton { position: relative; overflow: hidden; }
     .skeleton::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent); animation: shimmer 1.5s infinite; }
-    
     @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-    
-    .skeleton-text { height: 14px; background: rgba(255,255,255,0.06); border-radius: 6px; margin-bottom: 10px; }
-    .skeleton-text.short { width: 60%; }
-    .skeleton-text.medium { width: 80%; }
-    .skeleton-value { height: 28px; width: 80px; background: rgba(255,255,255,0.08); border-radius: 8px; margin-top: 12px; }
-    .skeleton-badge { height: 40px; width: 110px; background: rgba(255,255,255,0.06); border-radius: 30px; }
-    
-    .status-transition { transition: all var(--transition-smooth); }
-    .fade-in { animation: fadeIn 0.5s ease; }
-    
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-    
-    .data-updated { animation: dataFlash 0.6s ease; }
-    @keyframes dataFlash { 0%, 100% { background: var(--bg-card); } 50% { background: rgba(46, 204, 113, 0.1); } }
-    
-    #fps-counter { position: fixed; bottom: 16px; right: 16px; background: rgba(0,0,0,0.7); color: #2ecc71; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-family: 'JetBrains Mono', monospace; z-index: 1000; backdrop-filter: blur(10px); opacity: 0.7; transition: opacity var(--transition-fast); }
+    .skeleton-text { height: 14px; background: rgba(255,255,255,0.06); border-radius: 6px; margin-bottom: 10px; } .skeleton-text.short { width: 50%; } .skeleton-text.medium { width: 70%; }
+    .skeleton-value { height: 30px; width: 90px; background: rgba(255,255,255,0.08); border-radius: 8px; margin-top: 12px; }
+    #fps-counter { position: fixed; bottom: 16px; right: 16px; background: rgba(0,0,0,0.75); color: #2ecc71; padding: 8px 14px; border-radius: 10px; font-size: 11px; font-family: 'JetBrains Mono', monospace; z-index: 1000; backdrop-filter: blur(10px); opacity: 0.7; transition: opacity var(--transition-fast); border: 1px solid rgba(255,255,255,0.1); }
     #fps-counter:hover { opacity: 1; }
-    
-    .ripple { position: relative; overflow: hidden; }
-    .ripple-effect { position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.4); transform: scale(0); animation: rippleAnim 0.6s ease-out; pointer-events: none; }
-    
-    @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
-    
-    .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); color: #fff; padding: 14px 24px; border-radius: 12px; font-size: 13px; z-index: 1001; opacity: 0; transition: all var(--transition-smooth); border: 1px solid var(--border-color); }
+    .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(24px); background: rgba(0,0,0,0.92); backdrop-filter: blur(20px); color: #fff; padding: 16px 28px; border-radius: 14px; font-size: 13px; z-index: 1001; opacity: 0; transition: all var(--transition-smooth); border: 1px solid var(--border-color); }
     .toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
-    
-    .time-display { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); margin-top: 4px; }
-    
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
-    
+    .ripple { position: relative; overflow: hidden; }
+    .ripple-effect { position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.3); transform: scale(0); animation: rippleAnim 0.6s ease-out; pointer-events: none; }
+    @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
+    ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 4px; } ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; } ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
-    
     :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
   </style>
 </head>
 <body>
+  <div class="bg-mesh"><div class="mesh-layer"></div></div>
   <div id="scroll-progress"></div>
   <canvas id="particles"></canvas>
-  
   <div class="container">
-    <div class="status-card glass-card card-3d ripple">
-      <div class="fox-canvas-wrapper">
+    <div class="header-card glass-card">
+      <div class="card-glow"></div>
+      <div class="fox-wrapper">
+        <div class="fox-ring"></div>
+        <div class="fox-ring-inner"></div>
         <div class="fox-glow" id="foxGlow"></div>
-        <canvas id="foxCanvas" width="220" height="220"></canvas>
+        <canvas id="foxCanvas" width="240" height="240"></canvas>
       </div>
       <div class="status-info">
         <h1>Mo Shang</h1>
-        <div class="subtitle">数字弟弟 · Dashboard <span id="version">v167.0</span></div>
+        <div class="subtitle">数字弟弟 · Dashboard <span id="version">v170.0</span></div>
+        <div class="status-meta">
+          <div class="meta-item">📍 <span id="location">Local</span></div>
+          <div class="meta-item">⏱ <span id="uptimeShort">--</span></div>
+        </div>
         <div class="time-display" id="currentTime">--:--:--</div>
       </div>
-      <div id="heartbeat" class="status-badge status-transition idle">--</div>
+      <div id="heartbeat" class="status-badge">
+        <span class="badge-dot"></span>
+        <span id="heartbeatText">--</span>
+      </div>
     </div>
-    
     <div id="error-msg" class="error-msg"></div>
-    
-    <div class="metrics-grid">
-      <div class="metric-card glass-card tooltip card-3d ripple" data-tip="系统运行时间 🕐">
-        <div class="label">🕐 运行时间</div>
+    <div class="bento-grid">
+      <div class="metric-card glass-card tooltip" data-tip="系统运行时间 🕐">
+        <div class="label"><span class="icon">🕐</span> 运行时间</div>
         <div id="uptime" class="value skeleton-text medium">--</div>
         <div class="sub">在线时长</div>
       </div>
-      <div class="metric-card glass-card tooltip card-3d ripple" data-tip="会话消息统计 💬">
-        <div class="label">💬 消息</div>
+      <div class="metric-card glass-card tooltip" data-tip="会话消息统计 💬">
+        <div class="label"><span class="icon">💬</span> 消息</div>
         <div id="msgCount" class="value skeleton-text medium">--</div>
         <div class="sub">会话数</div>
       </div>
-      <div class="metric-card glass-card tooltip card-3d ripple" data-tip="已完成任务 📋">
-        <div class="label">📋 任务</div>
+      <div class="metric-card glass-card tooltip" data-tip="已完成任务 📋">
+        <div class="label"><span class="icon">📋</span> 任务</div>
         <div id="taskDone" class="value skeleton-text medium">--</div>
         <div class="sub">已完成</div>
       </div>
-      <div class="metric-card glass-card tooltip card-3d ripple" data-tip="系统活跃程度 🔥">
-        <div class="label">🔥 活跃度</div>
+      <div class="metric-card glass-card tooltip" data-tip="系统活跃程度 🔥">
+        <div class="label"><span class="icon">🔥</span> 活跃度</div>
         <div id="activityLevel" class="value skeleton-text short">--</div>
         <div class="metric-bar"><div id="activityBar" class="metric-bar-fill" style="width:0%;background:#2ecc71;"></div></div>
       </div>
     </div>
-    
-    <div class="metrics-grid">
-      <div class="metric-card glass-card tooltip card-3d ripple" data-tip="内存使用情况 🧠">
-        <div class="label">🧠 内存</div>
+    <div class="bento-grid">
+      <div class="metric-card glass-card tooltip" data-tip="内存使用情况 🧠">
+        <div class="label"><span class="icon">🧠</span> 内存</div>
         <div id="memory" class="value skeleton-text medium">--</div>
         <div class="sub">已用 / 总计</div>
       </div>
-      <div class="metric-card glass-card tooltip card-3d ripple" data-tip="Cron 任务状态 ⏰">
-        <div class="label">⏰ Cron</div>
+      <div class="metric-card glass-card tooltip" data-tip="Cron 任务状态 ⏰">
+        <div class="label"><span class="icon">⏰</span> Cron</div>
         <div id="cronJobs" class="value skeleton-text medium">--</div>
         <div class="sub">活跃任务</div>
       </div>
-      <div class="metric-card glass-card tooltip card-3d ripple" data-tip="EvoMap Rep 📊">
-        <div class="label">📊 Reputation</div>
+      <div class="metric-card glass-card tooltip" data-tip="EvoMap Rep 📊">
+        <div class="label"><span class="icon">📊</span> Reputation</div>
         <div id="reputation" class="value skeleton-text short">--</div>
         <div class="sub">EvoMap</div>
       </div>
-      <div class="metric-card glass-card tooltip card-3d ripple" data-tip="磁盘使用率 💾">
-        <div class="label">💾 磁盘</div>
+      <div class="metric-card glass-card tooltip" data-tip="磁盘使用率 💾">
+        <div class="label"><span class="icon">💾</span> 磁盘</div>
         <div id="disk" class="value skeleton-text medium">--</div>
         <div class="sub">已用百分比</div>
       </div>
     </div>
-    
+    <div class="quick-actions">
+      <button class="action-btn glass-card" onclick="refreshData()" title="刷新数据">
+        <span class="action-icon">🔄</span>
+        <span>刷新数据</span>
+      </button>
+      <button class="action-btn glass-card" onclick="showToast(\'技能管理开发中...\')" title="技能管理">
+        <span class="action-icon">🛠️</span>
+        <span>技能管理</span>
+      </button>
+      <button class="action-btn glass-card" onclick="showToast(\'系统设置开发中...\')" title="系统设置">
+        <span class="action-icon">⚙️</span>
+        <span>系统设置</span>
+      </button>
+    </div>
     <div class="evomap-panel glass-card skeleton">
-      <h2>EvoMap 状态</h2>
+      <h2><span class="section-icon">🧠</span> EvoMap 状态</h2>
       <div class="evomap-grid">
-        <div class="evo-stat">
-          <div class="label">查询</div>
-          <div id="kgQueries" class="value">--</div>
-        </div>
-        <div class="evo-stat">
-          <div class="label">写入</div>
-          <div id="kgWrites" class="value">--</div>
-        </div>
-        <div class="evo-stat">
-          <div class="label">会话</div>
-          <div id="kgSessions" class="value">--</div>
-        </div>
-        <div class="evo-stat">
-          <div class="label">Work</div>
-          <div id="kgWork" class="value">--</div>
-        </div>
-        <div class="evo-stat">
-          <div class="label">声誉</div>
-          <div id="kgRep" class="value">--</div>
-        </div>
-        <div class="evo-stat">
-          <div class="label">余额</div>
-          <div id="kgBalance" class="value">--</div>
-        </div>
+        <div class="evo-stat"><div class="label">查询</div><div id="kgQueries" class="value">--</div></div>
+        <div class="evo-stat"><div class="label">写入</div><div id="kgWrites" class="value blue">--</div></div>
+        <div class="evo-stat"><div class="label">会话</div><div id="kgSessions" class="value purple">--</div></div>
+        <div class="evo-stat"><div class="label">Work</div><div id="kgWork" class="value orange">--</div></div>
+        <div class="evo-stat"><div class="label">声誉</div><div id="kgRep" class="value">--</div></div>
+        <div class="evo-stat"><div class="label">余额</div><div id="kgBalance" class="value blue">--</div></div>
       </div>
       <div id="evomap-errors" class="evomap-errors"></div>
     </div>
-    
+    <div class="skills-panel glass-card skeleton">
+      <h2>🔧 技能列表</h2>
+      <div id="skills-list" class="skills-list"></div>
+    </div>
     <div class="history glass-card skeleton">
-      <h2>最近状态</h2>
+      <h2>📜 最近状态</h2>
       <div id="history-list" class="history-list">
         <div class="history-item skeleton">
-          <div class="history-dot idle" style="width:10px;height:10px;"></div>
+          <div class="history-dot idle" style="width:12px;height:12px;"></div>
           <div class="skeleton-text medium" style="flex:1;margin:0;height:12px;"></div>
           <div class="skeleton-text" style="width:60px;height:10px;margin:0;"></div>
         </div>
         <div class="history-item skeleton">
-          <div class="history-dot working" style="width:10px;height:10px;"></div>
+          <div class="history-dot working" style="width:12px;height:12px;"></div>
           <div class="skeleton-text medium" style="flex:1;margin:0;height:12px;"></div>
           <div class="skeleton-text" style="width:60px;height:10px;margin:0;"></div>
         </div>
       </div>
     </div>
   </div>
-  
   <div id="fps-counter">FPS: --</div>
   <div id="toast" class="toast"></div>
-
   <script>
-    // ========== 滚动进度条 ==========
+    // Scroll Progress
     const scrollProgress = document.getElementById('scroll-progress');
     window.addEventListener('scroll', () => {
       const scrollTop = window.scrollY;
@@ -468,7 +271,7 @@
       scrollProgress.style.width = progress + '%';
     });
 
-    // ========== 时间显示 ==========
+    // Time Display
     const timeDisplay = document.getElementById('currentTime');
     function updateTime() {
       const now = new Date();
@@ -477,12 +280,11 @@
     setInterval(updateTime, 1000);
     updateTime();
 
-    // ========== FPS 计数器 ==========
+    // FPS Counter
     let lastTime = performance.now();
     let frames = 0;
     let fps = 0;
     const fpsCounter = document.getElementById('fps-counter');
-    
     function updateFPS() {
       frames++;
       const now = performance.now();
@@ -496,22 +298,7 @@
     }
     updateFPS();
 
-    // ========== 涟漪点击效果 ==========
-    document.querySelectorAll('.ripple').forEach(el => {
-      el.addEventListener('click', function(e) {
-        const rect = this.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const ripple = document.createElement('span');
-        ripple.className = 'ripple-effect';
-        ripple.style.left = x + 'px';
-        ripple.style.top = y + 'px';
-        this.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 600);
-      });
-    });
-
-    // ========== Toast 提示 ==========
+    // Toast
     const toast = document.getElementById('toast');
     function showToast(msg, duration = 3000) {
       toast.textContent = msg;
@@ -519,16 +306,14 @@
       setTimeout(() => toast.classList.remove('visible'), duration);
     }
 
-    // ========== 粒子系统 ==========
+    // Particles
     const particlesCanvas = document.getElementById('particles');
     const pCtx = particlesCanvas.getContext('2d');
     let particles = [];
-    
     function resizeParticles() {
       particlesCanvas.width = window.innerWidth;
       particlesCanvas.height = window.innerHeight;
     }
-    
     class Particle {
       constructor() { this.reset(); }
       reset() {
@@ -552,34 +337,28 @@
         pCtx.fill();
       }
     }
-    
     function initParticles() {
       particles = [];
       const count = Math.min(80, Math.floor((particlesCanvas.width * particlesCanvas.height) / 15000));
       for (let i = 0; i < count; i++) particles.push(new Particle());
     }
-    
     function animateParticles() {
       pCtx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
       particles.forEach(p => { p.update(); p.draw(); });
       requestAnimationFrame(animateParticles);
     }
-    
     resizeParticles();
     initParticles();
     animateParticles();
     window.addEventListener('resize', () => { resizeParticles(); initParticles(); });
 
-    // ========== 狐狸 Canvas 渲染 ==========
+    // Fox Canvas
     const foxCanvas = document.getElementById('foxCanvas');
     const ctx = foxCanvas.getContext('2d');
     const foxGlow = document.getElementById('foxGlow');
-    
     let foxState = 'idle';
     let targetState = 'idle';
     let stateTransition = 0;
-    let lastStateChange = Date.now();
-    
     const foxColors = {
       idle: { primary: '#ff9f43', secondary: '#ffeaa7', accent: '#fff' },
       working: { primary: '#3498db', secondary: '#74b9ff', accent: '#fff' },
@@ -588,175 +367,97 @@
       thinking: { primary: '#9b59b6', secondary: '#d6a3ff', accent: '#fff' },
       excited: { primary: '#e74c3c', secondary: '#ff7675', accent: '#fff' }
     };
-    
     let currentColors = { ...foxColors.idle };
-    
     function lerpColor(c1, c2, t) {
-      const parse = c => {
-        const r = parseInt(c.slice(1,3),16), g = parseInt(c.slice(3,5),16), b = parseInt(c.slice(5,7),16);
-        return [r,g,b];
-      };
+      const parse = c => { const r = parseInt(c.slice(1,3),16), g = parseInt(c.slice(3,5),16), b = parseInt(c.slice(5,7),16); return [r,g,b]; };
       const [r1,g1,b1] = parse(c1), [r2,g2,b2] = parse(c2);
       const r = Math.round(r1 + (r2-r1)*t), g = Math.round(g1 + (g2-g1)*t), b = Math.round(b1 + (b2-b1)*t);
       return `rgb(${r},${g},${b})`;
     }
-    
     function drawFox(state) {
-      ctx.clearRect(0, 0, 220, 220);
-      const cx = 110, cy = 110;
+      ctx.clearRect(0, 0, 240, 240);
+      const cx = 120, cy = 120;
       const colors = currentColors;
-      
       let scale = 1, yOffset = 0, rotation = 0, eyeScale = 1;
       let tailWag = 0, earUp = 1, mouthOpen = 0;
-      
       switch(state) {
-        case 'idle':
-          tailWag = Math.sin(Date.now() / 300) * 0.15;
-          eyeScale = 1 + Math.sin(Date.now() / 1000) * 0.05;
-          break;
-        case 'working':
-          eyeScale = 0.7;
-          scale = 1 + Math.sin(Date.now() / 200) * 0.03;
-          yOffset = Math.sin(Date.now() / 150) * 2;
-          break;
-        case 'sleeping':
-          eyeScale = 0.2;
-          earUp = 0.3;
-          yOffset = 5;
-          break;
-        case 'laughing':
-          tailWag = Math.sin(Date.now() / 100) * 0.3;
-          mouthOpen = 0.5;
-          scale = 1.05;
-          break;
-        case 'thinking':
-          eyeScale = 0.8;
-          rotation = Math.sin(Date.now() / 500) * 0.05;
-          yOffset = -3;
-          break;
-        case 'excited':
-          tailWag = Math.sin(Date.now() / 80) * 0.4;
-          eyeScale = 1.2;
-          scale = 1 + Math.sin(Date.now() / 100) * 0.08;
-          break;
+        case 'idle': tailWag = Math.sin(Date.now() / 300) * 0.15; eyeScale = 1 + Math.sin(Date.now() / 1000) * 0.05; break;
+        case 'working': eyeScale = 0.7; scale = 1 + Math.sin(Date.now() / 200) * 0.03; yOffset = Math.sin(Date.now() / 150) * 2; break;
+        case 'sleeping': eyeScale = 0.2; earUp = 0.3; yOffset = 5; break;
+        case 'laughing': tailWag = Math.sin(Date.now() / 100) * 0.3; mouthOpen = 0.5; scale = 1.05; break;
+        case 'thinking': eyeScale = 0.8; rotation = Math.sin(Date.now() / 500) * 0.05; yOffset = -3; break;
+        case 'excited': tailWag = Math.sin(Date.now() / 80) * 0.4; eyeScale = 1.2; scale = 1 + Math.sin(Date.now() / 100) * 0.08; break;
       }
-      
       ctx.save();
       ctx.translate(cx, cy + yOffset);
       ctx.rotate(rotation);
       ctx.scale(scale, scale);
-      
-      // 身体
+      // Body
       ctx.beginPath();
-      ctx.ellipse(0, 25, 38, 45, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, 30, 42, 50, 0, 0, Math.PI * 2);
       ctx.fillStyle = colors.primary;
       ctx.fill();
-      
-      // 脸部
+      // Face
       ctx.beginPath();
-      ctx.ellipse(0, -15, 35, 32, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, -15, 38, 36, 0, 0, Math.PI * 2);
       ctx.fillStyle = colors.primary;
       ctx.fill();
-      
-      // 耳朵
+      // Ears
       ctx.beginPath();
-      ctx.moveTo(-32, -38); ctx.lineTo(-22, -60 * earUp); ctx.lineTo(-12, -38);
+      ctx.moveTo(-35, -42); ctx.lineTo(-24, -68 * earUp); ctx.lineTo(-13, -42);
       ctx.fillStyle = colors.primary; ctx.fill();
       ctx.beginPath();
-      ctx.moveTo(32, -38); ctx.lineTo(22, -60 * earUp); ctx.lineTo(12, -38);
+      ctx.moveTo(35, -42); ctx.lineTo(24, -68 * earUp); ctx.lineTo(13, -42);
       ctx.fillStyle = colors.primary; ctx.fill();
-      
-      // 耳朵内部
+      // Inner ears
       ctx.beginPath();
-      ctx.moveTo(-30, -39); ctx.lineTo(-22, -52 * earUp); ctx.lineTo(-16, -39);
+      ctx.moveTo(-32, -43); ctx.lineTo(-24, -58 * earUp); ctx.lineTo(-17, -43);
       ctx.fillStyle = colors.secondary; ctx.fill();
       ctx.beginPath();
-      ctx.moveTo(30, -39); ctx.lineTo(22, -52 * earUp); ctx.lineTo(16, -39);
+      ctx.moveTo(32, -43); ctx.lineTo(24, -58 * earUp); ctx.lineTo(17, -43);
       ctx.fillStyle = colors.secondary; ctx.fill();
-      
-      // 脸部白色区域
+      // Face white area
       ctx.beginPath();
-      ctx.ellipse(0, -8, 22, 20, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, -8, 24, 22, 0, 0, Math.PI * 2);
       ctx.fillStyle = colors.secondary;
       ctx.fill();
-      
-      // 眼睛
-      const eyeY = -22;
+      // Eyes
+      const eyeY = -24;
       ctx.save();
       ctx.scale(eyeScale, eyeScale);
-      
-      ctx.beginPath();
-      ctx.ellipse(-14, eyeY, 7, 8, 0, 0, Math.PI * 2);
-      ctx.fillStyle = '#fff'; ctx.fill();
-      ctx.beginPath();
-      ctx.arc(-14, eyeY, 4, 0, Math.PI * 2);
-      ctx.fillStyle = '#1a1a2e'; ctx.fill();
-      ctx.beginPath();
-      ctx.arc(-15, eyeY - 1, 1.5, 0, Math.PI * 2);
-      ctx.fillStyle = '#fff'; ctx.fill();
-      
-      ctx.beginPath();
-      ctx.ellipse(14, eyeY, 7, 8, 0, 0, Math.PI * 2);
-      ctx.fillStyle = '#fff'; ctx.fill();
-      ctx.beginPath();
-      ctx.arc(14, eyeY, 4, 0, Math.PI * 2);
-      ctx.fillStyle = '#1a1a2e'; ctx.fill();
-      ctx.beginPath();
-      ctx.arc(13, eyeY - 1, 1.5, 0, Math.PI * 2);
-      ctx.fillStyle = '#fff'; ctx.fill();
-      
+      ctx.beginPath(); ctx.ellipse(-15, eyeY, 8, 9, 0, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
+      ctx.beginPath(); ctx.arc(-15, eyeY, 5, 0, Math.PI * 2); ctx.fillStyle = '#1a1a2e'; ctx.fill();
+      ctx.beginPath(); ctx.arc(-16, eyeY - 1, 2, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
+      ctx.beginPath(); ctx.ellipse(15, eyeY, 8, 9, 0, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
+      ctx.beginPath(); ctx.arc(15, eyeY, 5, 0, Math.PI * 2); ctx.fillStyle = '#1a1a2e'; ctx.fill();
+      ctx.beginPath(); ctx.arc(14, eyeY - 1, 2, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
       ctx.restore();
-      
-      // 鼻子
+      // Nose
       ctx.beginPath();
-      ctx.ellipse(0, -5, 6, 5, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, -5, 7, 6, 0, 0, Math.PI * 2);
       ctx.fillStyle = '#1a1a2e'; ctx.fill();
-      
-      // 嘴巴
+      // Mouth
       if (mouthOpen > 0) {
-        ctx.beginPath();
-        ctx.ellipse(0, 3, 7 * mouthOpen, 5 * mouthOpen, 0, 0, Math.PI * 2);
-        ctx.fillStyle = '#c0392b'; ctx.fill();
+        ctx.beginPath(); ctx.ellipse(0, 4, 8 * mouthOpen, 6 * mouthOpen, 0, 0, Math.PI * 2); ctx.fillStyle = '#c0392b'; ctx.fill();
       } else {
-        ctx.beginPath();
-        ctx.arc(0, 0, 6, 0.1 * Math.PI, 0.9 * Math.PI);
-        ctx.strokeStyle = '#1a1a2e'; ctx.lineWidth = 2.5; ctx.stroke();
+        ctx.beginPath(); ctx.arc(0, 1, 7, 0.1 * Math.PI, 0.9 * Math.PI); ctx.strokeStyle = '#1a1a2e'; ctx.lineWidth = 3; ctx.stroke();
       }
-      
-      // 腮红
-      ctx.beginPath();
-      ctx.ellipse(-28, -10, 7, 5, 0, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(255,150,150,0.35)'; ctx.fill();
-      ctx.beginPath();
-      ctx.ellipse(28, -10, 7, 5, 0, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(255,150,150,0.35)'; ctx.fill();
-      
-      // 尾巴
+      // Blush
+      ctx.beginPath(); ctx.ellipse(-30, -10, 8, 5, 0, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,150,150,0.35)'; ctx.fill();
+      ctx.beginPath(); ctx.ellipse(30, -10, 8, 5, 0, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,150,150,0.35)'; ctx.fill();
+      // Tail
       ctx.save();
-      ctx.translate(35, 40);
+      ctx.translate(38, 45);
       ctx.rotate(tailWag + 0.3);
-      ctx.beginPath();
-      ctx.ellipse(18, 0, 28, 14, 0.3, 0, Math.PI * 2);
-      ctx.fillStyle = colors.primary; ctx.fill();
-      ctx.beginPath();
-      ctx.ellipse(35, -4, 12, 10, 0.3, 0, Math.PI * 2);
-      ctx.fillStyle = colors.secondary; ctx.fill();
+      ctx.beginPath(); ctx.ellipse(20, 0, 32, 16, 0.3, 0, Math.PI * 2); ctx.fillStyle = colors.primary; ctx.fill();
+      ctx.beginPath(); ctx.ellipse(40, -5, 14, 11, 0.3, 0, Math.PI * 2); ctx.fillStyle = colors.secondary; ctx.fill();
       ctx.restore();
-      
-      // 前爪
-      ctx.beginPath();
-      ctx.ellipse(-20, 60, 12, 9, -0.2, 0, Math.PI * 2);
-      ctx.fillStyle = colors.secondary; ctx.fill();
-      ctx.beginPath();
-      ctx.ellipse(20, 60, 12, 9, 0.2, 0, Math.PI * 2);
-      ctx.fillStyle = colors.secondary; ctx.fill();
-      
+      // Paws
+      ctx.beginPath(); ctx.ellipse(-22, 65, 13, 10, -0.2, 0, Math.PI * 2); ctx.fillStyle = colors.secondary; ctx.fill();
+      ctx.beginPath(); ctx.ellipse(22, 65, 13, 10, 0.2, 0, Math.PI * 2); ctx.fillStyle = colors.secondary; ctx.fill();
       ctx.restore();
     }
-    
     function updateFox() {
-      const now = Date.now();
-      
       if (stateTransition < 1 && foxState !== targetState) {
         stateTransition = Math.min(1, stateTransition + 0.05);
         const t = stateTransition;
@@ -765,41 +466,20 @@
         currentColors.primary = lerpColor(from.primary, to.primary, t);
         currentColors.secondary = lerpColor(from.secondary, to.secondary, t);
         currentColors.accent = lerpColor(from.accent, to.accent, t);
-        
-        if (stateTransition >= 1) {
-          foxState = targetState;
-          stateTransition = 0;
-        }
+        if (stateTransition >= 1) { foxState = targetState; stateTransition = 0; }
       }
-      
       drawFox(foxState);
       requestAnimationFrame(updateFox);
     }
-    
-    function setFoxState(state) {
-      if (state !== targetState) {
-        targetState = state;
-        stateTransition = 0;
-        lastStateChange = Date.now();
-      }
-    }
-    
+    function setFoxState(state) { if (state !== targetState) { targetState = state; stateTransition = 0; } }
     currentColors = { ...foxColors.idle };
     updateFox();
-    
-    function setFoxGlow(color) {
-      foxGlow.style.background = color;
-    }
-    
-    setInterval(() => {
-      const colors = foxColors[targetState] || foxColors.idle;
-      foxGlow.style.background = colors.primary;
-    }, 500);
+    function setFoxGlow(color) { foxGlow.style.background = color; }
+    setInterval(() => { const colors = foxColors[targetState] || foxColors.idle; foxGlow.style.background = colors.primary; }, 500);
 
-    // ========== 数据获取与处理 ==========
+    // Data handling
     const stateHistory = [];
     const MAX_HISTORY = 10;
-    
     function formatUptime(seconds) {
       const d = Math.floor(seconds / 86400);
       const h = Math.floor((seconds % 86400) / 3600);
@@ -808,80 +488,46 @@
       if (h > 0) return `${h}小时 ${m}分`;
       return `${m}分钟`;
     }
-    
     function addHistory(state, time) {
       stateHistory.unshift({ state, time: time || new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }) });
       if (stateHistory.length > MAX_HISTORY) stateHistory.pop();
     }
-    
     function updateHistory() {
       const list = document.getElementById('history-list');
       list.innerHTML = '';
       stateHistory.forEach(item => {
         const div = document.createElement('div');
         div.className = 'history-item fade-in';
-        div.innerHTML = `
-          <div class="history-dot ${item.state}"></div>
-          <span>状态: ${item.state}</span>
-          <span class="history-time">${item.time}</span>
-        `;
+        div.innerHTML = `<div class="history-dot ${item.state}"></div><div class="history-text"><div class="state-name">${item.state}</div><div class="state-time">${item.state}</div></div><span class="history-time">${item.time}</span>`;
         list.appendChild(div);
       });
     }
-    
     function updateMetrics(data) {
       document.querySelectorAll('.skeleton').forEach(el => el.classList.remove('skeleton'));
-      
       if (data.uptime) {
         const uptimeEl = document.getElementById('uptime');
         const newUptime = formatUptime(data.uptime);
-        if (uptimeEl.textContent !== newUptime) {
-          uptimeEl.textContent = newUptime;
-          uptimeEl.classList.add('count-animate');
-          setTimeout(() => uptimeEl.classList.remove('count-animate'), 400);
-        }
+        if (uptimeEl.textContent !== newUptime) { uptimeEl.textContent = newUptime; uptimeEl.classList.add('count-animate'); setTimeout(() => uptimeEl.classList.remove('count-animate'), 400); }
       }
-      
-      if (data.msgCount !== undefined) {
-        document.getElementById('msgCount').textContent = data.msgCount.toLocaleString();
-      }
-      
-      if (data.taskDone !== undefined) {
-        document.getElementById('taskDone').textContent = data.taskDone;
-      }
-      
+      if (data.uptimeShort) document.getElementById('uptimeShort').textContent = data.uptimeShort;
+      if (data.msgCount !== undefined) document.getElementById('msgCount').textContent = data.msgCount.toLocaleString();
+      if (data.taskDone !== undefined) document.getElementById('taskDone').textContent = data.taskDone;
       if (data.activity !== undefined) {
         const level = data.activity > 80 ? '极高' : data.activity > 50 ? '高' : data.activity > 20 ? '中' : '低';
         const el = document.getElementById('activityLevel');
         el.textContent = level;
-        
         const bar = document.getElementById('activityBar');
         bar.style.width = data.activity + '%';
-        
         el.className = 'value ' + (data.activity > 50 ? 'activity-high' : data.activity > 20 ? 'activity-medium' : 'activity-low');
         bar.style.background = data.activity > 50 ? '#e74c3c' : data.activity > 20 ? '#f39c12' : '#2ecc71';
       }
-      
-      if (data.memory) {
-        document.getElementById('memory').textContent = data.memory;
-      }
-      
-      if (data.cronJobs !== undefined) {
-        document.getElementById('cronJobs').textContent = data.cronJobs;
-      }
-      
-      if (data.reputation !== undefined) {
-        document.getElementById('reputation').textContent = data.reputation;
-      }
-      
-      if (data.disk !== undefined) {
-        document.getElementById('disk').textContent = data.disk + '%';
-      }
-      
-      document.querySelector('.metrics-grid').classList.add('data-updated');
-      setTimeout(() => document.querySelector('.metrics-grid').classList.remove('data-updated'), 600);
+      if (data.memory) document.getElementById('memory').textContent = data.memory;
+      if (data.cronJobs !== undefined) document.getElementById('cronJobs').textContent = data.cronJobs;
+      if (data.reputation !== undefined) document.getElementById('reputation').textContent = data.reputation;
+      if (data.disk !== undefined) document.getElementById('disk').textContent = data.disk + '%';
+      document.querySelector('.bento-grid').classList.add('data-updated');
+      setTimeout(() => document.querySelector('.bento-grid').classList.remove('data-updated'), 600);
     }
-    
     function updateEvoMap(data) {
       if (data.kgQueries !== undefined) document.getElementById('kgQueries').textContent = data.kgQueries;
       if (data.kgWrites !== undefined) document.getElementById('kgWrites').textContent = data.kgWrites;
@@ -889,56 +535,56 @@
       if (data.kgWork !== undefined) document.getElementById('kgWork').textContent = data.kgWork;
       if (data.kgRep !== undefined) document.getElementById('kgRep').textContent = data.kgRep;
       if (data.kgBalance !== undefined) document.getElementById('kgBalance').textContent = data.kgBalance;
-      if (data.error) {
-        document.getElementById('evomap-errors').textContent = '错误: ' + data.error;
-      } else {
-        document.getElementById('evomap-errors').textContent = '';
+      if (data.error) { document.getElementById('evomap-errors').textContent = '错误: ' + data.error; } else { document.getElementById('evomap-errors').textContent = ''; }
+    }
+    function updateSkills(data) {
+      const list = document.getElementById('skills-list');
+      if (!list) return;
+      list.innerHTML = '';
+      if (data.list && data.list.length > 0) {
+        data.list.slice(0, 12).forEach(skill => {
+          const tag = document.createElement('div');
+          tag.className = 'skill-tag' + (skill.active ? '' : ' inactive');
+          tag.innerHTML = `<span class="dot"></span><span>${skill.name}</span>`;
+          list.appendChild(tag);
+        });
       }
     }
-    
     function updateHeartbeat(state, color) {
       const badge = document.getElementById('heartbeat');
-      badge.textContent = state;
-      badge.className = 'status-badge status-transition ' + (state !== 'idle' ? state : 'idle');
+      const text = document.getElementById('heartbeatText');
+      badge.className = 'status-badge ' + (state !== 'idle' ? state : 'idle');
+      text.textContent = state || '--';
       setFoxGlow(color || foxColors[state]?.primary || '#ff9f43');
       setFoxState(state);
     }
-    
     function showError(msg) {
       const el = document.getElementById('error-msg');
       el.textContent = msg;
       el.style.display = 'block';
       setTimeout(() => el.style.display = 'none', 5000);
     }
-    
+    function refreshData() { fetchDashboardData(); showToast('数据已刷新'); }
     async function fetchDashboardData() {
       try {
-        const resp = await fetch('/api/status');
-        if (!resp.ok) throw new Error('API 响应错误');
+        const resp = await fetch('/api/dashboard');
+        if (!resp.ok) throw new Error('API error');
         const data = await resp.json();
-        
-        updateHeartbeat(data.state || 'idle', data.glowColor);
-        if (data.state) addHistory(data.state);
+        updateHeartbeat(data.status || 'idle');
+        if (data.status) addHistory(data.status);
         updateMetrics(data);
         if (data.evomap) updateEvoMap(data.evomap);
-        
+        if (data.skills) updateSkills(data.skills);
         return data;
       } catch (e) {
-        console.warn('获取数据失败:', e.message);
+        console.warn('Fetch failed:', e.message);
         showError('数据获取失败: ' + e.message);
         return null;
       }
     }
-    
     let pollInterval = null;
-    function startPolling() {
-      if (pollInterval) clearInterval(pollInterval);
-      fetchDashboardData();
-      pollInterval = setInterval(fetchDashboardData, 5000);
-    }
-    
+    function startPolling() { if (pollInterval) clearInterval(pollInterval); fetchDashboardData(); pollInterval = setInterval(fetchDashboardData, 5000); }
     startPolling();
-    
     window.addEventListener('resize', () => { resizeParticles(); initParticles(); });
   </script>
 </body>
