@@ -1,0 +1,14 @@
+# Runtime pid/log
+scripts/.dashboard.pid
+scripts/dashboard.log
+
+# OS / editor
+.DS_Store
+*.swp
+*.swo
+
+# Node
+node_modules/
+
+# Optional backups
+frontend/*.bak.*
